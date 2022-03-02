@@ -17,6 +17,7 @@ function convertDataToSong(filename){
     for (let i = 1; i < songs.length; i++){ // go through the songs
         const song = songs[i].split(','); // split each song into its attributes
         songObj = { // assign each attribute 
+            track_id: i,
             track_name: song[1],
             track_artist: song[2],
             track_album_name: song[5], 
@@ -29,6 +30,6 @@ function convertDataToSong(filename){
     song_array.push(songObj)
     }
   
-    console.log(songs.length)
+    console.log(song_array[0])
     return song_array;
 }
