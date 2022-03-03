@@ -11,6 +11,7 @@ var songs = [] // array of all songs
 var genreList = []; // list of all genres
 var subGenreList = []; // list of all sub genres
 var userGenre = []; // list of user genres
+var userSubgenre = []; // list of user subgenres
 convertDataToSong('spotify_songs.csv');
 getUserGenre(); // get favorite user genre
 
@@ -63,19 +64,13 @@ function convertDataToSong(filename) {
         }
     }
     this.genreList = genreList;
-
-    // print all genres 
-    console.log('List of all genres:')
-    for (let i = 0; i < this.genreList.length; i++) {
-        console.log(this.genreList[i])
-    }
-
     this.songs = song_array;
 }
 
 // get favorite genre of user
 async function getUserGenre() {
     let userGenre = [];
+    let userSubgenre = [];
     const readline = require("readline");
 
     function askQuestion(query) {
@@ -89,6 +84,14 @@ async function getUserGenre() {
             resolve(ans);
         }))
     }
+
+    // print all genres 
+    console.log('List of all genres:')
+    for (let i = 0; i < this.genreList.length; i++) {
+        console.log(this.genreList[i])
+    }
+
+    // get favorite genres
     while (userGenre.length < 3) {
         let ans = await askQuestion("What is your favorite genre? (" + (3 - userGenre.length) + " left) ")
         if (userGenre.includes(ans)) { // if user has already selected the genre, skip it
@@ -100,6 +103,27 @@ async function getUserGenre() {
             continue
         }
         userGenre.push(ans)
+    }
+
+    //get favorite subgenre
+    for (i in userGenre){
+        console.log('List of all ' + userGenre[i] + ' genres:')
+        for (let i = 0; i < this.genreList.length; i++) {
+            console.log(this.subGenreList[i])
+        }
+
+        while (userSubgenre.length < 3) {
+            let ans = await askQuestion("What is your favorite subgenre of " + userGenre[i] + "? (" + (3 - userGenre.length) + " left) ")
+            if (subGenreList.includes(ans)) { // if user has already selected the subgenre, skip it
+                console.log("You have already selected this subgenre")
+                continue
+            }
+            if (!this.subGenreList.includes(ans)) { // if user has selected an invalid subgenre, skip it
+                console.log("Invalid subgenre")
+                continue
+            }
+            userSubgenre.push(ans)
+        }
     }
 
     // this part needs to be inside this function for it to work, am trying to think of another way
@@ -125,4 +149,6 @@ function recommendSong(genre) {
     let songs = getSongsByGenre(genre);
     let rand = Math.floor(Math.random() * songs.length);
     console.log(songs[rand])
+    console.log('')
+
 }
