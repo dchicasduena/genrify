@@ -8,12 +8,11 @@
 let fs = require('fs');
 
 var songs = [] // array of all songs
-convertDataToSong('spotify_songs.csv');
 var genreList = []; // list of all genres
-var userGenre = getUserGenre(); // get favorite user genre
-var songsByGenre = getSongsByGenre(userGenre); // get songs using given genre
-let rand = Math.floor(Math.random() * songsByGenre.length); // get random song
-console.log(songsByGenre[rand])
+var subGenreList = []; // list of all sub genres
+var userGenre = []; // list of user genres
+convertDataToSong('spotify_songs.csv');
+getUserGenre(); // get favorite user genre
 
 
 function convertDataToSong(filename) {
@@ -51,16 +50,31 @@ function convertDataToSong(filename) {
         song_array.push(songObj)
     }
 
-    this.genreList = [
+    // get all sub genres
+    this.subGenreList = [
         ...new Map(genre_array.map((item) => [item["playlist_subgenre"], item])).values(),
     ];
 
-    console.log(this.genreList)
+    // get unique genres
+    let genreList = [];
+    for (let i = 0; i < this.subGenreList.length; i++) {
+        if (!genreList.includes(this.subGenreList[i].playlist_genre)) {
+            genreList.push(this.subGenreList[i].playlist_genre)
+        }
+    }
+    this.genreList = genreList;
+
+    // print all genres 
+    console.log('List of all genres:')
+    for (let i = 0; i < this.genreList.length; i++) {
+        console.log(this.genreList[i])
+    }
+
     this.songs = song_array;
 }
 
 // get favorite genre of user
-function getUserGenre() {
+async function getUserGenre() {
     let userGenre = [];
     const readline = require("readline");
 
@@ -75,15 +89,24 @@ function getUserGenre() {
             resolve(ans);
         }))
     }
-    const ans = /* await */ askQuestion("What is your favourite genre? "); // currently not working
-    let test = 'pop'; // for testing, change to ans
-    for (let i = 0; i < this.genreList.length; i++) {
-        if (test == this.genreList[i].playlist_genre && !(userGenre.includes(test))) { // if the genre is valid and not in the list, add it
-            userGenre.push(test)
-            console.log(userGenre)
+    while (userGenre.length < 3) {
+        let ans = await askQuestion("What is your favorite genre? (" + (3 - userGenre.length) + " left) ")
+        if (userGenre.includes(ans)) { // if user has already selected the genre, skip it
+            console.log("You have already selected this genre")
+            continue
         }
+        if (!this.genreList.includes(ans)) { // if user has selected an invalid genre, skip it
+            console.log("Invalid genre")
+            continue
+        }
+        userGenre.push(ans)
     }
-    return userGenre;
+
+    // this part needs to be inside this function for it to work, am trying to think of another way
+    this.userGenre = userGenre;
+    for (let i = 0; i < userGenre.length; i++) {
+        recommendSong(userGenre[i])
+    }
 }
 
 // get songs by genre
@@ -95,4 +118,11 @@ function getSongsByGenre(genre) {
         }
     }
     return songs;
+}
+
+// recommend song by genre
+function recommendSong(genre) {
+    let songs = getSongsByGenre(genre);
+    let rand = Math.floor(Math.random() * songs.length);
+    console.log(songs[rand])
 }
