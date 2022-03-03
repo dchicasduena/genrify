@@ -46,6 +46,7 @@ function convertDataToSong(filename){
         ...new Map(genre_array.map((item) => [item["playlist_subgenre"], item])).values(),
     ];
      
+    console.log(song_array[19000])
     console.log(unique_genre)
     return song_array;
 }
