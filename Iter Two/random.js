@@ -113,8 +113,8 @@ async function getUserGenre() {
         }
 
         while (userSubgenre.length < 3) {
-            let ans = await askQuestion("What is your favorite subgenre of " + userGenre[i] + "? (" + (3 - userGenre.length) + " left) ")
-            if (subGenreList.includes(ans)) { // if user has already selected the subgenre, skip it
+            let ans = await askQuestion("What is your favorite subgenre of " + userGenre[i] + "? (" + (3 - userSubgenre.length) + " left) ")
+            if (this.subGenreList.includes(ans)) { // if user has already selected the subgenre, skip it
                 console.log("You have already selected this subgenre")
                 continue
             }
