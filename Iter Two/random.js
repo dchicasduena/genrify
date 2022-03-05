@@ -9,11 +9,12 @@ let fs = require('fs');
 
 var songs = [] // array of all songs
 var genreList = []; // list of all genres
-var subGenreList = []; // list of all sub genres
+var subgenreObj = {}; // subgenre obj
 var userGenre = []; // list of user genres
 var userSubgenre = []; // list of user subgenres
+
 convertDataToSong('spotify_songs.csv');
-getUserGenre(); // get favorite user genre
+//getUserGenre(); // get favorite user genre
 
 
 function convertDataToSong(filename) {
@@ -56,6 +57,24 @@ function convertDataToSong(filename) {
         ...new Map(genre_array.map((item) => [item["playlist_subgenre"], item])).values(),
     ];
 
+    //assign subgenres to each genre for later use
+    // i dont like this being harcoded but cant think of anything else :/
+    // still working on it, doesnt work rn
+    
+    let temp = [];
+
+    for (let i = 0; i < this.subGenreList.length; i++){
+        if (temp.length <= 3){
+            temp.push(this.subGenreList[i].playlist_subgenre);
+            console.log(temp);
+        } else {
+            console.log('full');
+            temp = [];
+        }
+    }
+    
+
+
     // get unique genres
     let genreList = [];
     for (let i = 0; i < this.subGenreList.length; i++) {
@@ -63,6 +82,7 @@ function convertDataToSong(filename) {
             genreList.push(this.subGenreList[i].playlist_genre)
         }
     }
+
     this.genreList = genreList;
     this.songs = song_array;
 }
@@ -106,25 +126,7 @@ async function getUserGenre() {
     }
 
     //get favorite subgenre
-    for (i in userGenre){
-        console.log('List of all ' + userGenre[i] + ' genres:')
-        for (let i = 0; i < this.genreList.length; i++) {
-            console.log(this.subGenreList[i])
-        }
-
-        while (userSubgenre.length < 3) {
-            let ans = await askQuestion("What is your favorite subgenre of " + userGenre[i] + "? (" + (3 - userSubgenre.length) + " left) ")
-            if (this.subGenreList.includes(ans)) { // if user has already selected the subgenre, skip it
-                console.log("You have already selected this subgenre")
-                continue
-            }
-            if (!this.subGenreList.includes(ans)) { // if user has selected an invalid subgenre, skip it
-                console.log("Invalid subgenre")
-                continue
-            }
-            userSubgenre.push(ans)
-        }
-    }
+    
 
     // this part needs to be inside this function for it to work, am trying to think of another way
     this.userGenre = userGenre;
