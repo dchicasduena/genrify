@@ -9,12 +9,12 @@ let fs = require('fs');
 
 var songs = [] // array of all songs
 var genreList = []; // list of all genres
-var subgenreObj = {}; // subgenre obj
+var subGenreList = []; // list of all subgenres
 var userGenre = []; // list of user genres
 var userSubgenre = []; // list of user subgenres
 
 convertDataToSong('spotify_songs.csv');
-//getUserGenre(); // get favorite user genre
+getUserGenre(); // get favorite user genre
 
 
 function convertDataToSong(filename) {
@@ -52,34 +52,24 @@ function convertDataToSong(filename) {
         song_array.push(songObj)
     }
 
-    // get all sub genres
-    this.subGenreList = [
+    // map genre to subgenre
+    this.list = [
         ...new Map(genre_array.map((item) => [item["playlist_subgenre"], item])).values(),
     ];
 
-    //assign subgenres to each genre for later use
-    // i dont like this being harcoded but cant think of anything else :/
-    // still working on it, doesnt work rn
-    
+    // get unique subgenres
     let temp = [];
-
-    for (let i = 0; i < this.subGenreList.length; i++){
-        if (temp.length <= 3){
-            temp.push(this.subGenreList[i].playlist_subgenre);
-            console.log(temp);
-        } else {
-            console.log('full');
-            temp = [];
-        }
+    for (let i = 0; i < this.list.length; i++) {
+        temp.push(this.list[i].playlist_subgenre);
     }
-    
-
+    this.subGenreList = temp;
+    console.log(this.subGenreList);
 
     // get unique genres
     let genreList = [];
-    for (let i = 0; i < this.subGenreList.length; i++) {
-        if (!genreList.includes(this.subGenreList[i].playlist_genre)) {
-            genreList.push(this.subGenreList[i].playlist_genre)
+    for (let i = 0; i < this.list.length; i++) {
+        if (!genreList.includes(this.list[i].playlist_genre)) {
+            genreList.push(this.list[i].playlist_genre)
         }
     }
 
@@ -125,13 +115,67 @@ async function getUserGenre() {
         userGenre.push(ans)
     }
 
-    //get favorite subgenre
-    
+    //get favorite subgenres
+    let possibleSubGenre = [];
+    for (let i = 0; i < userGenre.length; i++) {
+        let subGenre = getSubGenre(userGenre[i]);
+        for (let j = 0; j < subGenre.length; j++) {
+            possibleSubGenre.push(subGenre[j])
+        }
+    }
+
+    // print all relevant subgenres
+    console.log('List of relevant subgenres:')
+    for (let i = 0; i < userGenre.length; i++) {
+        console.log(userGenre[i])
+        for (let j = 0; j < getSubGenre(userGenre[i]).length; j++) {
+            console.log(" - " + getSubGenre(userGenre[i])[j])
+        }
+    }
+
+    while (userSubgenre.length < 3) {
+        let currentGenre = userGenre[userSubgenre.length] // get current genre
+        let ans = await askQuestion("What is your favorite subgenre of " + currentGenre + "? (" + (3 - userSubgenre.length) + " left) ")
+        if (!possibleSubGenre.includes(ans)) { // if user has selected an invalid subgenre, skip it
+            console.log("Invalid subgenre")
+            continue
+        }
+        if (!getSubGenre(currentGenre).includes(ans)) { // if subgenre doesn't belong to current genre, skip it
+            console.log("Subgenre doesn't belong to " + currentGenre)
+            continue
+        }
+        if (userSubgenre.includes(ans)) { // if user has already selected the genre, skip it
+            console.log("You have already selected this subgenre")
+            continue
+        }
+        userSubgenre.push(ans)
+    }
 
     // this part needs to be inside this function for it to work, am trying to think of another way
     this.userGenre = userGenre;
+    this.userSubgenre = userSubgenre;
     for (let i = 0; i < userGenre.length; i++) {
-        recommendSong(userGenre[i])
+        recommendSong(this.userGenre[i], this.userSubgenre[i])
+    }
+}
+
+// get all subgenres of a genre
+function getSubGenre(genre) {
+    let subGenre = [];
+    for (let i = 0; i < this.list.length; i++) {
+        if (this.list[i].playlist_genre == genre) {
+            subGenre.push(this.list[i].playlist_subgenre)
+        }
+    }
+    return subGenre;
+}
+
+// get the genre of a given subgenre
+function getGenre(subgenre) {
+    for (let i = 0; i < this.list.length; i++) {
+        if (this.list[i].playlist_subgenre == subgenre) {
+            return this.list[i].playlist_genre
+        }
     }
 }
 
@@ -146,11 +190,16 @@ function getSongsByGenre(genre) {
     return songs;
 }
 
-// recommend song by genre
-function recommendSong(genre) {
+// recommend song by genre and subgenre
+function recommendSong(genre, subgenre) {
     let songs = getSongsByGenre(genre);
-    let rand = Math.floor(Math.random() * songs.length);
-    console.log(songs[rand])
-    console.log('')
-
+    let subgenreSongs = [];
+    for (let i = 0; i < songs.length; i++) {
+        if (songs[i].genre.playlist_subgenre == subgenre) {
+            subgenreSongs.push(songs[i])
+        }
+    }
+    let rand = Math.floor(Math.random() * subgenreSongs.length);
+    console.log(subgenreSongs[rand])
+    console.log("\n")
 }
