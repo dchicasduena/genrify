@@ -101,8 +101,10 @@ async function getUserGenre() {
 
         console.log('user playlist created:')
         for (let i = 0; i < 10; i++){
-            
-            let song = recommendSong(userGenre, userSubgenre); //this needs to be fixed
+            var randGenre = userGenre[Math.floor(Math.random()*userGenre.length)];
+            var randSubgenre = userSubgenre[Math.floor(Math.random()*userSubgenre.length)];
+
+            let song = recommendSong(randGenre, randSubgenre);
             playlist.push(song)
         }
        console.log(playlist)
