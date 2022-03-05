@@ -94,20 +94,6 @@ async function getUserGenre() {
         }))
     }
 
-    function createPlaylist() {
-        let playlist = [];
-        this.userGenre = userGenre;
-        this.userSubgenre = userSubgenre;
-
-        console.log('user playlist created:')
-        for (let i = 0; i < 10; i++){
-            
-            let song = recommendSong(userGenre, userSubgenre); //this needs to be fixed
-            playlist.push(song)
-        }
-       console.log(playlist)
-    }
-
     // print all genres 
     console.log('List of all genres:')
     for (let i = 0; i < this.genreList.length; i++) {
@@ -167,12 +153,20 @@ async function getUserGenre() {
     // this part needs to be inside this function for it to work, am trying to think of another way
     this.userGenre = userGenre;
     this.userSubgenre = userSubgenre;
-    for (let i = 0; i < userGenre.length; i++) {
-        let rec = recommendSong(this.userGenre[i], this.userSubgenre[i]) // print like this
-        //console.log(rec)
-    }
 
     createPlaylist();
+}
+
+function createPlaylist() {
+    let playlist = [];
+
+    console.log('user playlist created:')
+    for (let i = 0; i < 10; i++){
+        let rand = Math.floor(Math.random() * this.userGenre.length);
+        let song = recommendSong(this.userGenre[rand], this.userSubgenre[rand]); //this needs to be fixed
+        playlist.push(song)
+    }
+   console.log(playlist)
 }
 
 // get all subgenres of a genre
