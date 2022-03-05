@@ -63,7 +63,6 @@ function convertDataToSong(filename) {
         temp.push(this.list[i].playlist_subgenre);
     }
     this.subGenreList = temp;
-    console.log(this.subGenreList);
 
     // get unique genres
     let genreList = [];
@@ -93,6 +92,20 @@ async function getUserGenre() {
             rl.close();
             resolve(ans);
         }))
+    }
+
+    function createPlaylist() {
+        let playlist = [];
+        this.userGenre = userGenre;
+        this.userSubgenre = userSubgenre;
+
+        console.log('user playlist created:')
+        for (let i = 0; i < 10; i++){
+            
+            let song = recommendSong(userGenre, userSubgenre); //this needs to be fixed
+            playlist.push(song)
+        }
+       console.log(playlist)
     }
 
     // print all genres 
@@ -155,8 +168,11 @@ async function getUserGenre() {
     this.userGenre = userGenre;
     this.userSubgenre = userSubgenre;
     for (let i = 0; i < userGenre.length; i++) {
-        recommendSong(this.userGenre[i], this.userSubgenre[i])
+        let rec = recommendSong(this.userGenre[i], this.userSubgenre[i]) // print like this
+        //console.log(rec)
     }
+
+    createPlaylist();
 }
 
 // get all subgenres of a genre
@@ -200,6 +216,8 @@ function recommendSong(genre, subgenre) {
         }
     }
     let rand = Math.floor(Math.random() * subgenreSongs.length);
-    console.log(subgenreSongs[rand])
-    console.log("\n")
+    //console.log(subgenreSongs[rand])
+    //console.log("\n")
+    return subgenreSongs[rand]; // changed to return from print
 }
+
