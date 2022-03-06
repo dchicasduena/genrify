@@ -93,7 +93,7 @@ async function getUserGenre() {
             resolve(ans);
         }))
     }
-    
+
     // print all genres 
     console.log('List of all genres:')
     for (let i = 0; i < this.genreList.length; i++) {
@@ -161,12 +161,12 @@ function createPlaylist() {
     let playlist = [];
 
     console.log('user playlist created:')
-    for (let i = 0; i < 10; i++){
+    for (let i = 0; i < 10; i++) {
         let rand = Math.floor(Math.random() * this.userGenre.length);
         let song = recommendSong(this.userGenre[rand], this.userSubgenre[rand]); //this needs to be fixed
         playlist.push(song)
     }
-   console.log(playlist)
+    console.log(playlist)
 }
 
 // get all subgenres of a genre

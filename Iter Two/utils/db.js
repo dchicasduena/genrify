@@ -10,13 +10,14 @@ async function connectToDB() {
     try {
         // Connect the client to the server
         await client.connect();
-        // Our db name is going to be contacts-db
-        db = await client.db('contacts-db');
-        console.log("Connected successfully to mongoDB");  
+        // Our db name is going to be Playlist
+        db = await client.db('Playlist');
+        console.log("Connected successfully to mongoDB");
     } catch (err) {
-        throw err; 
+        throw err;
     } 
 }
+
 /**
  * This method just returns the database instance
  * @returns A Database instance

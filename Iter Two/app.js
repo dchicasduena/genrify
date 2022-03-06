@@ -5,6 +5,7 @@ const port = 3000;
 app.use(express.json());// support json encoded bodies
 app.use(express.urlencoded({ extended: true }));//incoming objects are strings or arrays
 
+const song = require('./controller/main');// Here we import our code with the contacts operations
 const mongo = require('./utils/db.js');
 
 var server;
@@ -15,7 +16,11 @@ async function createServer() {
         // starts correctly. Therefore, let's wait for
         // mongo to connect
         await mongo.connectToDB();
-
+        // contacts resource paths
+        app.get('/song', song.list_all);
+        app.get('/song/:track_id', song.get_song);
+        app.post('/song', song.add);
+        app.delete('/song/:track_id', song.delete_song);
         // start the server
         server = app.listen(port, () => {
             console.log('Example app listening at http://localhost:%d', port);
