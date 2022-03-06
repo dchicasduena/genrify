@@ -7,6 +7,7 @@
 
 let fs = require('fs');
 
+
 var songs = [] // array of all songs
 var genreList = []; // list of all genres
 var subGenreList = []; // list of all subgenres
@@ -210,8 +211,6 @@ function recommendSong(genre, subgenre) {
         }
     }
     let rand = Math.floor(Math.random() * subgenreSongs.length);
-    //console.log(subgenreSongs[rand])
-    //console.log("\n")
     return subgenreSongs[rand]; // changed to return from print
 }
 
