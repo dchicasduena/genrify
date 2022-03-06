@@ -1,5 +1,5 @@
+const get_song = require('../utils/get-song-info');
 const client = require('../utils/db.js');
-// const get_song = require('../utils/get-song-info');
 
 async function _get_songs_collection() {
     client.connectToDB();
@@ -17,6 +17,9 @@ class Song {
         this.track_id = track_id;
     }
 
+    /**
+     * This method will add the song's info
+     */
     addSongInfo(track_name, track_artist, track_album_name, playlist_name, playlist_genre, playlist_subgenre, duration) {
         this.track_name = track_name;
         this.track_artist = track_artist;
@@ -27,29 +30,24 @@ class Song {
         this.duration = duration;
     }
 
-    setSong(track_id) {
-        let obj = get(track_id);
-        this.addSongInfo(obj.track_name, obj.track_artist, obj.track_album_name, obj.playlist_name, obj.playlist_genre, obj.playlist_subgenre, obj.duration);
-    }
-
     /**
      * This method saves the current object song in the Database
      * @returns {String} - A message if song was saved in the db or not
      */
-    // async save() {
-    //     try {
-    //         let songInfo = await get_song.getSongInfo(this.track_id);
-    //         if (songInfo != null) {
-    //             this.addSongInfo(songInfo[1], songInfo[2], songInfo[5], songInfo[7], songInfo[9], songInfo[10], songInfo[22]);
-    //         }
-    //         let collection = await _get_songs_collection();
-    //         let mongoObj = await collection.insertOne(this);
-    //         console.log('1 song was inserted in the database with id -> ' + mongoObj.insertedId);
-    //         return 'song correctly inserted in the Database.';
-    //     } catch (err) {
-    //         throw err
-    //     }
-    // }
+    async save() {
+        try {
+            let songInfo = await get_song.getSongInfo(this.track_id);
+            if (songInfo != null) {
+                this.addSongInfo(songInfo[1], songInfo[2], songInfo[5], songInfo[7], songInfo[9], songInfo[10], songInfo[22]);
+            }
+            let collection = await _get_songs_collection();
+            let mongoObj = await collection.insertOne(this);
+            console.log('1 song was inserted in the database with id -> ' + mongoObj.insertedId);
+            return 'song correctly inserted in the Database.';
+        } catch (err) {
+            throw err
+        }
+    }
 
     /**
      * This static method for the class song will retrieve
@@ -102,9 +100,9 @@ class Song {
         let collection = await _get_songs_collection();
         let obj = await collection.deleteOne({ 'track_id': track_id_to_delete })
         if (obj.deletedCount > 0) {
-            return 'song was deleted.'
+            return 'Song was deleted.'
         } else {
-            return 'song was not found'
+            return 'Song was not found.'
         }
     }
 }
