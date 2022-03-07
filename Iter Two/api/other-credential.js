@@ -11,8 +11,8 @@ var SpotifyWebApi = require('spotify-web-api-node');
 var user = 'davidchicas164' // change for username
 
 const spotifyApi = new SpotifyWebApi({
-    clientId: '2132f16792c24ff596cc0a1bb4e1be09', // change to client
-    clientSecret: '2132f16792c24ff596cc0a1bb4e1be09', // change to secret
+    clientId: 'f7365fd298aa404eb6ec85570cce10bb', // change to client
+    clientSecret: 'efaecfd4fabb40639c14eee7e26ba095', // change to secret
     redirectUri: 'http://localhost:8888/callback',
   });
   
