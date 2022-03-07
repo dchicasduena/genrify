@@ -1,7 +1,10 @@
 var request = require('request'); // "Request" library
 
-var client_id = 'f7365fd298aa404eb6ec85570cce10bb'; // Your client id
-var client_secret = 'efaecfd4fabb40639c14eee7e26ba095'; // Your secret
+const dotenv = require('dotenv');
+dotenv.config({ path: './../.env' });
+
+var client_id = process.env.CLIENT_ID; // Your client id
+var client_secret = process.env.CLIENT_SECRET; // Your secret
 
 // your application requests authorization
 var authOptions = {

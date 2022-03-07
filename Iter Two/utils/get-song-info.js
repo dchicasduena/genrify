@@ -1,13 +1,14 @@
 var SpotifyWebApi = require('spotify-web-api-node');
 var user = '31lmjmqtzgmennebs7vslcfxm5d4' // change for username
 
+const dotenv = require('dotenv');
+dotenv.config({ path: './../.env' });
+
 const spotifyApi = new SpotifyWebApi({
-    clientId: 'f7365fd298aa404eb6ec85570cce10bb', // change to client
-    clientSecret: 'efaecfd4fabb40639c14eee7e26ba095', // change to secret
+    clientId: process.env.CLIENT_ID, // change to client
+    clientSecret: process.env.CLIENT_SECRET, // change to secret
     redirectUri: 'http://localhost:8888/callback',
 });
-console.log(process.env.CLIENT_ID)
-
 
 module.exports.getSongInfo = (track_id) => {
     return new Promise((resolve, reject) => {
