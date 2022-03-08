@@ -43,7 +43,7 @@ class Song {
             let collection = await _get_songs_collection();
             let mongoObj = await collection.insertOne(this);
             console.log('1 song was inserted in the database with id -> ' + mongoObj.insertedId);
-            return 'song correctly inserted in the Database.';
+            return 'Song correctly inserted in the Database.';
         } catch (err) {
             throw err
         }
@@ -52,7 +52,7 @@ class Song {
     /**
      * This static method for the class song will retrieve
      * all the songs inside the database
-     * @returns {Array[song]} - An array with all songs retrieved
+     * @returns {Array[Song]} - An array with all songs retrieved
      */
     static async getAll() {
         let collection = await _get_songs_collection();
@@ -64,7 +64,7 @@ class Song {
      * This method will retrieve a song with the name passed
      * as a parameter
      * @param {String} track_id - the id of the song to be retrieved
-     * @returns {song} - An object Song with all song's data
+     * @returns {Song} - An object Song with all song's data
      */
     static async get(track_id) {
         let collection = await _get_songs_collection();
@@ -76,7 +76,7 @@ class Song {
     /**
      * This method will update the song's data
      * @param {String} track_id - The name to be updated
-     * @param {song} new_song - An object of class song
+     * @param {Song} new_song - An object of class song
      * @returns {String} A message if the song was updated or not
      */
     static async update(track_id, new_song) {

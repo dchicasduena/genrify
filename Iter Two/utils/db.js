@@ -1,5 +1,5 @@
 const MongoClient = require("mongodb").MongoClient
-const uri ="mongodb://localhost:27017";
+const uri = "mongodb://localhost:27017";
 const client = new MongoClient(uri, { useUnifiedTopology: true });
 var db;
 
@@ -15,7 +15,7 @@ async function connectToDB() {
         console.log("Connected successfully to mongoDB");
     } catch (err) {
         throw err;
-    } 
+    }
 }
 
 /**
@@ -26,10 +26,23 @@ async function getDb() {
     return db;
 }
 
-async function closeDBConnection(){
+async function closeDBConnection() {
     await client.close();
     return 'Connection closed';
 };
 
+async function getPlaylist() {
+    await connectToDB();
+    let a = await getDb();
+    a.collection('Test').find({}).toArray().then((docs) => {
 
-module.exports = {connectToDB, getDb, closeDBConnection}
+        console.log(docs);
+
+    }).catch((err) => {
+
+        console.log(err);
+    })
+}
+// getPlaylist();
+
+module.exports = { connectToDB, getDb, closeDBConnection }

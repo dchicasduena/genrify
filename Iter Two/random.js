@@ -6,6 +6,13 @@
 */
 
 let fs = require('fs');
+const client = require('./utils/db.js');
+
+async function _get_contacts_collection() {
+    await client.connectToDB();
+    let db = await client.getDb();
+    return await db.collection('Test');
+};
 
 
 var songs = [] // array of all songs
@@ -14,67 +21,38 @@ var subGenreList = []; // list of all subgenres
 var userGenre = []; // list of user genres
 var userSubgenre = []; // list of user subgenres
 
-convertDataToSong('spotify_songs.csv');
-getUserGenre(); // get favorite user genre
+convertDataToSong();
 
 
-function convertDataToSong(filename) {
-    const song_array = [];
-    const genre_array = [];
-    const data = fs.readFileSync(filename, { encoding: 'utf8', flag: 'r' }); // open and read file
-    const songs = data.split('\n'); // split into each song 
+async function convertDataToSong() {
+    const genreList = [];
+    const subGenreList = [];
+    const collection = await _get_contacts_collection();
+    const songs = await collection.find({}).toArray(); // split into each song 
 
     for (let i = 1; i < songs.length; i++) { // go through the songs
-        const song = songs[i].split(/,/); // split each song into its attributes
-
-        if (song.length != 23) { // if the song is not valid, skip it
-            continue;
-        }
-
-        songObj = { // assign each attribute 
-            track_id: i,
-            track_name: song[1],
-            track_artist: song[2],
-            track_album_name: song[5],
-            playlist_name: song[7],
-            genre: {
-                playlist_genre: song[9],
-                playlist_subgenre: song[10]
-            },
-            duration: parseInt(song[22])
-        }
+        const song = songs[i]; // split each song into its attributes
 
         // change duration to minutes
-        const minutes = Math.floor(songObj.duration / 60000);
-        const seconds = ((songObj.duration % 60000) / 1000).toFixed(0);
-        songObj.duration = minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
+        const minutes = Math.floor(song.duration_ms / 60000);
+        const seconds = ((song.duration_ms % 60000) / 1000).toFixed(0);
+        song.duration_ms = minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
 
-        genre_array.push(songObj.genre)
-        song_array.push(songObj)
-    }
-
-    // map genre to subgenre
-    this.list = [
-        ...new Map(genre_array.map((item) => [item["playlist_subgenre"], item])).values(),
-    ];
-
-    // get unique subgenres
-    let temp = [];
-    for (let i = 0; i < this.list.length; i++) {
-        temp.push(this.list[i].playlist_subgenre);
-    }
-    this.subGenreList = temp;
-
-    // get unique genres
-    let genreList = [];
-    for (let i = 0; i < this.list.length; i++) {
-        if (!genreList.includes(this.list[i].playlist_genre)) {
-            genreList.push(this.list[i].playlist_genre)
+        // add genre to genreList
+        if (!genreList.includes(song.playlist_genre)) {
+            genreList.push(song.playlist_genre)
         }
+        // add subgenre to subGenreList
+        if (!subGenreList.includes(song.playlist_subgenre)) {
+            subGenreList.push(song.playlist_subgenre)
+        }
+
     }
 
     this.genreList = genreList;
-    this.songs = song_array;
+    this.subGenreList = subGenreList;
+    this.songs = songs;
+    getUserGenre();
 }
 
 // get favorite genre of user
@@ -173,9 +151,9 @@ function createPlaylist() {
 // get all subgenres of a genre
 function getSubGenre(genre) {
     let subGenre = [];
-    for (let i = 0; i < this.list.length; i++) {
-        if (this.list[i].playlist_genre == genre) {
-            subGenre.push(this.list[i].playlist_subgenre)
+    for (let i = 0; i < this.songs.length; i++) {
+        if ((this.songs[i].playlist_genre == genre) && (!subGenre.includes(this.songs[i].playlist_subgenre))) {
+            subGenre.push(this.songs[i].playlist_subgenre)
         }
     }
     return subGenre;
@@ -183,8 +161,8 @@ function getSubGenre(genre) {
 
 // get the genre of a given subgenre
 function getGenre(subgenre) {
-    for (let i = 0; i < this.list.length; i++) {
-        if (this.list[i].playlist_subgenre == subgenre) {
+    for (let i = 0; i < this.songs.length; i++) {
+        if (this.songs[i].playlist_subgenre == subgenre) {
             return this.list[i].playlist_genre
         }
     }
@@ -194,10 +172,11 @@ function getGenre(subgenre) {
 function getSongsByGenre(genre) {
     let songs = [];
     for (let i = 0; i < this.songs.length; i++) {
-        if (this.songs[i].genre.playlist_genre == genre) {
+        if (this.songs[i].playlist_genre == genre) {
             songs.push(this.songs[i])
         }
     }
+    
     return songs;
 }
 
@@ -206,7 +185,7 @@ function recommendSong(genre, subgenre) {
     let songs = getSongsByGenre(genre);
     let subgenreSongs = [];
     for (let i = 0; i < songs.length; i++) {
-        if (songs[i].genre.playlist_subgenre == subgenre) {
+        if (songs[i].playlist_subgenre == subgenre) {
             subgenreSongs.push(songs[i])
         }
     }
