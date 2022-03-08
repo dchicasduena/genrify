@@ -77,8 +77,8 @@ async function getUserGenre() {
 
     // print all genres 
     console.log('List of all genres:')
-    for (let i = 0; i < this.genreList.length; i++) {
-        console.log(this.genreList[i])
+    for (let i = 0; i < genreList.length; i++) {
+        console.log(genreList[i])
     }
 
     // get favorite genres
@@ -88,7 +88,7 @@ async function getUserGenre() {
             console.log("You have already selected this genre")
             continue
         }
-        if (!this.genreList.includes(ans)) { // if user has selected an invalid genre, skip it
+        if (!genreList.includes(ans)) { // if user has selected an invalid genre, skip it
             console.log("Invalid genre")
             continue
         }
@@ -143,8 +143,8 @@ async function createPlaylist() {
 
     console.log('user playlist created:')
     for (let i = 0; i < 10; i++) {
-        let rand = Math.floor(Math.random() * this.userSubgenre.length);
-        let song = await recommendSong(this.userSubgenre[rand]); //this needs to be fixed
+        let rand = Math.floor(Math.random() * userSubgenre.length);
+        let song = await recommendSong(userSubgenre[rand]); //this needs to be fixed
         playlist.push(song)
     }
     console.log(playlist)
@@ -153,9 +153,9 @@ async function createPlaylist() {
 // get all subgenres of a genre
 function getSubGenre(genre) {
     let subGenre = [];
-    for (let i = 0; i < this.songs.length; i++) {
-        if ((this.songs[i].playlist_genre == genre) && (!subGenre.includes(this.songs[i].playlist_subgenre))) {
-            subGenre.push(this.songs[i].playlist_subgenre)
+    for (let i = 0; i < songs.length; i++) {
+        if ((songs[i].playlist_genre == genre) && (!subGenre.includes(this.songs[i].playlist_subgenre))) {
+            subGenre.push(songs[i].playlist_subgenre)
         }
     }
     return subGenre;
