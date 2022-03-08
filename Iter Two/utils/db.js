@@ -31,18 +31,4 @@ async function closeDBConnection() {
     return 'Connection closed';
 };
 
-async function getPlaylist() {
-    await connectToDB();
-    let a = await getDb();
-    a.collection('Test').find({}).toArray().then((docs) => {
-
-        console.log(docs);
-
-    }).catch((err) => {
-
-        console.log(err);
-    })
-}
-// getPlaylist();
-
 module.exports = { connectToDB, getDb, closeDBConnection }

@@ -20,6 +20,7 @@ var genreList = []; // list of all genres
 var subGenreList = []; // list of all subgenres
 var userGenre = []; // list of user genres
 var userSubgenre = []; // list of user subgenres
+var collection = [];
 
 convertDataToSong();
 
@@ -28,6 +29,7 @@ async function convertDataToSong() {
     const genreList = [];
     const subGenreList = [];
     const collection = await _get_contacts_collection();
+    this.collection = collection;
     const songs = await collection.find({}).toArray(); // split into each song 
 
     for (let i = 1; i < songs.length; i++) { // go through the songs
@@ -53,6 +55,8 @@ async function convertDataToSong() {
     this.subGenreList = subGenreList;
     this.songs = songs;
     getUserGenre();
+    // let a = await recommendSong('trap');
+    // console.log(a);
 }
 
 // get favorite genre of user
@@ -136,13 +140,13 @@ async function getUserGenre() {
     createPlaylist();
 }
 
-function createPlaylist() {
+async function createPlaylist() {
     let playlist = [];
 
     console.log('user playlist created:')
     for (let i = 0; i < 10; i++) {
-        let rand = Math.floor(Math.random() * this.userGenre.length);
-        let song = recommendSong(this.userGenre[rand], this.userSubgenre[rand]); //this needs to be fixed
+        let rand = Math.floor(Math.random() * this.userSubgenre.length);
+        let song = await recommendSong(this.userSubgenre[rand]); //this needs to be fixed
         playlist.push(song)
     }
     console.log(playlist)
@@ -170,26 +174,14 @@ function getGenre(subgenre) {
 
 // get songs by genre
 function getSongsByGenre(genre) {
-    let songs = [];
-    for (let i = 0; i < this.songs.length; i++) {
-        if (this.songs[i].playlist_genre == genre) {
-            songs.push(this.songs[i])
-        }
-    }
-    
+    let songs = this.collection.find({ playlist_genre: genre }).toArray();
     return songs;
 }
 
-// recommend song by genre and subgenre
-function recommendSong(genre, subgenre) {
-    let songs = getSongsByGenre(genre);
-    let subgenreSongs = [];
-    for (let i = 0; i < songs.length; i++) {
-        if (songs[i].playlist_subgenre == subgenre) {
-            subgenreSongs.push(songs[i])
-        }
-    }
-    let rand = Math.floor(Math.random() * subgenreSongs.length);
-    return subgenreSongs[rand]; // changed to return from print
+// recommend song by subgenre
+async function recommendSong(subgenre) {
+    let songs = await this.collection.find({ playlist_subgenre: subgenre }).toArray();
+    let rand = Math.floor(Math.random() * songs.length);
+    return songs[rand]; // changed to return from print
 }
 
