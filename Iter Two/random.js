@@ -7,20 +7,12 @@
 
 let fs = require('fs');
 const client = require('./utils/db.js');
-const Song = require('./model/song.js').Song;
-
-async function _get_songs_collection() {
-    await client.connectToDB();
-    let db = await client.getDb();
-    return await db.collection('Test');
-};
 
 var songs = [] // array of all songs
 var genreList = []; // list of all genres
 var subGenreList = []; // list of all subgenres
 var userGenre = []; // list of user genres
 var userSubgenre = []; // list of user subgenres
-var collection = [];
 
 
 const axios = require('axios')
@@ -38,8 +30,6 @@ convertDataToSong();
 async function convertDataToSong() {
     const genreList = [];
     const subGenreList = [];
-    const collection = await _get_songs_collection();
-    this.collection = collection;
     const songs = await instance.get('/song'); // split into each song 
     this.songs = songs.data;
 
@@ -65,8 +55,6 @@ async function convertDataToSong() {
     this.genreList = genreList;
     this.subGenreList = subGenreList;
     getUserGenre();
-    // let a = await recommendSong('trap');
-    // console.log(a);
 }
 
 // get favorite genre of user
@@ -184,16 +172,14 @@ function getGenre(subgenre) {
 
 // get songs by genre
 async function getSongsByGenre(genre) {
-    // let songs = await instance.get('/song/' + genre);
-    let songs = this.collection.find({ playlist_genre: genre }).toArray();
+    let songs = await instance.get('/song/genre/' + genre);
     return songs;
 }
 
 // recommend song by subgenre
 async function recommendSong(subgenre) {
-    // let songs = await instance.get('/song/:playlist_subgenre', {body: {playlist_subgenre: subgenre}});
-    let songs = await this.collection.find({ playlist_subgenre: subgenre }).toArray();
-    let rand = Math.floor(Math.random() * songs.length);
-    return songs[rand]; // changed to return from print
+    let songs = await instance.get('/song/subgenre/' + subgenre);
+    let rand = Math.floor(Math.random() * songs.data.length);
+    return songs.data[rand]; // changed to return from print
 }
 

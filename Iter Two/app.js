@@ -19,8 +19,8 @@ async function createServer() {
     // contacts resource paths
     app.get('/song', song.list_all);
     app.get('/song/:track_id', song.get_song);
-    app.get('/song/:playlist_genre', song.get_song_by_genre);
-    app.get('/song/:playlist_subgenre', song.get_song_by_subgenre);
+    app.get('/song/genre/:playlist_genre', song.get_song_by_genre);
+    app.get('/song/subgenre/:playlist_subgenre', song.get_song_by_subgenre);
     app.post('/song', song.add);
     app.delete('/song/:track_id', song.delete_song);
     // start the server

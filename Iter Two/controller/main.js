@@ -53,7 +53,7 @@ module.exports.get_song_by_genre = async (req, res) => {
     let obj = await Song.getSongByGenre(playlist_genre);
     if (obj.length > 0) {
         console.log(obj.length + ' item(s) sent.');
-        res.send(obj[0]);
+        res.send(obj);
     } else {
         res.send('No item was found');
     }
@@ -70,7 +70,7 @@ module.exports.get_song_by_subgenre = async (req, res) => {
     let obj = await Song.getSongBySubgenre(playlist_subgenre);
     if (obj.length > 0) {
         console.log(obj.length + ' item(s) sent.');
-        res.send(obj[0]);
+        res.send(obj);
     } else {
         res.send('No item was found');
     }
