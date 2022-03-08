@@ -7,13 +7,13 @@
 
 let fs = require('fs');
 const client = require('./utils/db.js');
+const Song = require('./model/song.js').Song;
 
-async function _get_contacts_collection() {
+async function _get_songs_collection() {
     await client.connectToDB();
     let db = await client.getDb();
     return await db.collection('Test');
 };
-
 
 var songs = [] // array of all songs
 var genreList = []; // list of all genres
@@ -22,18 +22,29 @@ var userGenre = []; // list of user genres
 var userSubgenre = []; // list of user subgenres
 var collection = [];
 
+
+const axios = require('axios')
+var myurl = 'http://localhost:3000';
+
+// Let's configure the base url
+const instance = axios.create({
+    baseURL: myurl,
+    headers: {'content-type': 'application/json'}
+});
+
 convertDataToSong();
 
 
 async function convertDataToSong() {
     const genreList = [];
     const subGenreList = [];
-    const collection = await _get_contacts_collection();
+    const collection = await _get_songs_collection();
     this.collection = collection;
-    const songs = await collection.find({}).toArray(); // split into each song 
+    const songs = await instance.get('/song'); // split into each song 
+    this.songs = songs.data;
 
-    for (let i = 1; i < songs.length; i++) { // go through the songs
-        const song = songs[i]; // split each song into its attributes
+    for (let i = 1; i < this.songs.length; i++) { // go through the songs
+        const song = this.songs[i]; // split each song into its attributes
 
         // change duration to minutes
         const minutes = Math.floor(song.duration_ms / 60000);
@@ -53,7 +64,6 @@ async function convertDataToSong() {
 
     this.genreList = genreList;
     this.subGenreList = subGenreList;
-    this.songs = songs;
     getUserGenre();
     // let a = await recommendSong('trap');
     // console.log(a);
@@ -167,19 +177,21 @@ function getSubGenre(genre) {
 function getGenre(subgenre) {
     for (let i = 0; i < this.songs.length; i++) {
         if (this.songs[i].playlist_subgenre == subgenre) {
-            return this.list[i].playlist_genre
+            return this.songs[i].playlist_genre
         }
     }
 }
 
 // get songs by genre
-function getSongsByGenre(genre) {
+async function getSongsByGenre(genre) {
+    // let songs = await instance.get('/song/' + genre);
     let songs = this.collection.find({ playlist_genre: genre }).toArray();
     return songs;
 }
 
 // recommend song by subgenre
 async function recommendSong(subgenre) {
+    // let songs = await instance.get('/song/:playlist_subgenre', {body: {playlist_subgenre: subgenre}});
     let songs = await this.collection.find({ playlist_subgenre: subgenre }).toArray();
     let rand = Math.floor(Math.random() * songs.length);
     return songs[rand]; // changed to return from print

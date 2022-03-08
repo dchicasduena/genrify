@@ -2,7 +2,7 @@ const get_song = require('../utils/get-song-info');
 const client = require('../utils/db.js');
 
 async function _get_songs_collection() {
-    client.connectToDB();
+    await client.connectToDB();
     let db = await client.getDb();
     return await db.collection('Test');
 };
@@ -70,6 +70,32 @@ class Song {
         let collection = await _get_songs_collection();
         console.log(track_id)
         let obj = await collection.find({ "track_id": track_id }).toArray();
+        return obj;
+    }
+
+    /**
+     * This method will retrieve all songs with the genre passed
+     * as a parameter
+     * @param {String} genre - the genre of the song to be retrieved
+     * @returns {Song} - An object Song with all song's data
+     */
+    static async getSongByGenre(genre) {
+        let collection = await _get_songs_collection();
+        console.log(genre)
+        let obj = await collection.find({ "playlist_genre": genre }).toArray();
+        return obj;
+    }
+
+    /**
+     * This method will retrieve all songs with the subgenre passed
+     * as a parameter
+     * @param {String} subgenre - the subgenre of the song to be retrieved
+     * @returns {Song} - An object Song with all song's data
+     */
+    static async getSongBySubgenre(subgenre) {
+        let collection = await _get_songs_collection();
+        console.log(subgenre)
+        let obj = await collection.find({ "playlist_subgenre": subgenre }).toArray();
         return obj;
     }
 
