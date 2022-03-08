@@ -28,8 +28,6 @@ convertDataToSong();
 
 
 async function convertDataToSong() {
-    const genreList = [];
-    const subGenreList = [];
     const songs = await instance.get('/song'); // split into each song 
     this.songs = songs.data;
 
@@ -51,16 +49,11 @@ async function convertDataToSong() {
         }
 
     }
-
-    this.genreList = genreList;
-    this.subGenreList = subGenreList;
     getUserGenre();
 }
 
 // get favorite genre of user
 async function getUserGenre() {
-    let userGenre = [];
-    let userSubgenre = [];
     const readline = require("readline");
 
     function askQuestion(query) {
@@ -153,9 +146,9 @@ async function createPlaylist() {
 // get all subgenres of a genre
 function getSubGenre(genre) {
     let subGenre = [];
-    for (let i = 0; i < songs.length; i++) {
-        if ((songs[i].playlist_genre == genre) && (!subGenre.includes(this.songs[i].playlist_subgenre))) {
-            subGenre.push(songs[i].playlist_subgenre)
+    for (let i = 0; i < this.songs.length; i++) {
+        if ((this.songs[i].playlist_genre == genre) && (!subGenre.includes(this.songs[i].playlist_subgenre))) {
+            subGenre.push(this.songs[i].playlist_subgenre)
         }
     }
     return subGenre;
