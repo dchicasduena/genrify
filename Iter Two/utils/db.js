@@ -1,3 +1,10 @@
+/**
+* @author Nhu Nguyen, David Chicas
+* @student_id 201919354, 201916426
+* @course COMP 3100 - Web Programming
+* @year 2022 
+*/
+
 const MongoClient = require("mongodb").MongoClient
 const uri = "mongodb://localhost:27017";
 const client = new MongoClient(uri, { useUnifiedTopology: true });

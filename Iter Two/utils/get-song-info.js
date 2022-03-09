@@ -1,3 +1,10 @@
+/**
+* @author Nhu Nguyen, David Chicas
+* @student_id 201919354, 201916426
+* @course COMP 3100 - Web Programming
+* @year 2022 
+*/
+
 var SpotifyWebApi = require('spotify-web-api-node');
 var user = '31lmjmqtzgmennebs7vslcfxm5d4' // change for username
 

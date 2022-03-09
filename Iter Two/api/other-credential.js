@@ -1,7 +1,5 @@
-// this -> https://github.com/thelinmichael/spotify-web-api-node
-
 /**
-* @author David Chicas, Nhu Nguyen
+* @author Nhu Nguyen, David Chicas
 * @student_id 201919354, 201916426
 * @course COMP 3100 - Web Programming
 * @year 2022 
@@ -10,6 +8,7 @@
 var SpotifyWebApi = require('spotify-web-api-node');
 var user = 'davidchicas164' // change for username
 
+//get client id and secret from env file
 const dotenv = require('dotenv');
 dotenv.config({ path: './../.env' });
 
@@ -20,13 +19,15 @@ const spotifyApi = new SpotifyWebApi({
   });
 
 async function main () {
+    // main functions
     await getUserInfo()
     await getUserPlaylists()
 }
+
 main()
 
-spotifyApi.clientCredentialsGrant()
-.then(function(data) {
+spotifyApi.clientCredentialsGrant().then(function(data) {
+
     // Save the access token so that it's used in future calls
     spotifyApi.setAccessToken(data.body['access_token']);
 

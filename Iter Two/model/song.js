@@ -1,3 +1,10 @@
+/**
+* @author Nhu Nguyen, David Chicas
+* @student_id 201919354, 201916426
+* @course COMP 3100 - Web Programming
+* @year 2022 
+*/
+
 const get_song = require('../utils/get-song-info');
 const client = require('../utils/db.js');
 

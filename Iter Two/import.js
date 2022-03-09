@@ -1,3 +1,10 @@
+/**
+* @author Nhu Nguyen, David Chicas
+* @student_id 201919354, 201916426
+* @course COMP 3100 - Web Programming
+* @year 2022 
+*/
+
 // Import required module csvtojson and mongodb packages
 const csvtojson = require('csvtojson');
 const mongodb = require('mongodb');

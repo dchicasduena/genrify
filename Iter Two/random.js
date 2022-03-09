@@ -1,5 +1,5 @@
 /**
-* @author David Chicas, Nhu Nguyen
+* @author Nhu Nguyen, David Chicas
 * @student_id 201919354, 201916426
 * @course COMP 3100 - Web Programming
 * @year 2022 
@@ -26,7 +26,6 @@ const instance = axios.create({
 
 convertDataToSong();
 
-
 async function convertDataToSong() {
     const songs = await instance.get('/song'); // split into each song 
     this.songs = songs.data;
@@ -47,7 +46,6 @@ async function convertDataToSong() {
         if (!subGenreList.includes(song.playlist_subgenre)) {
             subGenreList.push(song.playlist_subgenre)
         }
-
     }
     getUserGenre();
 }

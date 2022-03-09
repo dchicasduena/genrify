@@ -1,3 +1,10 @@
+/**
+* @author Nhu Nguyen, David Chicas
+* @student_id 201919354, 201916426
+* @course COMP 3100 - Web Programming
+* @year 2022 
+*/
+
 var request = require('request'); // "Request" library
 
 const dotenv = require('dotenv');
