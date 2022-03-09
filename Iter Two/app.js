@@ -13,7 +13,14 @@ app.use(express.json()); // support json encoded bodies
 app.use(express.urlencoded({ extended: true })); // incoming objects are strings or arrays
 
 const song = require('./controller/main'); // Here we import our code with the contacts operations
+//const spotify = require('./model/get-song-info');
 const mongo = require('./utils/db.js');
+
+const dotenv = require('dotenv');
+dotenv.config({ path: './.env' });
+
+var client_id = process.env.CLIENT_ID; // Your client id
+var client_secret = process.env.CLIENT_SECRET; // Your secret
 
 var server;
 
@@ -28,6 +35,7 @@ async function createServer() {
     app.get('/song/:track_id', song.get_song);
     app.get('/song/genre/:playlist_genre', song.get_song_by_genre);
     app.get('/song/subgenre/:playlist_subgenre', song.get_song_by_subgenre);
+    //app.get('/spotify/:track_id', spotify.getSongInfo);
     app.post('/song', song.add);
     app.delete('/song/:track_id', song.delete_song);
     // start the server

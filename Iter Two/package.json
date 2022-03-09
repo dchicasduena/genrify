@@ -10,11 +10,17 @@
     "csvtojson": "^2.0.10",
     "dotenv": "^16.0.0",
     "express": "~4.16.0",
+    "open": "^7.0.2",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^4.4.1",
     "querystring": "~0.2.0",
     "request": "~2.83.0",
-    "spotify-web-api-node": "^5.0.2"}, 
+    "spotify-web-api-node": "^5.0.2"
+  },
   "scripts": {
-    "test": "echo \"Hello World\""}
+    "test": "mocha"
+  },
+  "devDependencies": {
+    "mocha": "^9.2.1"
+  }
 }

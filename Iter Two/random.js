@@ -27,6 +27,8 @@ const instance = axios.create({
 convertDataToSong();
 
 async function convertDataToSong() {
+    // const spotify = await instance.get('/spotify/474HmRcCZuGFV7i0jMNfEL')
+    // console.log(spotify.data)
     const songs = await instance.get('/song'); // split into each song 
     this.songs = songs.data;
 

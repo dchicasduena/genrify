@@ -5,7 +5,7 @@
 * @year 2022 
 */
 
-const get_song = require('../utils/get-song-info');
+//const get_song = require('./get-song-info');
 const client = require('../utils/db.js');
 
 async function _get_songs_collection() {
@@ -40,20 +40,20 @@ class Song {
      * This method saves the current object song in the Database
      * @returns {String} - A message if song was saved in the db or not
      */
-    async save() {
-        try {
-            let songInfo = await get_song.getSongInfo(this.track_id);
-            if (songInfo != null) {
-                this.addSongInfo(songInfo[1], songInfo[2], songInfo[5], songInfo[7], songInfo[9], songInfo[10], songInfo[22]);
-            }
-            let collection = await _get_songs_collection();
-            let mongoObj = await collection.insertOne(this);
-            console.log('1 song was inserted in the database with id -> ' + mongoObj.insertedId);
-            return 'Song correctly inserted in the Database.';
-        } catch (err) {
-            throw err
-        }
-    }
+    // async save() {
+    //     try {
+    //         let songInfo = await get_song.getSongInfo(this.track_id);
+    //         if (songInfo != null) {
+    //             this.addSongInfo(songInfo[1], songInfo[2], songInfo[5], songInfo[7], songInfo[9], songInfo[10], songInfo[22]);
+    //         }
+    //         let collection = await _get_songs_collection();
+    //         let mongoObj = await collection.insertOne(this);
+    //         console.log('1 song was inserted in the database with id -> ' + mongoObj.insertedId);
+    //         return 'Song correctly inserted in the Database.';
+    //     } catch (err) {
+    //         throw err
+    //     }
+    // }
 
     /**
      * This static method for the class song will retrieve
