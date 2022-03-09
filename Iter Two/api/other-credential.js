@@ -1,12 +1,12 @@
 /**
 * @author Nhu Nguyen, David Chicas
-* @student_id 201919354, 201916426
+* @student_id 201916426, 201919354
 * @course COMP 3100 - Web Programming
 * @year 2022 
 */
 
 var SpotifyWebApi = require('spotify-web-api-node');
-var user = 'davidchicas164' // change for username
+var user = '31myzbvynnxx7srbidkjxtp4fmqe' // change for username
 
 //get client id and secret from env file
 const dotenv = require('dotenv');

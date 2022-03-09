@@ -1,6 +1,6 @@
 /**
 * @author Nhu Nguyen, David Chicas
-* @student_id 201919354, 201916426
+* @student_id 201916426, 201919354
 * @course COMP 3100 - Web Programming
 * @year 2022 
 */
@@ -31,7 +31,7 @@ request.post(authOptions, function(error, response, body) {
     // use the access token to access the Spotify Web API
     var token = body.access_token;
     var options = {
-      url: 'https://api.spotify.com/v1/users/davidchicas164',
+      url: 'https://api.spotify.com/v1/users/31myzbvynnxx7srbidkjxtp4fmqe',
       headers: {
         'Authorization': 'Bearer ' + token
       },
