@@ -27,75 +27,72 @@ spotifyApi.clientCredentialsGrant().then(function (data) {
     console.log('Something went wrong when retrieving an access token', err.message);
 });
 
-class Spotify {
 
-    static async getUserInfo() {
-        let tok = await spotifyApi.clientCredentialsGrant()
+async function getUserInfo() {
+    let tok = await spotifyApi.clientCredentialsGrant()
 
-        // Get a user
-        spotifyApi.getUser(user)
-            .then(function (data) {
-                console.log('user information:')
-                userObj = {
-                    'display-name': data.body.display_name,
-                    url: data.body.external_urls,
-                    followers: data.body.followers.total,
-                    username: data.body.id,
-                    uri: data.body.uri
-                }
-                console.log(userObj)
-                console.log("\n")
-            }, function (err) {
-                console.log('Something went wrong!', err);
-            });
-    }
+    // Get a user
+    spotifyApi.getUser(user)
+        .then(function (data) {
+            console.log('user information:')
+            userObj = {
+                'display-name': data.body.display_name,
+                url: data.body.external_urls,
+                followers: data.body.followers.total,
+                username: data.body.id,
+                uri: data.body.uri
+            }
+            console.log(userObj)
+            console.log("\n")
+        }, function (err) {
+            console.log('Something went wrong!', err);
+        });
+}
 
-    static async getUserPlaylists() {
-        let tok = await spotifyApi.clientCredentialsGrant()
+async function getUserPlaylists() {
+    let tok = await spotifyApi.clientCredentialsGrant()
 
-        // Get names of user playlists
-        spotifyApi.getUserPlaylists(user)
-            .then(function (data) {
-                console.log('user playlists:');
-                for (let i = 1; i < data.body.items.length; i++) {
-                    console.log(data.body.items[i].name); // print name
-                }
-                console.log("\n")
+    // Get names of user playlists
+    spotifyApi.getUserPlaylists(user)
+        .then(function (data) {
+            console.log('user playlists:');
+            for (let i = 1; i < data.body.items.length; i++) {
+                console.log(data.body.items[i].name); // print name
+            }
+            console.log("\n")
 
-            }, function (err) {
-                console.log('Something went wrong!', err);
-            });
-    }
+        }, function (err) {
+            console.log('Something went wrong!', err);
+        });
+}
 
-    static async getTrack(trackId) {
-        let tok = await spotifyApi.clientCredentialsGrant()
+async function getTrack(trackId) {
+    let tok = await spotifyApi.clientCredentialsGrant()
 
-        // Get a track
-        spotifyApi.getTrack(trackId)
-            .then(function (data) {
-                //console.log('track information:')
-                let trackObj = {
-                    'name': data.body.name,
-                    'artists': data.body.artists[0].name,
-                    'album': data.body.album.name,
-                    'duration_ms': data.body.duration_ms,
-                    'uri': data.body.uri
-                }
-                return (trackObj)
-            }, function (err) {
-                console.log('Something went wrong!', err);
-            });
-    }
+    // Get a track
+    spotifyApi.getTrack(trackId)
+        .then(function (data) {
+            //console.log('track information:')
+            let trackObj = {
+                'name': data.body.name,
+                'artists': data.body.artists[0].name,
+                'album': data.body.album.name,
+                'duration_ms': data.body.duration_ms,
+                'uri': data.body.uri
+            }
+            console.log(trackObj)
+        }, function (err) {
+            console.log('Something went wrong!', err);
+        });
 }
 
 
 async function main() {
     // main functions
-    var spotify = new Spotify()
-    await spotify.getUserInfo()
-    await spotify.getUserPlaylists()
-    await spotify.getTrack('474HmRcCZuGFV7i0jMNfEL')
+    await getUserInfo()
+    await getUserPlaylists()
+    await getTrack('474HmRcCZuGFV7i0jMNfEL')
 }
-// main()
+ main()
 
-module.exports.Spotify = Spotify;
+//module.exports.Spotify = Spotify;
