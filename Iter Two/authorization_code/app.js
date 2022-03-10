@@ -149,7 +149,6 @@ function getUserID(userID) {
 }
 
 async function create_playlist(access_token, user_id) {
-  //var user_id = await getUserID(user);
   var options = {
     url: 'https://api.spotify.com/v1/users/' + user_id + '/playlists',
     body: JSON.stringify({ name: "Random Playlist", description: "playlist made through 3100 Project", public: true }),
@@ -162,17 +161,17 @@ async function create_playlist(access_token, user_id) {
 
   request.post(options, (error, response, body) => {
     console.log('playlist information: ')
-    console.log(body); // prints body of playlist THIS IS A STRING
+    var info = JSON.parse(body)
+    console.log(info);
     console.log('playlist created')
-    
+
+    add_track(access_token, info.id)
   })
 }
 
 async function add_track(access_token, playlist_id) {
-  var user_id = await getUserID(user);
   var options = {
-    url: 'https://api.spotify.com/v1/users/' + user_id + '/playlists',
-    body: JSON.stringify({ name: "Random Playlist", description: "playlist made through 3100 Project", public: true }),
+    url: 'https://api.spotify.com/v1/playlists/' + playlist_id + '/tracks',
     dataType: 'json',
     headers: {
       'Authorization': 'Bearer ' + access_token,
@@ -182,7 +181,7 @@ async function add_track(access_token, playlist_id) {
 
   request.post(options, (error, response, body) => {
     console.log(body);
-    console.log('songs added')
+    console.log('song added')
   })
 }
 
