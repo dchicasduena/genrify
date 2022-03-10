@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 const open = require('open');
 
 const dotenv = require('dotenv');
+const { apps } = require('open');
 dotenv.config({ path: './../.env' });
 
 var client_id = process.env.CLIENT_ID; // Your client id
@@ -28,7 +29,6 @@ var generateRandomString = function(length) {
 };
 
 var stateKey = 'spotify_auth_state';
-
 var app = express();
 
 app.use(express.static(__dirname + '/public'))
@@ -41,7 +41,7 @@ app.get('/login', function(req, res) {
   res.cookie(stateKey, state);
 
   // your application requests authorization
-  var scope = 'user-read-private user-read-email';
+  var scope = 'user-read-private user-read-email playlist-modify-public';
   res.redirect('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
       response_type: 'code',
@@ -92,11 +92,16 @@ app.get('/callback', function(req, res) {
           json: true
         };
 
+        var user_id = ''
         // use the access token to access the Spotify Web API
         request.get(options, function(error, response, body) {
           console.log(body);
+          user_id = body.id;
         });
+        getUserID(user_id);
+        create_playlist(access_token); // create playlist
 
+        console.log('playlist created')
         // we can also pass the token to the browser to make requests from there
         res.redirect('/#' +
           querystring.stringify({
@@ -137,7 +142,33 @@ app.get('/refresh_token', function(req, res) {
   });
 });
 
+function getUserID(userID){
+  return new Promise(function (resolve, reject){
+    var id = userID;
+    console.log(id)
+    resolve(id);
+  }, (error) => {reject(error)}
+  )
+}
+
+async function create_playlist(access_token){
+  var user_id = await getUserID();
+  var options = {
+      url: "https://api.spotify.com/v1/users/"+user_id+"/playlists",
+      data: { 'Authorization': 'Bearer ' + access_token},
+      json : true,
+      headers: {
+          'Authorization': 'Bearer ' + access_token
+      },
+      "content-Type": 'application/json'
+    };   
+
+    request.post(options,(error,response,body) => {
+        console.log(body);
+        console.log('playlist created')
+    })
+}
+
 console.log('Listening on 8888');
 app.listen(8888);
 open('http://localhost:8888');
-
