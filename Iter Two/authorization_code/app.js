@@ -54,8 +54,6 @@ app.get('/login', function (req, res) {
 
 app.get('/callback', function (req, res) {
 
-  // your application requests refresh and access tokens
-  // after checking the state parameter
   var code = req.query.code || null;
   var state = req.query.state || null;
   var storedState = req.cookies ? req.cookies[stateKey] : null;
@@ -92,20 +90,19 @@ app.get('/callback', function (req, res) {
           json: true
         };
 
-        var user_id = '31lmjmqtzgmennebs7vslcfxm5d4'
         // use the access token to access the Spotify Web API
         request.get(options, function (error, response, body) {
+          console.log('user information: ')
           console.log(body);
-        });
-        await create_playlist(access_token, user_id); // create playlist
+          create_playlist(access_token, body.id); // create playlist
 
-        //console.log('playlist created')
-        // we can also pass the token to the browser to make requests from there
-        res.redirect('/#' +
-          querystring.stringify({
-            access_token: access_token,
-            refresh_token: refresh_token
-          }));
+          // we can also pass the token to the browser to make requests from there
+          res.redirect('/#' +
+            querystring.stringify({
+              access_token: access_token,
+              refresh_token: refresh_token
+            }));
+        });
       } else {
         res.redirect('/#' +
           querystring.stringify({
@@ -140,20 +137,42 @@ app.get('/refresh_token', function (req, res) {
   });
 });
 
+
+// moved create playlist inside the callback so no need for this function
 function getUserID(userID) {
   return new Promise(function (resolve, reject) {
     var id = userID;
-    console.log(id)
+    console.log('hello from inside getuserid function')
     resolve(id);
   }, (error) => { reject(error) }
   )
 }
 
-async function create_playlist(access_token, user) {
+async function create_playlist(access_token, user_id) {
+  //var user_id = await getUserID(user);
+  var options = {
+    url: 'https://api.spotify.com/v1/users/' + user_id + '/playlists',
+    body: JSON.stringify({ name: "Random Playlist", description: "playlist made through 3100 Project", public: true }),
+    dataType: 'json',
+    headers: {
+      'Authorization': 'Bearer ' + access_token,
+      'Content-Type': 'application/json',
+    }
+  };
+
+  request.post(options, (error, response, body) => {
+    console.log('playlist information: ')
+    console.log(body); // prints body of playlist THIS IS A STRING
+    console.log('playlist created')
+    
+  })
+}
+
+async function add_track(access_token, playlist_id) {
   var user_id = await getUserID(user);
   var options = {
     url: 'https://api.spotify.com/v1/users/' + user_id + '/playlists',
-    body: JSON.stringify({ name: "test", public: false }),
+    body: JSON.stringify({ name: "Random Playlist", description: "playlist made through 3100 Project", public: true }),
     dataType: 'json',
     headers: {
       'Authorization': 'Bearer ' + access_token,
@@ -163,7 +182,7 @@ async function create_playlist(access_token, user) {
 
   request.post(options, (error, response, body) => {
     console.log(body);
-    console.log('playlist created')
+    console.log('songs added')
   })
 }
 
