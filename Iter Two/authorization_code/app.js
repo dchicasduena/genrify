@@ -18,7 +18,7 @@ var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
  * @param  {number} length The length of the string
  * @return {string} The generated string
  */
-var generateRandomString = function(length) {
+var generateRandomString = function (length) {
   var text = '';
   var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
@@ -32,16 +32,16 @@ var stateKey = 'spotify_auth_state';
 var app = express();
 
 app.use(express.static(__dirname + '/public'))
-   .use(cors())
-   .use(cookieParser());
+  .use(cors())
+  .use(cookieParser());
 
-app.get('/login', function(req, res) {
+app.get('/login', function (req, res) {
 
   var state = generateRandomString(16);
   res.cookie(stateKey, state);
 
   // your application requests authorization
-  var scope = 'user-read-private user-read-email playlist-modify-public';
+  var scope = 'user-read-private user-read-email playlist-modify-public playlist-modify-private playlist-modify';
   res.redirect('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
       response_type: 'code',
@@ -52,7 +52,7 @@ app.get('/login', function(req, res) {
     }));
 });
 
-app.get('/callback', function(req, res) {
+app.get('/callback', function (req, res) {
 
   // your application requests refresh and access tokens
   // after checking the state parameter
@@ -80,11 +80,11 @@ app.get('/callback', function(req, res) {
       json: true
     };
 
-    request.post(authOptions, function(error, response, body) {
+    request.post(authOptions, async function (error, response, body) {
       if (!error && response.statusCode === 200) {
 
         var access_token = body.access_token,
-            refresh_token = body.refresh_token;
+          refresh_token = body.refresh_token;
 
         var options = {
           url: 'https://api.spotify.com/v1/me',
@@ -92,16 +92,14 @@ app.get('/callback', function(req, res) {
           json: true
         };
 
-        var user_id = ''
+        var user_id = '31lmjmqtzgmennebs7vslcfxm5d4'
         // use the access token to access the Spotify Web API
-        request.get(options, function(error, response, body) {
+        request.get(options, function (error, response, body) {
           console.log(body);
-          user_id = body.id;
         });
-        getUserID(user_id);
-        create_playlist(access_token); // create playlist
+        await create_playlist(access_token, user_id); // create playlist
 
-        console.log('playlist created')
+        //console.log('playlist created')
         // we can also pass the token to the browser to make requests from there
         res.redirect('/#' +
           querystring.stringify({
@@ -118,7 +116,7 @@ app.get('/callback', function(req, res) {
   }
 });
 
-app.get('/refresh_token', function(req, res) {
+app.get('/refresh_token', function (req, res) {
 
   // requesting access token from refresh token
   var refresh_token = req.query.refresh_token;
@@ -132,7 +130,7 @@ app.get('/refresh_token', function(req, res) {
     json: true
   };
 
-  request.post(authOptions, function(error, response, body) {
+  request.post(authOptions, function (error, response, body) {
     if (!error && response.statusCode === 200) {
       var access_token = body.access_token;
       res.send({
@@ -142,31 +140,31 @@ app.get('/refresh_token', function(req, res) {
   });
 });
 
-function getUserID(userID){
-  return new Promise(function (resolve, reject){
+function getUserID(userID) {
+  return new Promise(function (resolve, reject) {
     var id = userID;
     console.log(id)
     resolve(id);
-  }, (error) => {reject(error)}
+  }, (error) => { reject(error) }
   )
 }
 
-async function create_playlist(access_token){
-  var user_id = await getUserID();
+async function create_playlist(access_token, user) {
+  var user_id = await getUserID(user);
   var options = {
-      url: "https://api.spotify.com/v1/users/"+user_id+"/playlists",
-      data: { 'Authorization': 'Bearer ' + access_token},
-      json : true,
-      headers: {
-          'Authorization': 'Bearer ' + access_token
-      },
-      "content-Type": 'application/json'
-    };   
+    url: 'https://api.spotify.com/v1/users/' + user_id + '/playlists',
+    body: JSON.stringify({ name: "test", public: false }),
+    dataType: 'json',
+    headers: {
+      'Authorization': 'Bearer ' + access_token,
+      'Content-Type': 'application/json',
+    }
+  };
 
-    request.post(options,(error,response,body) => {
-        console.log(body);
-        console.log('playlist created')
-    })
+  request.post(options, (error, response, body) => {
+    console.log(body);
+    console.log('playlist created')
+  })
 }
 
 console.log('Listening on 8888');
