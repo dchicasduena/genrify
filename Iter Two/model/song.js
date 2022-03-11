@@ -5,10 +5,10 @@
 * @year 2022 
 */
 
-//const get_song = require('./get-song-info');
 const client = require('../utils/db.js');
 
 async function _get_songs_collection() {
+    await client.connectToDB();
     let db = await client.getDb();
     return await db.collection('Test');
 };
@@ -19,41 +19,31 @@ async function _get_songs_collection() {
  */
 
 class Song {
-    constructor(track_id) {
-        this.track_id = track_id;
-    }
-
-    /**
-     * This method will add the song's info
-     */
-    addSongInfo(track_name, track_artist, track_album_name, playlist_name, playlist_genre, playlist_subgenre, duration) {
-        this.track_name = track_name;
-        this.track_artist = track_artist;
-        this.track_album_name = track_album_name;
-        this.playlist_name = playlist_name;
-        this.playlist_genre = playlist_genre;
-        this.playlist_subgenre = playlist_subgenre;
-        this.duration = duration;
+    constructor() {
+        this.track_id = 0;
+        this.track_name = '';
+        this.track_artist = '';
+        this.track_album_name = '';
+        this.playlist_name = '';
+        this.playlist_genre = '';
+        this.playlist_subgenre = '';
+        this.duration_ms = 0;
     }
 
     /**
      * This method saves the current object song in the Database
      * @returns {String} - A message if song was saved in the db or not
      */
-    // async save() {
-    //     try {
-    //         let songInfo = await get_song.getSongInfo(this.track_id);
-    //         if (songInfo != null) {
-    //             this.addSongInfo(songInfo[1], songInfo[2], songInfo[5], songInfo[7], songInfo[9], songInfo[10], songInfo[22]);
-    //         }
-    //         let collection = await _get_songs_collection();
-    //         let mongoObj = await collection.insertOne(this);
-    //         console.log('1 song was inserted in the database with id -> ' + mongoObj.insertedId);
-    //         return 'Song correctly inserted in the Database.';
-    //     } catch (err) {
-    //         throw err
-    //     }
-    // }
+    async save() {
+        try {
+            let collection = await _get_songs_collection();
+            let mongoObj = await collection.insertOne(this);
+            console.log('1 song was inserted in the database with id -> ' + mongoObj.insertedId);
+            return 'Song correctly inserted in the Database.';
+        } catch (err) {
+            throw err
+        }
+    }
 
     /**
      * This static method for the class song will retrieve

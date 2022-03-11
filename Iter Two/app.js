@@ -60,3 +60,5 @@ process.on('SIGINT', () => {
     console.log(msg);
   });
 });
+
+module.exports = { app };

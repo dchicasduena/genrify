@@ -14,8 +14,15 @@ const Song = require('../model/song.js').Song;
  * @param {Response} res - A response Object
  */
 module.exports.add = async (req, res) => {
-    let track_id = req.body.track_id;
-    let new_song = new Song(track_id);
+    let new_song = new Song();
+    new_song.track_id = req.body.track_id;
+    new_song.track_name = req.body.track_name;
+    new_song.track_artist = req.body.track_artist;
+    new_song.track_album_name = req.body.track_album_name;
+    new_song.playlist_name = req.body.playlist_name;
+    new_song.playlist_genre = req.body.playlist_genre;
+    new_song.playlist_subgenre = req.body.playlist_subgenre;
+    new_song.duration = req.body.duration;
     let msg = await new_song.save();
     res.send(msg);
 };
