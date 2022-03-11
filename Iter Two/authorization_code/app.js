@@ -13,6 +13,9 @@ var client_id = process.env.CLIENT_ID; // Your client id
 var client_secret = process.env.CLIENT_SECRET; // Your secret
 var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
 
+const client = require('../utils/db.js');
+const db = require('../utils/db.js');
+
 /**
  * Generates a random string containing numbers and letters
  * @param  {number} length The length of the string
@@ -170,9 +173,19 @@ async function create_playlist(access_token, user_id) {
 }
 
 async function add_track(access_token, playlist_id) {
+  var test = ['spotify:track:2goLsvvODILDzeeiT4dAoR'];
+  let collection = await _get_playlist_collection();
+  let songObjs = await collection.find({}).toArray();
+  let tracks = []
+
+  for (let i = 0; i < songObjs.length; i++){
+    tracks.push(songObjs[i].track_id)
+    console.log(songObjs[i].track_id)
+  }
+  console.log('added songs to playlist');
   var options = {
     url: 'https://api.spotify.com/v1/playlists/' + playlist_id + '/tracks',
-    body:JSON.stringify({ uris: ['spotify:track:4iV5W9uYEdYUVa79Axb7Rh','spotify:track:1301WleyT98MSxVHPZCA6M']}),
+    body:JSON.stringify({ uris: tracks}),
     dataType: 'json',
     headers: {
       'Authorization': 'Bearer ' + access_token,
@@ -185,6 +198,12 @@ async function add_track(access_token, playlist_id) {
     console.log('song added')
   })
 }
+
+async function _get_playlist_collection() {
+  await client.connectToDB();
+  let db = await client.getDb();
+  return await db.collection('Playlist');
+};
 
 console.log('Listening on 8888');
 app.listen(8888);
