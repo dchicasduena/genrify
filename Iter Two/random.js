@@ -24,11 +24,16 @@ const instance = axios.create({
     headers: {'content-type': 'application/json'}
 });
 
+
+async function _get_playlist_collection() {
+    await client.connectToDB();
+    let db = await client.getDb();
+    return await db.collection('Playlist');
+};
+
 convertDataToSong();
 
 async function convertDataToSong() {
-    // const spotify = await instance.get('/spotify/474HmRcCZuGFV7i0jMNfEL')
-    // console.log(spotify.data)
     const songs = await instance.get('/song'); // split into each song 
     this.songs = songs.data;
 
@@ -138,9 +143,17 @@ async function createPlaylist() {
     for (let i = 0; i < 10; i++) {
         let rand = Math.floor(Math.random() * userSubgenre.length);
         let song = await recommendSong(userSubgenre[rand]); //this needs to be fixed
-        playlist.push(song)
+        playlist.push(song.track_id)
     }
     console.log(playlist)
+    let collection = await _get_playlist_collection();
+    for (let i = 0; i < playlist.length; i++) {
+        await collection.insertOne({
+            track_id: playlist[i],
+            playlist_genre: userGenre[i],
+            playlist_subgenre: userSubgenre[i]
+        });
+    }
 }
 
 // get all subgenres of a genre
