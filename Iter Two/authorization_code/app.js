@@ -172,6 +172,7 @@ async function create_playlist(access_token, user_id) {
 async function add_track(access_token, playlist_id) {
   var options = {
     url: 'https://api.spotify.com/v1/playlists/' + playlist_id + '/tracks',
+    body:JSON.stringify({ uris: ['spotify:track:4iV5W9uYEdYUVa79Axb7Rh','spotify:track:1301WleyT98MSxVHPZCA6M']}),
     dataType: 'json',
     headers: {
       'Authorization': 'Bearer ' + access_token,
