@@ -152,9 +152,10 @@ function getUserID(userID) {
 }
 
 async function create_playlist(access_token, user_id) {
+  let time = new Date().toLocaleString();
   var options = {
     url: 'https://api.spotify.com/v1/users/' + user_id + '/playlists',
-    body: JSON.stringify({ name: "Random Playlist", description: "playlist made through 3100 Project", public: true }),
+    body: JSON.stringify({ name: "Random Playlist", description: "playlist made through 3100 Project // made at " + time, public: true }),
     dataType: 'json',
     headers: {
       'Authorization': 'Bearer ' + access_token,
@@ -182,6 +183,7 @@ async function add_track(access_token, playlist_id) {
     tracks.push(songObjs[i].track_id)
     console.log(songObjs[i].track_id)
   }
+
   console.log('added songs to playlist');
   var options = {
     url: 'https://api.spotify.com/v1/playlists/' + playlist_id + '/tracks',
@@ -195,7 +197,8 @@ async function add_track(access_token, playlist_id) {
 
   request.post(options, (error, response, body) => {
     console.log(body);
-    console.log('song added')
+    console.log('songs added')
+    _remove_playlist_collection();
   })
 }
 
@@ -203,6 +206,12 @@ async function _get_playlist_collection() {
   await client.connectToDB();
   let db = await client.getDb();
   return await db.collection('Playlist');
+};
+
+async function _remove_playlist_collection() {
+  await client.connectToDB();
+  let db = await client.getDb();
+  await db.collection('Playlist').deleteMany({});
 };
 
 console.log('Listening on 8888');
