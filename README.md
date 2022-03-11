@@ -1,5 +1,5 @@
-# playlist-generator
-a playlist generator based on answers, questions and songs
+# spotify playlist generator
+a random playlist generator based on answers, questions and songs
 
 > this is still a WIP so fuctionality can still be changed / improved
 
