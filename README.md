@@ -31,9 +31,13 @@ idk i have to check
 now you can run the command `npm install`to download all the dependancies you need for the project. 
 
 to import the list of songs in the .csv file you need to run the command `node import.js `, this command only needs to be run **once** during setup.
+
 ## usage
 
+## troubleshooting
+
 ## resources
+
 API's we want to use: 
 - [apple music api](https://developer.apple.com/documentation/applemusicapi/)
 - [spotify api](https://developer.spotify.com/documentation/web-api/)
