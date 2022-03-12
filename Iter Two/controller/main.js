@@ -28,8 +28,7 @@ module.exports.add = async (req, res) => {
 };
 
 /**
- * A function that lists all songs with all information that is
- * in the file. 
+ * A function that lists all songs with all infomation.
  * @param {Request} req - A request Object
  * @param {Response} res - A response Object
  */
@@ -40,7 +39,7 @@ module.exports.list_all = async (req, res) => {
 };
 
 /**
- * A function that gets a song by name and returns all
+ * A function that gets a song by id and returns all
  * data of the requested song.
  * @param {Request} req - A request Object
  * @param {Response} res - A response Object
