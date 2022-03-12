@@ -10,8 +10,8 @@ chai.use(chaiHttp);
 
 describe('Songs', () => {
     /*
-      * Test the /POST route
-      */
+     * Test the /POST route
+     */
     describe('/POST song', () => {
         it('POST a song with info', function (done) {
             let song = new Song();
@@ -26,9 +26,10 @@ describe('Songs', () => {
                 .send(song)
                 .end((err, res) => {
                     if (err) { done(err) }
-                    console.log(res.body);
+                    console.log(res.body.success);
                     res.should.have.status(200);
                     res.body.should.be.a('object');
+                    res.body.should.have.property('success');
                     done();
                 });
         });
@@ -45,8 +46,10 @@ describe('Songs', () => {
                 .delete('/song/' + track_id)
                 .end((err, res) => {
                     if (err) { done(err) }
+                    console.log(res.body.success);
                     res.should.have.status(200);
                     res.body.should.be.a('object');
+                    res.body.should.have.property('success');
                     done();
                 });
         });
@@ -62,7 +65,7 @@ describe('Songs', () => {
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.a('array');
-                    res.body.length.should.be.eql(32833);
+                    res.body.length.should.be.at.least(32833);
                     done();
                 });
         });
@@ -78,7 +81,6 @@ describe('Songs', () => {
                 .get('/song/' + track_id)
                 .end((err, res) => {
                     if (err) { done(err) }
-                    //console.log(res.body);
                     res.should.have.status(200);
                     res.body.should.be.a('object');
                     res.body.should.have.property('track_id');
@@ -103,7 +105,7 @@ describe('Songs', () => {
                     if (err) { done(err) }
                     res.should.have.status(200);
                     res.body.should.be.a('array');
-                    res.body.length.should.be.eql(5507);
+                    res.body.length.should.be.at.least(5507);
                     done();
                 });
 
@@ -122,7 +124,7 @@ describe('Songs', () => {
                     if (err) { done(err) }
                     res.should.have.status(200);
                     res.body.should.be.a('array');
-                    res.body.length.should.be.eql(1298);
+                    res.body.length.should.be.at.least(1298);
                     done();
                 });
 

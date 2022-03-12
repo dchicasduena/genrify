@@ -30,14 +30,15 @@ async function createServer() {
     // starts correctly. Therefore, let's wait for
     // mongo to connect
     await mongo.connectToDB();
+
     // contacts resource paths
     app.get('/song', song.list_all);
     app.get('/song/:track_id', song.get_song);
     app.get('/song/genre/:playlist_genre', song.get_song_by_genre);
     app.get('/song/subgenre/:playlist_subgenre', song.get_song_by_subgenre);
-    //app.get('/spotify/:track_id', spotify.getSongInfo);
     app.post('/song', song.add);
     app.delete('/song/:track_id', song.delete_song);
+    
     // start the server
     server = app.listen(port, () => {
       console.log('Example app listening at http://localhost:%d', port);

@@ -39,7 +39,7 @@ class Song {
             let collection = await _get_songs_collection();
             let mongoObj = await collection.insertOne(this);
             console.log('1 song was inserted in the database with id -> ' + mongoObj.insertedId);
-            return 'Song correctly inserted in the Database.';
+            return {success: 'Song correctly inserted in the Database.'};
         } catch (err) {
             throw err
         }
@@ -122,7 +122,7 @@ class Song {
         let collection = await _get_songs_collection();
         let obj = await collection.deleteOne({ 'track_id': track_id_to_delete })
         if (obj.deletedCount > 0) {
-            return 'Song was deleted.'
+            return { success: 'Song correctly deleted.' };
         } else {
             return 'Song was not found.'
         }
