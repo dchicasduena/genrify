@@ -20,6 +20,9 @@
     "spotify-web-api-node": "^5.0.2"
   },
   "scripts": {
+    "start":"node app.js",
+    "random":"node random.js",
+    "test1":"npm run start && npm run random",
     "test": "mocha"
   },
   "devDependencies": {
