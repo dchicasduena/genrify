@@ -24,7 +24,7 @@ async function importData() {
     });
 
     // Get the collection
-    var collectionName = 'Spotify';
+    var collectionName = 'spotify';
     var collection = dbConn.collection(collectionName);
     dbConn.listCollections({ name: collectionName })
         .next(async function (err, collinfo) {
@@ -51,7 +51,7 @@ async function importData() {
     var arrayToInsert = [];
     await csvtojson().fromFile(csv).then(source => {
         // Insert into the table
-        var collectionName = 'Test';
+        var collectionName = 'all_songs';
         var collection = dbConn.collection(collectionName);
         dbConn.listCollections({ name: collectionName })
             .next(async function (err, collinfo) {
@@ -59,11 +59,11 @@ async function importData() {
                     // Fetching the all data from each row
                     for (var i = 0; i < source.length; i++) {
                         var oneRow = {
-                            track_id: source[i].track_id,
+                            track_id: 'spotify:track:' + source[i].track_id,
                             track_name: source[i].track_name,
                             track_artist: source[i].track_artist,
                             track_popularity: source[i].track_popularity,
-                            track_album_id: source[i].track_album_id,
+                            track_album_id: 'spotify:album:' + source[i].track_album_id,
                             track_album_name: source[i].track_album_name,
                             track_album_release_date: source[i].track_album_release_date,
                             playlist_name: source[i].playlist_name,
@@ -91,8 +91,40 @@ async function importData() {
                             console.log('Import CSV into database successfully.');
                         }
                     });
+
+                    // Arrange the data
+                    await arrangeData();
                 }
             });
+    });
+}
+
+async function arrangeData() {
+    var arrayToInsert = [];
+    var collection = dbConn.collection('spotify');
+    let objs = await collection.find({}).toArray();
+    for (let playlist in objs) {
+        for (let num in objs[playlist].tracks) {
+            let song = {
+                track_id: objs[playlist].tracks[num].track_uri,
+                track_name: objs[playlist].tracks[num].track_name,
+                track_artist: objs[playlist].tracks[num].artist_name,
+                playlist_name: objs[playlist].name,
+                playlist_genre: '',
+                playlist_subgenre: '',
+                track_album_id: objs[playlist].tracks[num].album_uri,
+                track_album_name: objs[playlist].tracks[num].album_name,
+                duration_ms: objs[playlist].tracks[num].duration_ms,
+            }
+            arrayToInsert.push(song);
+        }
+    }
+    var collection = dbConn.collection('all_songs');
+    await collection.insertMany(arrayToInsert, (err, result) => {
+        if (err) console.log(err);
+        if (result) {
+            console.log('Arrange spotify data successfully.');
+        }
     });
 }
 

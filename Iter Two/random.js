@@ -148,7 +148,7 @@ async function createPlaylist() {
     let collection = await _get_playlist_collection();
     for (let i = 0; i < playlist.length; i++) {
         await collection.insertOne({
-            track_id: 'spotify:track:' + playlist[i],
+            track_id: playlist[i],
             playlist_genre: userGenre[i],
             playlist_subgenre: userSubgenre[i]
         });
