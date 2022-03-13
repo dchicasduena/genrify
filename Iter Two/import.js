@@ -21,7 +21,7 @@ mongodb.MongoClient.connect(url, {
 });
 
 // CSV file name
-const fileName = 'spotify_songs.csv';
+const fileName = 'data/spotify_songs.csv';
 var arrayToInsert = [];
 csvtojson().fromFile(fileName).then(source => {
     // Fetching the all data from each row
