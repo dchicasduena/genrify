@@ -1,4 +1,7 @@
 # spotify playlist generator
+
+[features](https://github.com/dchicasduena/playlist-generator/edit/main/README.md#features) | [installation](https://github.com/dchicasduena/playlist-generator/edit/main/README.md#installation) | [usage](https://github.com/dchicasduena/playlist-generator/edit/main/README.md#usage) | [troubleshooting](https://github.com/dchicasduena/playlist-generator/edit/main/README.md#troubleshooting)
+
 a random playlist generator based on answers, questions and songs
 
 > this is still a WIP so fuctionality can still be changed / improved
