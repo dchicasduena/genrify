@@ -139,7 +139,7 @@ async function createPlaylist() {
     let playlist = [];
 
     console.log('user playlist created:')
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 20; i++) {
         let rand = Math.floor(Math.random() * userSubgenre.length);
         let song = await recommendSong(userSubgenre[rand]); //this needs to be fixed
         playlist.push(song.track_id)

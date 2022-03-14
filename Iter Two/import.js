@@ -12,6 +12,14 @@ const mongodb = require('mongodb');
 var url = 'mongodb://localhost:27017/Playlist';
 var dbConn;
 
+const dotenv = require('dotenv');
+const { apps } = require('open');
+dotenv.config({ path: './.env' });
+
+var client_id = process.env.CLIENT_ID; // Your client id
+var client_secret = process.env.CLIENT_SECRET; // Your secret
+var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
+
 async function importData() {
     // Connect to the database
     await mongodb.MongoClient.connect(url, {
@@ -105,6 +113,7 @@ async function arrangeData() {
     let objs = await collection.find({}).toArray();
     for (let playlist in objs) {
         for (let num in objs[playlist].tracks) {
+
             let song = {
                 track_id: objs[playlist].tracks[num].track_uri,
                 track_name: objs[playlist].tracks[num].track_name,
@@ -123,7 +132,7 @@ async function arrangeData() {
     await collection.insertMany(arrayToInsert, (err, result) => {
         if (err) console.log(err);
         if (result) {
-            console.log('Arrange spotify data successfully.');
+            console.log('Arrange spotify data successfully. You can now close the terminal.');
         }
     });
 }
