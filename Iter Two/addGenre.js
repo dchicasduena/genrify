@@ -73,6 +73,7 @@ async function importData() {
 }
 
 async function arrangeData() {
+  let csvString = "";
   var arrayToInsert = [];
   var collection = dbConn.collection('spotify');
   let objs = await collection.find({}).toArray();
@@ -92,7 +93,19 @@ async function arrangeData() {
         track_album_name: objs[playlist].tracks[num].album_name,
         duration_ms: objs[playlist].tracks[num].duration_ms,
       }
-      console.log(num);
+      csvString+=
+      `{"track_id":"${song.track_id}"
+      ,"track_name":"${song.track_name}"
+      ,"track_artist":"${song.track_artist}"
+      ,"playlist_name":"${song.playlist_name}"
+      ,"playlist_genre":"${song.playlist_genre}"
+      ,"playlist_subgenre":"${song.playlist_subgenre}"
+      ,"track_album_id":"${song.track_album_id}"
+      ,"track_album_name":"${song.track_album_name}"
+      ,"duration_ms":"${song.duration_ms}"
+      },`
+      
+      writeData('test.json', csvString)
       arrayToInsert.push(song);
     }
   }
@@ -178,7 +191,16 @@ function fixGenre(artistGenres, type) {
   return mainList;
 }
 
+function writeData(filename,contents){
+    //Saves CSV contents
+    var writeFile = fs.createWriteStream(filename, {flag: 'a'}) // create file and append
+    writeFile.write('[') // write header
+    writeFile.write(contents) // append report
+    writeFile.end(']') // stop appending
 
+    var writeFile = fs.createWriteStream(filename, {flag: 'w'}) // if program is ran again, delete and create new file
+
+}
 
 async function main() {
   ALL_GENRES = await getAllGenres();
