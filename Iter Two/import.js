@@ -137,4 +137,8 @@ async function arrangeData() {
     });
 }
 
+async function getGenre() {
+    console.log("genre")
+}
+
 importData();

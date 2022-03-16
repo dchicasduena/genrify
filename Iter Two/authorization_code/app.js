@@ -174,7 +174,6 @@ async function create_playlist(access_token, user_id) {
 }
 
 async function add_track(access_token, playlist_id) {
-  var test = ['spotify:track:2goLsvvODILDzeeiT4dAoR'];
   let collection = await _get_playlist_collection();
   let songObjs = await collection.find({}).toArray();
   let tracks = []
