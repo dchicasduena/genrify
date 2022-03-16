@@ -8,17 +8,21 @@
 // Import required module csvtojson and mongodb packages
 const fs = require('fs');
 const csvtojson = require('csvtojson');
+const request = require('request'); // "Request" library
 const mongodb = require('mongodb');
 var url = 'mongodb://localhost:27017/Playlist';
 var dbConn;
 
 const dotenv = require('dotenv');
 const { apps } = require('open');
+
 dotenv.config({ path: './.env' });
 
 var client_id = process.env.CLIENT_ID; // Your client id
 var client_secret = process.env.CLIENT_SECRET; // Your secret
 var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
+
+var ALL_GENRES = [];
 
 async function importData() {
     // Connect to the database
@@ -119,7 +123,7 @@ async function arrangeData() {
                 track_name: objs[playlist].tracks[num].track_name,
                 track_artist: objs[playlist].tracks[num].artist_name,
                 playlist_name: objs[playlist].name,
-                playlist_genre: '',
+                playlist_genre: getGenre(objs[playlist].tracks[num].artist_uri),
                 playlist_subgenre: '',
                 track_album_id: objs[playlist].tracks[num].album_uri,
                 track_album_name: objs[playlist].tracks[num].album_name,
@@ -141,4 +145,62 @@ async function getGenre() {
     console.log("genre")
 }
 
+
+// your application requests authorization
+var authOptions = {
+    url: 'https://accounts.spotify.com/api/token',
+    headers: {
+      'Authorization': 'Basic ' + (Buffer.from(client_id + ':' + client_secret).toString('base64'))
+    },
+    form: {
+      grant_type: 'client_credentials'
+    },
+    json: true
+  };
+
+async function getAllGenres() {
+    request.post(authOptions, function(error, response, body) {
+        if (!error && response.statusCode === 200) {
+      
+          // use the access token to access the Spotify Web API
+          var token = body.access_token;
+          var options = {
+            url: 'https://api.spotify.com/v1/recommendations/available-genre-seeds',
+            headers: {
+              'Authorization': 'Bearer ' + token
+            },
+            json: true
+          };
+    
+          request.get(options, function(error, response, body) {
+              ALL_GENRES = body
+              console.log(ALL_GENRES)
+          });
+        }
+      });
+}
+
+async function getGenre() {
+    request.post(authOptions, function(error, response, body) {
+        if (!error && response.statusCode === 200) {
+      
+          // use the access token to access the Spotify Web API
+          var token = body.access_token;
+          var options = {
+            url: 'https://api.spotify.com/v1/artists/' + artist_id,
+            headers: {
+              'Authorization': 'Bearer ' + token
+            },
+            json: true
+          };
+    
+          request.get(options, function(error, response, body) {
+              console.log(body['genres'])
+              return body['genres']
+          });
+        }
+      });
+}
+
+getAllGenres();
 importData();
