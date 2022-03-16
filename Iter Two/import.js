@@ -117,19 +117,19 @@ async function arrangeData() {
     let objs = await collection.find({}).toArray();
     for (let playlist in objs) {
         for (let num in objs[playlist].tracks) {
+            let artist = objs[playlist].tracks[num].artist_uri;
 
             let song = {
                 track_id: objs[playlist].tracks[num].track_uri,
                 track_name: objs[playlist].tracks[num].track_name,
                 track_artist: objs[playlist].tracks[num].artist_name,
                 playlist_name: objs[playlist].name,
-                playlist_genre: await getGenre(objs[playlist].tracks[num].artist_uri),
+                playlist_genre: await getGenre(artist.substring(15)),
                 playlist_subgenre: '',
                 track_album_id: objs[playlist].tracks[num].album_uri,
                 track_album_name: objs[playlist].tracks[num].album_name,
                 duration_ms: objs[playlist].tracks[num].duration_ms,
             }
-            //console.log('push')
             arrayToInsert.push(song);
         }
     }
@@ -192,7 +192,6 @@ function getGenre(artist_id) {
           };
     
           request.get(options, function(error, response, body) {
-            //console.log(body.genres)
             resolve (body.genres)
           });
         }})
