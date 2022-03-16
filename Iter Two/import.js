@@ -43,7 +43,7 @@ async function importData() {
             if (!collinfo) { // If the collection does not exist, create it
                 // Read the files
                 let filename = 'spotify';
-                for (let i = 1; i < 11; i++) {
+                for (let i = 1; i < 2; i++) {
                     let spotifyData = fs.readFileSync('data/' + filename + i + '.json');
                     let data = await JSON.parse(spotifyData);
 
@@ -132,6 +132,7 @@ async function arrangeData() {
             arrayToInsert.push(song);
         }
     }
+    console.log(arrayToInsert[1])
     var collection = dbConn.collection('all_songs');
     await collection.insertMany(arrayToInsert, (err, result) => {
         if (err) console.log(err);
@@ -180,7 +181,7 @@ async function getAllGenres() {
       });
 }
 
-async function getGenre() {
+async function getGenre(artist_id) {
     request.post(authOptions, function(error, response, body) {
         if (!error && response.statusCode === 200) {
       
@@ -195,8 +196,7 @@ async function getGenre() {
           };
     
           request.get(options, function(error, response, body) {
-              console.log(body['genres'])
-              return body['genres']
+              console.log(response)
           });
         }
       });
