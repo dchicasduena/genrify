@@ -123,12 +123,13 @@ async function arrangeData() {
                 track_name: objs[playlist].tracks[num].track_name,
                 track_artist: objs[playlist].tracks[num].artist_name,
                 playlist_name: objs[playlist].name,
-                playlist_genre: getGenre(objs[playlist].tracks[num].artist_uri),
+                playlist_genre: await getGenre(objs[playlist].tracks[num].artist_uri),
                 playlist_subgenre: '',
                 track_album_id: objs[playlist].tracks[num].album_uri,
                 track_album_name: objs[playlist].tracks[num].album_name,
                 duration_ms: objs[playlist].tracks[num].duration_ms,
             }
+            //console.log('push')
             arrayToInsert.push(song);
         }
     }
@@ -141,11 +142,6 @@ async function arrangeData() {
         }
     });
 }
-
-async function getGenre() {
-    console.log("genre")
-}
-
 
 // your application requests authorization
 var authOptions = {
@@ -175,14 +171,14 @@ async function getAllGenres() {
     
           request.get(options, function(error, response, body) {
               ALL_GENRES = body
-              console.log(ALL_GENRES)
           });
         }
       });
 }
 
-async function getGenre(artist_id) {
-    request.post(authOptions, function(error, response, body) {
+function getGenre(artist_id) {
+    return new Promise(function (resolve, reject) {
+      request.post(authOptions, function(error, response, body) {
         if (!error && response.statusCode === 200) {
       
           // use the access token to access the Spotify Web API
@@ -196,10 +192,11 @@ async function getGenre(artist_id) {
           };
     
           request.get(options, function(error, response, body) {
-              console.log(response)
+            //console.log(body.genres)
+            resolve (body.genres)
           });
-        }
-      });
+        }})
+    })
 }
 
 getAllGenres();

@@ -38,7 +38,37 @@ request.post(authOptions, function(error, response, body) {
       json: true
     };
     request.get(options, function(error, response, body) {
-      console.log(body);
+      //console.log(body);
     });
   }
 });
+
+function getGenre(artist_id) {
+  return new Promise(function (resolve, reject) {
+    request.post(authOptions, function(error, response, body) {
+      if (!error && response.statusCode === 200) {
+    
+        // use the access token to access the Spotify Web API
+        var token = body.access_token;
+        var options = {
+          url: 'https://api.spotify.com/v1/artists/' + artist_id,
+          headers: {
+            'Authorization': 'Bearer ' + token
+          },
+          json: true
+        };
+  
+        request.get(options, function(error, response, body) {
+          //console.log(body.genres)
+          resolve (body.genres)
+        });
+      }})
+  })
+}
+
+async function main(){
+  let res = await getGenre('2wIVse2owClT7go1WT98tk')
+  console.log(res);
+}
+
+main();
