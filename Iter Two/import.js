@@ -125,7 +125,7 @@ async function arrangeData() {
                 track_artist: objs[playlist].tracks[num].artist_name,
                 playlist_name: objs[playlist].name,
                 playlist_genre: await getGenre(artist.substring(15)),
-                playlist_subgenre: '',
+                playlist_subgenre: await getSubgenre(artist.substring(15)),
                 track_album_id: objs[playlist].tracks[num].album_uri,
                 track_album_name: objs[playlist].tracks[num].album_name,
                 duration_ms: objs[playlist].tracks[num].duration_ms,
@@ -133,7 +133,7 @@ async function arrangeData() {
             arrayToInsert.push(song);
         }
     }
-    console.log(arrayToInsert[1])
+    
     var collection = dbConn.collection('all_songs');
     await collection.insertMany(arrayToInsert, (err, result) => {
         if (err) console.log(err);
@@ -155,25 +155,26 @@ var authOptions = {
     json: true
   };
 
-async function getAllGenres() {
+function getAllGenres() {
+    return new Promise(function (resolve, reject) {
     request.post(authOptions, function(error, response, body) {
-        if (!error && response.statusCode === 200) {
-      
-          // use the access token to access the Spotify Web API
-          var token = body.access_token;
-          var options = {
+      if (!error && response.statusCode === 200) {
+    
+        // use the access token to access the Spotify Web API
+        var token = body.access_token;
+        var options = {
             url: 'https://api.spotify.com/v1/recommendations/available-genre-seeds',
             headers: {
-              'Authorization': 'Bearer ' + token
-            },
-            json: true
-          };
-    
-          request.get(options, function(error, response, body) {
-              ALL_GENRES = body
-          });
-        }
-      });
+            'Authorization': 'Bearer ' + token
+          },
+          json: true
+        };
+  
+        request.get(options, function(error, response, body) {
+          resolve (body.genres)
+        });
+      }})
+  })
 }
 
 function getGenre(artist_id) {
@@ -192,11 +193,51 @@ function getGenre(artist_id) {
           };
     
           request.get(options, function(error, response, body) {
-            resolve (body.genres)
+            let genres = []
+            let artistGenres = body.genres
+            for (let i = 0; i < body.genres.length; i++){
+                if (ALL_GENRES.includes(artistGenres[i].replace(/\s+/g, '-'))){
+                    genres.push(artistGenres[i])
+                } 
+            }
+            resolve(genres)
           });
         }})
     })
 }
 
-getAllGenres();
-importData();
+function getSubgenre(artist_id) {
+    return new Promise(function (resolve, reject) {
+      request.post(authOptions, function(error, response, body) {
+        if (!error && response.statusCode === 200) {
+      
+          // use the access token to access the Spotify Web API
+          var token = body.access_token;
+          var options = {
+            url: 'https://api.spotify.com/v1/artists/' + artist_id,
+            headers: {
+              'Authorization': 'Bearer ' + token
+            },
+            json: true
+          };
+    
+          request.get(options, function(error, response, body) {
+            let genres = []
+            let artistGenres = body.genres
+            for (let i = 0; i < body.genres.length; i++){
+                if (!ALL_GENRES.includes(artistGenres[i].replace(/\s+/g, '-'))){
+                    genres.push(artistGenres[i])
+                } 
+            }
+            resolve(genres)
+          });
+        }})
+    })
+}
+
+async function main(){
+    ALL_GENRES = await getAllGenres();
+    importData();
+}
+
+main()
