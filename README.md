@@ -1,4 +1,5 @@
 # spotify playlist generator
+
 a random playlist generator based on answers, questions and songs
 
 > this is still a WIP so fuctionality can still be changed / improved
@@ -58,7 +59,7 @@ now check your account on the spotify app or web player to see your new playlist
 
 ## troubleshooting
 
-## for the future
+## future relases
 
 API's we want to implement: 
 - [apple music api](https://developer.apple.com/documentation/applemusicapi/)
