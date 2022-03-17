@@ -48,7 +48,7 @@ async function importData() {
 }
 
 async function arrangeData() {
-  let csvString = "";
+  let string = "";
   var arrayToInsert = [];
   var collection = dbConn.collection('all');
   let objs = await collection.find({}).toArray();
@@ -67,23 +67,9 @@ async function arrangeData() {
       track_album_name: objs[i].track_album_name,
       duration_ms: objs[i].duration_ms,
     }
-
-    csvString +=
-      `
-      {
-      "track_id":"${song.track_id}",
-      "track_name":"${song.track_name}",
-      "track_artist":"${song.track_artist}",
-      "playlist_name":"${song.playlist_name}",
-      "playlist_genre":"${song.playlist_genre}",
-      "playlist_subgenre":"${song.playlist_subgenre}",
-      "track_album_id":"${song.track_album_id}",
-      "track_album_name":"${song.track_album_name}",
-      "duration_ms":"${song.duration_ms}"
-      },
-      `
-
-    writeData('test.json', csvString)
+    
+    string += JSON.stringify(song) + ',\n';
+    writeData('test.json', string);
     arrayToInsert.push(song);
   }
 
