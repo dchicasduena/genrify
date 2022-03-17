@@ -52,7 +52,7 @@ async function arrangeData() {
   var arrayToInsert = [];
   var collection = dbConn.collection('all');
   let objs = await collection.find({}).toArray();
-  for (let i = 19000; i < objs.length; i++) {
+  for (let i = 0 ; i < objs.length; i++) {
     let artist = objs[i].track_artist_id;
     let genre = await getArtistGenre(artist.substring(15));
     if (genre != null) {
@@ -72,10 +72,11 @@ async function arrangeData() {
         string = '';
       }
       string += JSON.stringify(song) + ',\n';
-      writeData('test' + count + '.json', string);
+      writeData('test' + 99 + '.json', string);
       arrayToInsert.push(song);
     } else {
-      console.log(i + ': ' + objs[i].track_name + 'has no genre');
+      console.log(objs[i])
+      console.log(i + ': ' + objs[i].track_name + ' has no genre');
     }
   }
 
@@ -132,7 +133,6 @@ function getArtistGenre(artist_id) {
         };
 
         request.get(options, function (error, response, body) {
-          let genres = []
           let artistGenres = body.genres
           resolve(artistGenres)
         });

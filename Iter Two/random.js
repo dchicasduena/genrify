@@ -21,13 +21,13 @@ var myurl = 'http://localhost:3000';
 // Let's configure the base url
 const instance = axios.create({
     baseURL: myurl,
-    headers: {'content-type': 'application/json'}
+    headers: { 'content-type': 'application/json' }
 });
 
 async function _get_playlist_collection() {
     await client.connectToDB();
     let db = await client.getDb();
-    return await db.collection('Playlist');
+    return await db.collection('user_playlist');
 };
 
 convertDataToSong();
@@ -45,12 +45,16 @@ async function convertDataToSong() {
         song.duration_ms = minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
 
         // add genre to genreList
-        if (!genreList.includes(song.playlist_genre)) {
-            genreList.push(song.playlist_genre)
+        for (let i in song.playlist_genre) {
+            if (!genreList.includes(song.playlist_genre[i])) {
+                genreList.push(song.playlist_genre[i])
+            }
         }
         // add subgenre to subGenreList
-        if (!subGenreList.includes(song.playlist_subgenre)) {
-            subGenreList.push(song.playlist_subgenre)
+        for (let i in song.playlist_subgenre) {
+            if (!subGenreList.includes(song.playlist_subgenre[i])) {
+                subGenreList.push(song.playlist_subgenre[i])
+            }
         }
     }
     getUserGenre();
@@ -159,8 +163,11 @@ async function createPlaylist() {
 function getSubGenre(genre) {
     let subGenre = [];
     for (let i = 0; i < this.songs.length; i++) {
-        if ((this.songs[i].playlist_genre == genre) && (!subGenre.includes(this.songs[i].playlist_subgenre))) {
-            subGenre.push(this.songs[i].playlist_subgenre)
+        let song = this.songs[i];
+        for (let j in song.playlist_subgenre) {
+            if ((song.playlist_genre[j] == genre) && (!subGenre.includes(song.playlist_subgenre[j]))) {
+                subGenre.push(song.playlist_subgenre[j])
+            }
         }
     }
     return subGenre;
@@ -187,4 +194,3 @@ async function recommendSong(subgenre) {
     let rand = Math.floor(Math.random() * songs.data.length);
     return songs.data[rand]; // changed to return from print
 }
-

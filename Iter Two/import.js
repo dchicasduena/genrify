@@ -36,35 +36,12 @@ async function importData() {
     console.log('DB Connection Error: ${err.message}');
   });
 
-  // Get the collection
-  var collectionName = 'spotify';
-  var collection = dbConn.collection(collectionName);
-  dbConn.listCollections({ name: collectionName })
-    .next(async function (err, collinfo) {
-      if (!collinfo) { // If the collection does not exist, create it
-        // Read the files
-        let filename = 'spotify';
-        for (let i = 1; i < 2; i++) {
-          let spotifyData = fs.readFileSync('data/' + filename + i + '.json');
-          let data = await JSON.parse(spotifyData);
-
-          // Insert into the table 
-          await collection.insertMany(data, (err, result) => {
-            if (err) console.log(err);
-            if (result) {
-              console.log('Import file ' + filename + i + ' into database successfully.');
-            }
-          });
-        }
-      }
-    });
-
   // CSV file import
   const csv = 'data/spotify_songs.csv';
   var arrayToInsert = [];
   await csvtojson().fromFile(csv).then(source => {
     // Insert into the table
-    var collectionName = 'all_songs';
+    var collectionName = 'test';
     var collection = dbConn.collection(collectionName);
     dbConn.listCollections({ name: collectionName })
       .next(async function (err, collinfo) {
@@ -98,52 +75,39 @@ async function importData() {
             };
             arrayToInsert.push(oneRow);
           }
-          // await collection.insertMany(arrayToInsert, (err, result) => {
-          //   if (err) console.log(err);
-          // if (result) {
-          //   console.log('Import CSV into database successfully.');
-          //}
-          //});
 
-          // Arrange the data
-          await arrangeData();
+          await collection.insertMany(arrayToInsert, (err, result) => {
+            if (err) console.log(err);
+            if (result) {
+              console.log('Import CSV into database successfully.');
+            }
+          });
+          
+          // import json file
+          await addJson();
         }
       });
   });
 }
 
-async function arrangeData() {
-  var arrayToInsert = [];
-  var collection = dbConn.collection('spotify');
-  let objs = await collection.find({}).toArray();
-  for (let playlist in objs) {
-    for (let num in objs[playlist].tracks) {
-      let artist = objs[playlist].tracks[num].artist_uri;
-      let genre = await getArtistGenre(artist.substring(15));
+async function addJson() {
+  // Get the collection
+  var collectionName = 'test';
+  var collection = dbConn.collection(collectionName);
+  // Read the files
+  let filename = 'test';
+  for (let i = 0; i < 19; i++) {
+    let spotifyData = fs.readFileSync('data/' + filename + i + '.json');
+    let data = await JSON.parse(spotifyData);
 
-      let song = {
-        track_id: objs[playlist].tracks[num].track_uri,
-        track_name: objs[playlist].tracks[num].track_name,
-        track_artist: objs[playlist].tracks[num].artist_name,
-        playlist_name: objs[playlist].name,
-        playlist_genre: fixGenre(genre, 'mainGenre'),
-        playlist_subgenre: fixGenre(genre, 'subGenre'),
-        track_album_id: objs[playlist].tracks[num].album_uri,
-        track_album_name: objs[playlist].tracks[num].album_name,
-        duration_ms: objs[playlist].tracks[num].duration_ms,
+    // Insert into the table 
+    await collection.insertMany(data, (err, result) => {
+      if (err) console.log(err);
+      if (result) {
+        console.log('Import file ' + filename + i + ' into database successfully.');
       }
-      console.log(num);
-      arrayToInsert.push(song);
-    }
+    });
   }
-
-  var collection = dbConn.collection('all_songs');
-  await collection.insertMany(arrayToInsert, (err, result) => {
-    if (err) console.log(err);
-    if (result) {
-      console.log('Arrange spotify data successfully. You can now close the terminal.');
-    }
-  });
 }
 
 // your application requests authorization
