@@ -76,7 +76,7 @@ describe('Songs', () => {
      */
     describe('/GET song with id', () => {
         it('GET song with the given track ID', function (done) {
-            let track_id = '6f807x0ima9a1j3VPbc7VN';
+            let track_id = 'spotify:track:6f807x0ima9a1j3VPbc7VN';
             chai.request(server)
                 .get('/song/' + track_id)
                 .end((err, res) => {
@@ -86,7 +86,6 @@ describe('Songs', () => {
                     res.body.should.have.property('track_id');
                     res.body.should.have.property('track_name');
                     res.body.should.have.property('track_artist');
-                    res.body.should.have.property('track_popularity');
                     res.body.should.have.property('playlist_name');
                     done();
                 });

@@ -46,7 +46,7 @@ async function convertDataToSong() {
 
         // add genre to genreList
         for (let i in song.playlist_genre) {
-            if (!genreList.includes(song.playlist_genre[i])) {
+            if (!genreList.includes(song.playlist_genre[i]) && (song.playlist_genre[i].length > 2)) {
                 genreList.push(song.playlist_genre[i])
             }
         }
@@ -164,9 +164,11 @@ function getSubGenre(genre) {
     let subGenre = [];
     for (let i = 0; i < this.songs.length; i++) {
         let song = this.songs[i];
-        for (let j in song.playlist_subgenre) {
-            if ((song.playlist_genre[j] == genre) && (!subGenre.includes(song.playlist_subgenre[j]))) {
-                subGenre.push(song.playlist_subgenre[j])
+        for (let a in song.playlist_genre) {
+            for (let b in song.playlist_subgenre) {
+                if (song.playlist_genre[a] == genre && (!subGenre.includes(song.playlist_subgenre[b]))) {
+                    subGenre.push(song.playlist_subgenre[b])
+                }
             }
         }
     }
