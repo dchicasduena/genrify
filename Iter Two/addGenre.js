@@ -35,79 +35,56 @@ async function importData() {
   }).catch(err => {
     console.log('DB Connection Error: ${err.message}');
   });
-
-  // Get the collection
-  var collectionName = 'spotify';
+  // Insert into the table
+  var collectionName = 'songs';
   var collection = dbConn.collection(collectionName);
   dbConn.listCollections({ name: collectionName })
     .next(async function (err, collinfo) {
       if (!collinfo) { // If the collection does not exist, create it
-        // Read the files
-        let filename = 'spotify';
-        for (let i = 1; i < 2; i++) {
-          let spotifyData = fs.readFileSync('data/' + filename + i + '.json');
-          let data = await JSON.parse(spotifyData);
-
-          // Insert into the table 
-          await collection.insertMany(data, (err, result) => {
-            if (err) console.log(err);
-            if (result) {
-              console.log('Import file ' + filename + i + ' into database successfully.');
-            }
-          });
-        }
+        // Arrange the data
+        await arrangeData();
       }
     });
-
-  
-    // Insert into the table
-    var collectionName = 'all_songs';
-    var collection = dbConn.collection(collectionName);
-    dbConn.listCollections({ name: collectionName })
-      .next(async function (err, collinfo) {
-        if (!collinfo) { // If the collection does not exist, create it
-          // Arrange the data
-          await arrangeData();
-        }
-      });
 }
 
 async function arrangeData() {
   let csvString = "";
   var arrayToInsert = [];
-  var collection = dbConn.collection('spotify');
+  var collection = dbConn.collection('all');
   let objs = await collection.find({}).toArray();
-  for (let playlist in objs) {
-    for (let num in objs[playlist].tracks) {
-      let artist = objs[playlist].tracks[num].artist_uri;
-      let genre = await getArtistGenre(artist.substring(15));
+  for (let i in objs) {
+    let artist = objs[i].track_artist_id;
+    let genre = await getArtistGenre(artist.substring(15));
 
-      let song = {
-        track_id: objs[playlist].tracks[num].track_uri,
-        track_name: objs[playlist].tracks[num].track_name,
-        track_artist: objs[playlist].tracks[num].artist_name,
-        playlist_name: objs[playlist].name,
-        playlist_genre: fixGenre(genre, 'mainGenre'),
-        playlist_subgenre: fixGenre(genre, 'subGenre'),
-        track_album_id: objs[playlist].tracks[num].album_uri,
-        track_album_name: objs[playlist].tracks[num].album_name,
-        duration_ms: objs[playlist].tracks[num].duration_ms,
-      }
-      csvString+=
-      `{"track_id":"${song.track_id}"
-      ,"track_name":"${song.track_name}"
-      ,"track_artist":"${song.track_artist}"
-      ,"playlist_name":"${song.playlist_name}"
-      ,"playlist_genre":"${song.playlist_genre}"
-      ,"playlist_subgenre":"${song.playlist_subgenre}"
-      ,"track_album_id":"${song.track_album_id}"
-      ,"track_album_name":"${song.track_album_name}"
-      ,"duration_ms":"${song.duration_ms}"
-      },`
-      
-      writeData('test.json', csvString)
-      arrayToInsert.push(song);
+    let song = {
+      track_id: objs[i].track_id,
+      track_name: objs[i].track_name,
+      track_artist: objs[i].track_artist,
+      playlist_name: objs[i].playlist_name,
+      playlist_genre: fixGenre(genre, 'mainGenre'),
+      playlist_subgenre: fixGenre(genre, 'subGenre'),
+      track_album_id: objs[i].track_album_id,
+      track_album_name: objs[i].track_album_name,
+      duration_ms: objs[i].duration_ms,
     }
+
+    csvString +=
+      `
+      {
+      "track_id":"${song.track_id}",
+      "track_name":"${song.track_name}",
+      "track_artist":"${song.track_artist}",
+      "playlist_name":"${song.playlist_name}",
+      "playlist_genre":"${song.playlist_genre}",
+      "playlist_subgenre":"${song.playlist_subgenre}",
+      "track_album_id":"${song.track_album_id}",
+      "track_album_name":"${song.track_album_name}",
+      "duration_ms":"${song.duration_ms}"
+      },
+      `
+
+    writeData('test.json', csvString)
+    arrayToInsert.push(song);
   }
 
 }
@@ -191,14 +168,14 @@ function fixGenre(artistGenres, type) {
   return mainList;
 }
 
-function writeData(filename,contents){
-    //Saves CSV contents
-    var writeFile = fs.createWriteStream(filename, {flag: 'a'}) // create file and append
-    writeFile.write('[') // write header
-    writeFile.write(contents) // append report
-    writeFile.end(']') // stop appending
+function writeData(filename, contents) {
+  //Saves CSV contents
+  var writeFile = fs.createWriteStream(filename, { flag: 'a' }) // create file and append
+  writeFile.write('[') // write header
+  writeFile.write(contents) // append report
+  writeFile.end(']') // stop appending
 
-    var writeFile = fs.createWriteStream(filename, {flag: 'w'}) // if program is ran again, delete and create new file
+  var writeFile = fs.createWriteStream(filename, { flag: 'w' }) // if program is ran again, delete and create new file
 
 }
 
