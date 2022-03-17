@@ -49,10 +49,11 @@ async function importData() {
 
 async function arrangeData() {
   let string = "";
+  count = 0;
   var arrayToInsert = [];
   var collection = dbConn.collection('all');
   let objs = await collection.find({}).toArray();
-  for (let i in objs) {
+  for (let i = 2000; i < objs.length; i++) {
     let artist = objs[i].track_artist_id;
     let genre = await getArtistGenre(artist.substring(15));
 
@@ -67,9 +68,12 @@ async function arrangeData() {
       track_album_name: objs[i].track_album_name,
       duration_ms: objs[i].duration_ms,
     }
-    
+    if (count != Math.floor(i / 2000)) {
+      count = Math.floor(i / 2000);
+      string = '';
+    }
     string += JSON.stringify(song) + ',\n';
-    writeData('test.json', string);
+    writeData('test' + count + '.json', string);
     arrayToInsert.push(song);
   }
 
