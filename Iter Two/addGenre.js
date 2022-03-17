@@ -9,8 +9,9 @@
 const fs = require('fs');
 const csvtojson = require('csvtojson');
 const request = require('request'); // "Request" library
-const mongodb = require('mongodb');
 var url = 'mongodb://localhost:27017/Playlist';
+const MongoClient = require('mongodb').MongoClient;
+const client = new MongoClient(url, { useUnifiedTopology: true });
 var dbConn;
 
 const dotenv = require('dotenv');
@@ -27,9 +28,7 @@ var ALL_GENRES = [];
 
 async function importData() {
   // Connect to the database
-  await mongodb.MongoClient.connect(url, {
-    useUnifiedTopology: true,
-  }).then((client) => {
+  await client.connect().then((client) => {
     console.log('DB Connected!');
     dbConn = client.db();
   }).catch(err => {
@@ -53,28 +52,31 @@ async function arrangeData() {
   var arrayToInsert = [];
   var collection = dbConn.collection('all');
   let objs = await collection.find({}).toArray();
-  for (let i = 2000; i < objs.length; i++) {
+  for (let i = 19000; i < objs.length; i++) {
     let artist = objs[i].track_artist_id;
     let genre = await getArtistGenre(artist.substring(15));
-
-    let song = {
-      track_id: objs[i].track_id,
-      track_name: objs[i].track_name,
-      track_artist: objs[i].track_artist,
-      playlist_name: objs[i].playlist_name,
-      playlist_genre: fixGenre(genre, 'mainGenre'),
-      playlist_subgenre: fixGenre(genre, 'subGenre'),
-      track_album_id: objs[i].track_album_id,
-      track_album_name: objs[i].track_album_name,
-      duration_ms: objs[i].duration_ms,
+    if (genre != null) {
+      let song = {
+        track_id: objs[i].track_id,
+        track_name: objs[i].track_name,
+        track_artist: objs[i].track_artist,
+        playlist_name: objs[i].playlist_name,
+        playlist_genre: fixGenre(genre, 'mainGenre'),
+        playlist_subgenre: fixGenre(genre, 'subGenre'),
+        track_album_id: objs[i].track_album_id,
+        track_album_name: objs[i].track_album_name,
+        duration_ms: objs[i].duration_ms,
+      }
+      if (count != Math.floor(i / 2000)) {
+        count = Math.floor(i / 2000);
+        string = '';
+      }
+      string += JSON.stringify(song) + ',\n';
+      writeData('test' + count + '.json', string);
+      arrayToInsert.push(song);
+    } else {
+      console.log(i + ': ' + objs[i].track_name + 'has no genre');
     }
-    if (count != Math.floor(i / 2000)) {
-      count = Math.floor(i / 2000);
-      string = '';
-    }
-    string += JSON.stringify(song) + ',\n';
-    writeData('test' + count + '.json', string);
-    arrayToInsert.push(song);
   }
 
 }
@@ -168,6 +170,16 @@ function writeData(filename, contents) {
   var writeFile = fs.createWriteStream(filename, { flag: 'w' }) // if program is ran again, delete and create new file
 
 }
+
+
+// This will avoid us to create many mongo connections
+// and use all our computer resources
+// process.on('SIGINT', async () => {
+//   console.info('SIGINT signal received.');
+//   console.log('Closing Mongo Client.');
+//   let msg = await client.close();
+//   console.log(msg);
+// });
 
 async function main() {
   ALL_GENRES = await getAllGenres();

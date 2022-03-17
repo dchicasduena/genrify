@@ -13,14 +13,7 @@ app.use(express.json()); // support json encoded bodies
 app.use(express.urlencoded({ extended: true })); // incoming objects are strings or arrays
 
 const song = require('./controller/main'); // Here we import our code with the contacts operations
-//const spotify = require('./model/get-song-info');
 const mongo = require('./utils/db.js');
-
-const dotenv = require('dotenv');
-dotenv.config({ path: './.env' });
-
-var client_id = process.env.CLIENT_ID; // Your client id
-var client_secret = process.env.CLIENT_SECRET; // Your secret
 
 var server;
 
