@@ -1,3 +1,10 @@
+/**
+* @author Nhu Nguyen, David Chicas
+* @student_id 201916426, 201919354
+* @course COMP 3100 - Web Programming
+* @year 2022 
+*/
+
 var express = require('express'); // Express web server framework
 var request = require('request'); // "Request" library
 var cors = require('cors');
@@ -5,6 +12,7 @@ var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 const open = require('open');
 
+// use .env file to load id and secret
 const dotenv = require('dotenv');
 const { apps } = require('open');
 dotenv.config({ path: './../.env' });
@@ -43,7 +51,7 @@ app.get('/login', function (req, res) {
   var state = generateRandomString(16);
   res.cookie(stateKey, state);
 
-  // your application requests authorization
+  // your application requests authorization to Spotify
   var scope = 'user-read-private user-read-email playlist-modify-public playlist-modify-private playlist-modify';
   res.redirect('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
@@ -55,6 +63,7 @@ app.get('/login', function (req, res) {
     }));
 });
 
+// callback that manages the authentication, provided by Spotify API
 app.get('/callback', function (req, res) {
 
   var code = req.query.code || null;
@@ -151,10 +160,12 @@ function getUserID(userID) {
   )
 }
 
+// creates a playlist with the information the usr gave
+// in random.js
 async function create_playlist(access_token, user_id) {
   let time = new Date().toLocaleString();
   var options = {
-    url: 'https://api.spotify.com/v1/users/' + user_id + '/playlists',
+    url: 'https://api.spotify.com/v1/users/' + user_id + '/playlists', // create playlist for user
     body: JSON.stringify({ name: "Random Playlist", description: "playlist made through 3100 Project // made at " + time, public: true }),
     dataType: 'json',
     headers: {
@@ -163,21 +174,24 @@ async function create_playlist(access_token, user_id) {
     }
   }
 
+  // post request to spotify
   request.post(options, (error, response, body) => {
     console.log('playlist information: ')
     var info = JSON.parse(body)
     console.log(info);
     console.log('playlist created')
 
+    // after creating playlist add the songs to the playlist
     add_track(access_token, info.id)
   })
 }
 
 async function add_track(access_token, playlist_id) {
-  let collection = await _get_playlist_collection();
-  let songObjs = await collection.find({}).toArray();
+  let collection = await _get_playlist_collection(); // get playlist from mongo
+  let songObjs = await collection.find({}).toArray(); // turn it to an array
   let tracks = []
 
+  // add tracks to array
   for (let i = 0; i < songObjs.length; i++){
     tracks.push(songObjs[i].track_id)
     console.log(songObjs[i].track_id)
@@ -194,6 +208,7 @@ async function add_track(access_token, playlist_id) {
     }
   };
 
+  // post request of array of songs to spotify
   request.post(options, (error, response, body) => {
     console.log(body);
     console.log('songs added')
@@ -210,9 +225,9 @@ async function _get_playlist_collection() {
 async function _remove_playlist_collection() {
   await client.connectToDB();
   let db = await client.getDb();
-  await db.collection('user_playlist').deleteMany({});
+  await db.collection('user_playlist').deleteMany({}); // delete playlist from mongo after its added 
 };
 
 console.log('Listening on 8888');
 app.listen(8888);
-open('http://localhost:8888');
+open('http://localhost:8888'); // used to open auth page when ran
