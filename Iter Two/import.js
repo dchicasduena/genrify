@@ -11,6 +11,8 @@ const csvtojson = require('csvtojson');
 const request = require('request'); // "Request" library
 const mongodb = require('mongodb');
 var url = 'mongodb://localhost:27017/Playlist';
+const MongoClient = require('mongodb').MongoClient;
+const client = new MongoClient(url, { useUnifiedTopology: true });
 var dbConn;
 
 const dotenv = require('dotenv');
@@ -23,13 +25,9 @@ var client_id = process.env.CLIENT_ID; // Your client id
 var client_secret = process.env.CLIENT_SECRET; // Your secret
 var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
 
-var ALL_GENRES = []; // get all genres available in spotify
-
 async function importData() {
   // Connect to the database
-  await mongodb.MongoClient.connect(url, {
-    useUnifiedTopology: true,
-  }).then((client) => {
+  await client.connect().then((client) => {
     console.log('DB Connected!');
     dbConn = client.db();
   }).catch(err => {
@@ -85,6 +83,9 @@ async function importData() {
 
           // import json file
           await addJson();
+        } else {
+          console.log('Collection already exists!');
+          await client.close();
         }
       });
   });
@@ -104,94 +105,11 @@ async function addJson() {
     await collection.insertMany(data, (err, result) => {
       if (err) console.log(err);
       if (result) {
-        console.log('Import file ' + filename + i + ' into database successfully.');
       }
     });
   }
+  console.log('Import JSON into database successfully. Please close the terminal.');
+
 }
 
-// your application requests authorization
-var authOptions = {
-  url: 'https://accounts.spotify.com/api/token',
-  headers: {
-    'Authorization': 'Basic ' + (Buffer.from(client_id + ':' + client_secret).toString('base64'))
-  },
-  form: {
-    grant_type: 'client_credentials'
-  },
-  json: true
-};
-
-function getAllGenres() {
-  return new Promise(function (resolve, reject) {
-    request.post(authOptions, function (error, response, body) {
-      if (!error && response.statusCode === 200) {
-
-        // use the access token to access the Spotify Web API
-        var token = body.access_token;
-        var options = {
-          url: 'https://api.spotify.com/v1/recommendations/available-genre-seeds',
-          headers: {
-            'Authorization': 'Bearer ' + token
-          },
-          json: true
-        };
-
-        request.get(options, function (error, response, body) {
-          resolve(body.genres)
-        });
-      }
-    })
-  })
-}
-
-function getArtistGenre(artist_id) {
-  return new Promise(function (resolve, reject) {
-    request.post(authOptions, function (error, response, body) {
-      if (!error && response.statusCode === 200) {
-
-        // use the access token to access the Spotify Web API
-        var token = body.access_token;
-        var options = {
-          url: 'https://api.spotify.com/v1/artists/' + artist_id,
-          headers: {
-            'Authorization': 'Bearer ' + token
-          },
-          json: true
-        };
-
-        request.get(options, function (error, response, body) {
-          let genres = []
-          let artistGenres = body.genres
-          resolve(artistGenres)
-        });
-      }
-    })
-  })
-}
-
-function fixGenre(artistGenres, type) {
-  let mainList = [];
-  if (type == 'mainGenre') { // if genre is in ALL_GENRES add as genre
-    for (let i = 0; i < artistGenres.length; i++) {
-      if (ALL_GENRES.includes(artistGenres[i].replace(/\s+/g, '-'))) { // replace any space for a - to match 
-        mainList.push(artistGenres[i])
-      }
-    }
-  } else { // if genre is not in ALL_GENRES add as subgenre
-    for (let i = 0; i < artistGenres.length; i++) {
-      if (!ALL_GENRES.includes(artistGenres[i].replace(/\s+/g, '-'))) {
-        mainList.push(artistGenres[i])
-      }
-    }
-  }
-
-  return mainList;
-}
-
-async function main() {
-  ALL_GENRES = await getAllGenres();
-  importData();
-}
-
-main()
+importData();

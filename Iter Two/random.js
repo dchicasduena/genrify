@@ -96,7 +96,17 @@ async function getUserGenre() {
         userGenre.push(ans)
     }
 
-    //get favorite subgenres
+    // print all relevant subgenres
+    console.log('List of relevant subgenres:')
+    for (let i = 0; i < userGenre.length; i++) {
+        console.log(userGenre[i])
+        let subGenre = getSubGenre(userGenre[i]);
+        for (let j = 0; j < subGenre.length; j++) {
+            console.log(" - " + subGenre[j])
+        }
+    }
+
+    // get possible subgenres
     let possibleSubGenre = [];
     for (let i = 0; i < userGenre.length; i++) {
         let subGenre = getSubGenre(userGenre[i]);
@@ -105,24 +115,11 @@ async function getUserGenre() {
         }
     }
 
-    // print all relevant subgenres
-    console.log('List of relevant subgenres:')
-    for (let i = 0; i < userGenre.length; i++) {
-        console.log(userGenre[i])
-        for (let j = 0; j < getSubGenre(userGenre[i]).length; j++) {
-            console.log(" - " + getSubGenre(userGenre[i])[j])
-        }
-    }
-
-    while (userSubgenre.length < 3) {
-        let currentGenre = userGenre[userSubgenre.length] // get current genre
-        let ans = await askQuestion("What is your favorite subgenre of " + currentGenre + "? (" + (3 - userSubgenre.length) + " left) ")
+    // get favorite subgenres
+    while (userSubgenre.length < 6) {
+        let ans = await askQuestion("What is your favorite subgenre? (" + (6 - userSubgenre.length) + " left).")
         if (!possibleSubGenre.includes(ans)) { // if user has selected an invalid subgenre, skip it
             console.log("Invalid subgenre")
-            continue
-        }
-        if (!getSubGenre(currentGenre).includes(ans)) { // if subgenre doesn't belong to current genre, skip it
-            console.log("Subgenre doesn't belong to " + currentGenre)
             continue
         }
         if (userSubgenre.includes(ans)) { // if user has already selected the genre, skip it
@@ -136,27 +133,39 @@ async function getUserGenre() {
     this.userGenre = userGenre;
     this.userSubgenre = userSubgenre;
 
-    createPlaylist();
+    // get number of recommended songs
+    let ans = 0;
+    while (ans < 10 || ans > 50) {
+        ans = await askQuestion("How many songs would you like to have in your playlist? (10-50) ")
+        if (ans < 10 || ans > 50) {
+            console.log("Invalid number")
+        } else {
+            break
+        }
+    }
+
+    createPlaylist(ans);
 }
 
-async function createPlaylist() {
+async function createPlaylist(num) {
     let playlist = [];
 
     console.log('user playlist created:')
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < num; i++) {
         let rand = Math.floor(Math.random() * userSubgenre.length);
         let song = await recommendSong(userSubgenre[rand]); //this needs to be fixed
-        playlist.push(song.track_id)
+        playlist.push(song)
     }
     console.log(playlist)
     let collection = await _get_playlist_collection();
     for (let i = 0; i < playlist.length; i++) {
         await collection.insertOne({
-            track_id: playlist[i],
-            playlist_genre: userGenre[i],
-            playlist_subgenre: userSubgenre[i]
+            track_id: playlist[i].track_id,
+            playlist_genre: playlist[i].playlist_genre,
+            playlist_subgenre: playlist[i].playlist_subgenre
         });
     }
+    await client.closeDBConnection();
 }
 
 // get all subgenres of a genre

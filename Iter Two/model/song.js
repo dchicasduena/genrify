@@ -7,15 +7,15 @@
 
 const client = require('../utils/db.js');
 
+
 async function _get_songs_collection() {
-    await client.connectToDB();
     let db = await client.getDb();
     return await db.collection('test');
 };
 
 /**
- * The class song, with a main constructor and two methods
- * to add more fields retrieved with the third-party APIs
+ * The class song, with a main constructor and seven methods 
+ * to add/delete/update/get songs in the database
  */
 
 class Song {
@@ -57,7 +57,7 @@ class Song {
     }
 
     /**
-     * This method will retrieve a song with the name passed
+     * This method will retrieve a song with the id passed
      * as a parameter
      * @param {String} track_id - the id of the song to be retrieved
      * @returns {Song} - An object Song with all song's data
@@ -113,14 +113,13 @@ class Song {
     }
 
     /**
-     * This method will detele the song with the specified
-     * name.
-     * @param {String} track_id_to_delete - A name to be deleted
+     * This method will delete the song with the specified id
+     * @param {String} track_id - A name to be deleted
      * @returns {String} A message if the song was deleted or not
      */
-    static async delete(track_id_to_delete) {
+    static async delete(track_id) {
         let collection = await _get_songs_collection();
-        let obj = await collection.deleteOne({ 'track_id': track_id_to_delete })
+        let obj = await collection.deleteOne({ 'track_id': track_id })
         if (obj.deletedCount > 0) {
             return { success: 'Song correctly deleted.' };
         } else {
