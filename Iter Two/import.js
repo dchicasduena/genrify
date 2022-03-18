@@ -25,11 +25,11 @@ async function importData() {
   // CSV file import
   const csv = 'data/spotify_songs.csv';
   var arrayToInsert = [];
-  await csvtojson().fromFile(csv).then(source => {
+  await csvtojson().fromFile(csv).then(async function (source){
     // Insert into the table
     var collectionName = 'test';
     var collection = dbConn.collection(collectionName);
-    dbConn.listCollections({ name: collectionName })
+    await dbConn.listCollections({ name: collectionName })
       .next(async function (err, collinfo) {
         if (!collinfo) { // If the collection does not exist, create it
           // Fetching the all data from each row
@@ -66,6 +66,7 @@ async function importData() {
             if (err) console.log(err);
             if (result) {
               console.log('Import CSV into database successfully.');
+              console.log('Please close the terminal.');
             }
           });
 
@@ -77,6 +78,7 @@ async function importData() {
         }
       });
   });
+  
 }
 
 async function addJson() {
@@ -96,7 +98,7 @@ async function addJson() {
       }
     });
   }
-  console.log('Import JSON into database successfully. Please close the terminal.');
+  console.log('Import JSON into database successfully.');
 
 }
 

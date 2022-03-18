@@ -65,7 +65,7 @@ describe('Songs', () => {
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.a('array');
-                    res.body.length.should.be.at.least(60000);
+                    res.body.length.should.be.at.least(70000);
                     done();
                 });
         });

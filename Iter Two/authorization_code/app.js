@@ -179,7 +179,7 @@ async function create_playlist(access_token, user_id) {
     console.log('playlist information: ')
     var info = JSON.parse(body)
     console.log(info);
-    console.log('playlist created')
+    console.log('Playlist created')
 
     // after creating playlist add the songs to the playlist
     add_track(access_token, info.id)
@@ -196,8 +196,6 @@ async function add_track(access_token, playlist_id) {
     tracks.push(songObjs[i].track_id)
     console.log(songObjs[i].track_id)
   }
-
-  console.log('added songs to playlist');
   var options = {
     url: 'https://api.spotify.com/v1/playlists/' + playlist_id + '/tracks',
     body:JSON.stringify({ uris: tracks}),
@@ -210,8 +208,8 @@ async function add_track(access_token, playlist_id) {
 
   // post request of array of songs to spotify
   request.post(options, (error, response, body) => {
-    console.log(body);
-    console.log('songs added')
+    // console.log(body);
+    console.log('Playlist added successfully.') // if successful
     _remove_playlist_collection();
   })
 }
@@ -223,9 +221,9 @@ async function _get_playlist_collection() {
 };
 
 async function _remove_playlist_collection() {
-  await client.connectToDB();
   let db = await client.getDb();
   await db.collection('user_playlist').deleteMany({}); // delete playlist from mongo after its added 
+  console.log(await client.closeDBConnection());
 };
 
 console.log('Listening on 8888');

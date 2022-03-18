@@ -30,14 +30,14 @@ async function _get_playlist_collection() {
     return await db.collection('user_playlist');
 };
 
-convertDataToSong();
+getData();
 
-async function convertDataToSong() {
-    const songs = await instance.get('/song'); // split into each song 
+async function getData() {
+    const songs = await instance.get('/song'); // get all songs from server
     this.songs = songs.data;
 
     for (let i = 1; i < this.songs.length; i++) { // go through the songs
-        const song = this.songs[i]; // split each song into its attributes
+        const song = this.songs[i]; // get the song
 
         // change duration to minutes
         const minutes = Math.floor(song.duration_ms / 60000);
@@ -57,7 +57,7 @@ async function convertDataToSong() {
             }
         }
     }
-    getUserGenre();
+    await getUserGenre();
 }
 
 // get favorite genre of user
@@ -69,7 +69,6 @@ async function getUserGenre() {
             input: process.stdin,
             output: process.stdout,
         });
-
         return new Promise(resolve => rl.question(query, ans => {
             rl.close();
             resolve(ans);
@@ -116,8 +115,16 @@ async function getUserGenre() {
     }
 
     // get favorite subgenres
+    console.log('Enter -1 to stop entering subgenres.')
     while (userSubgenre.length < 6) {
         let ans = await askQuestion("What is your favorite subgenre? (" + (6 - userSubgenre.length) + " left).")
+        if (ans == -1) { // if user wants to stop entering subgenres, break
+            if (userSubgenre.length < 3) {
+                console.log("You must select at least 3 subgenres.")
+                continue
+            }
+            break
+        }
         if (!possibleSubGenre.includes(ans)) { // if user has selected an invalid subgenre, skip it
             console.log("Invalid subgenre")
             continue
@@ -126,7 +133,7 @@ async function getUserGenre() {
             console.log("You have already selected this subgenre")
             continue
         }
-        userSubgenre.push(ans)
+        userSubgenre.push(ans) // add subgenre to userSubgenre
     }
 
     // this part needs to be inside this function for it to work, am trying to think of another way
@@ -138,7 +145,7 @@ async function getUserGenre() {
     while (ans < 10 || ans > 50) {
         ans = await askQuestion("How many songs would you like to have in your playlist? (10-50) ")
         if (ans < 10 || ans > 50) {
-            console.log("Invalid number")
+            console.log("Invalid number, please try again")
         } else {
             break
         }
@@ -147,6 +154,7 @@ async function getUserGenre() {
     createPlaylist(ans);
 }
 
+// create recommended playlist for user
 async function createPlaylist(num) {
     let playlist = [];
 
@@ -165,7 +173,7 @@ async function createPlaylist(num) {
             playlist_subgenre: playlist[i].playlist_subgenre
         });
     }
-    await client.closeDBConnection();
+    console.log(await client.closeDBConnection());
 }
 
 // get all subgenres of a genre
@@ -182,15 +190,6 @@ function getSubGenre(genre) {
         }
     }
     return subGenre;
-}
-
-// get the genre of a given subgenre
-function getGenre(subgenre) {
-    for (let i = 0; i < this.songs.length; i++) {
-        if (this.songs[i].playlist_subgenre == subgenre) {
-            return this.songs[i].playlist_genre
-        }
-    }
 }
 
 // get songs by genre
