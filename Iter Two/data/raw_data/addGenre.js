@@ -5,9 +5,8 @@
 * @year 2022 
 */
 
-// Import required module csvtojson and mongodb packages
+// Import required modules
 const fs = require('fs');
-const csvtojson = require('csvtojson');
 const request = require('request'); // "Request" library
 var url = 'mongodb://localhost:27017/Playlist';
 const MongoClient = require('mongodb').MongoClient;
@@ -15,16 +14,12 @@ const client = new MongoClient(url, { useUnifiedTopology: true });
 var dbConn;
 
 const dotenv = require('dotenv');
-const { apps } = require('open');
-const e = require('express');
-
 dotenv.config({ path: './.env' });
 
 var client_id = process.env.CLIENT_ID; // Your client id
 var client_secret = process.env.CLIENT_SECRET; // Your secret
-var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
 
-var ALL_GENRES = [];
+var ALL_GENRES = []; // all available genres
 
 async function importData() {
   // Connect to the database
@@ -34,16 +29,8 @@ async function importData() {
   }).catch(err => {
     console.log('DB Connection Error: ${err.message}');
   });
-  // Insert into the table
-  var collectionName = 'songs';
-  var collection = dbConn.collection(collectionName);
-  dbConn.listCollections({ name: collectionName })
-    .next(async function (err, collinfo) {
-      if (!collinfo) { // If the collection does not exist, create it
-        // Arrange the data
-        await arrangeData();
-      }
-    });
+  // Arrange the data
+  await arrangeData();
 }
 
 async function arrangeData() {
@@ -52,9 +39,10 @@ async function arrangeData() {
   var arrayToInsert = [];
   var collection = dbConn.collection('all');
   let objs = await collection.find({}).toArray();
-  for (let i = 0 ; i < objs.length; i++) {
+  for (let i = 0; i < objs.length; i++) {
     let artist = objs[i].track_artist_id;
     let genre = await getArtistGenre(artist.substring(15));
+    // if song has genre
     if (genre != null) {
       let song = {
         track_id: objs[i].track_id,
@@ -67,12 +55,13 @@ async function arrangeData() {
         track_album_name: objs[i].track_album_name,
         duration_ms: objs[i].duration_ms,
       }
+      // Insert 2000 songs in each json file
       if (count != Math.floor(i / 2000)) {
         count = Math.floor(i / 2000);
         string = '';
       }
       string += JSON.stringify(song) + ',\n';
-      writeData('test' + 99 + '.json', string);
+      writeData('test' + count + '.json', string);
       arrayToInsert.push(song);
     } else {
       console.log(objs[i])
@@ -94,6 +83,7 @@ var authOptions = {
   json: true
 };
 
+// get all available genres
 function getAllGenres() {
   return new Promise(function (resolve, reject) {
     request.post(authOptions, function (error, response, body) {
@@ -117,6 +107,7 @@ function getAllGenres() {
   })
 }
 
+// get artist genre
 function getArtistGenre(artist_id) {
   return new Promise(function (resolve, reject) {
     request.post(authOptions, function (error, response, body) {
@@ -141,6 +132,7 @@ function getArtistGenre(artist_id) {
   })
 }
 
+// arrange the genres into 2 categories
 function fixGenre(artistGenres, type) {
   let mainList = [];
   if (type == 'mainGenre') {

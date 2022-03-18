@@ -8,22 +8,10 @@
 // Import required module csvtojson and mongodb packages
 const fs = require('fs');
 const csvtojson = require('csvtojson');
-const request = require('request'); // "Request" library
-const mongodb = require('mongodb');
 var url = 'mongodb://localhost:27017/Playlist';
 const MongoClient = require('mongodb').MongoClient;
 const client = new MongoClient(url, { useUnifiedTopology: true });
 var dbConn;
-
-const dotenv = require('dotenv');
-const { apps } = require('open');
-const e = require('express');
-
-dotenv.config({ path: './.env' });
-
-var client_id = process.env.CLIENT_ID; // Your client id
-var client_secret = process.env.CLIENT_SECRET; // Your secret
-var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
 
 async function importData() {
   // Connect to the database

@@ -65,7 +65,7 @@ describe('Songs', () => {
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.a('array');
-                    res.body.length.should.be.at.least(32833);
+                    res.body.length.should.be.at.least(60000);
                     done();
                 });
         });
@@ -104,7 +104,7 @@ describe('Songs', () => {
                     if (err) { done(err) }
                     res.should.have.status(200);
                     res.body.should.be.a('array');
-                    res.body.length.should.be.at.least(5507);
+                    res.body.length.should.be.at.least(10000);
                     done();
                 });
 
@@ -123,7 +123,7 @@ describe('Songs', () => {
                     if (err) { done(err) }
                     res.should.have.status(200);
                     res.body.should.be.a('array');
-                    res.body.length.should.be.at.least(1298);
+                    res.body.length.should.be.at.least(5000);
                     done();
                 });
 
