@@ -82,7 +82,7 @@ async function importData() {
               console.log('Import CSV into database successfully.');
             }
           });
-          
+
           // import json file
           await addJson();
         }
@@ -96,7 +96,7 @@ async function addJson() {
   var collection = dbConn.collection(collectionName);
   // Read the files
   let filename = 'test';
-  for (let i = 0; i < 19; i++) {
+  for (let i = 0; i < 20; i++) {
     let spotifyData = fs.readFileSync('data/' + filename + i + '.json');
     let data = await JSON.parse(spotifyData);
 

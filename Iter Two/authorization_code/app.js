@@ -161,7 +161,7 @@ async function create_playlist(access_token, user_id) {
       'Authorization': 'Bearer ' + access_token,
       'Content-Type': 'application/json',
     }
-  };
+  }
 
   request.post(options, (error, response, body) => {
     console.log('playlist information: ')
