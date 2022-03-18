@@ -23,7 +23,7 @@ var client_id = process.env.CLIENT_ID; // Your client id
 var client_secret = process.env.CLIENT_SECRET; // Your secret
 var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
 
-var ALL_GENRES = [];
+var ALL_GENRES = []; // get all genres available in spotify
 
 async function importData() {
   // Connect to the database
@@ -172,13 +172,13 @@ function getArtistGenre(artist_id) {
 
 function fixGenre(artistGenres, type) {
   let mainList = [];
-  if (type == 'mainGenre') {
+  if (type == 'mainGenre') { // if genre is in ALL_GENRES add as genre
     for (let i = 0; i < artistGenres.length; i++) {
-      if (ALL_GENRES.includes(artistGenres[i].replace(/\s+/g, '-'))) {
+      if (ALL_GENRES.includes(artistGenres[i].replace(/\s+/g, '-'))) { // replace any space for a - to match 
         mainList.push(artistGenres[i])
       }
     }
-  } else {
+  } else { // if genre is not in ALL_GENRES add as subgenre
     for (let i = 0; i < artistGenres.length; i++) {
       if (!ALL_GENRES.includes(artistGenres[i].replace(/\s+/g, '-'))) {
         mainList.push(artistGenres[i])
