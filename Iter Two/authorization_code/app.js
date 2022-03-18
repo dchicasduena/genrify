@@ -204,13 +204,13 @@ async function add_track(access_token, playlist_id) {
 async function _get_playlist_collection() {
   await client.connectToDB();
   let db = await client.getDb();
-  return await db.collection('Playlist');
+  return await db.collection('user_playlist');
 };
 
 async function _remove_playlist_collection() {
   await client.connectToDB();
   let db = await client.getDb();
-  await db.collection('Playlist').deleteMany({});
+  await db.collection('user_playlist').deleteMany({});
 };
 
 console.log('Listening on 8888');
