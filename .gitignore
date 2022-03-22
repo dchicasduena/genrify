@@ -1,3 +1,3 @@
-Iter Two/node_modules
-Iter Two/package-lock.json
-Iter Two/.env
+node_modules
+package-lock.json
+.env
