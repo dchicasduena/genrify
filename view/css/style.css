@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Playfair+Display:400,900');
+
 /*
  * Globals
  */
@@ -18,16 +20,28 @@
 body {
   text-shadow: 0 .05rem .1rem rgba(0, 0, 0, .5);
   box-shadow: inset 0 0 5rem rgba(0, 0, 0, .5);
+  padding: 0;
+  background: #0A2463;
+  height: 100%;  width: 100%;
+  position: fixed;
+}
+
+.lead{
+  font-weight: 500;
 }
 
 .cover-container {
   max-width: 42em;
 }
 
-
 /*
  * Header
  */
+
+header{
+  z-index: 10;
+  font-weight: 750;
+}
 
 .nav-masthead .nav-link {
   padding: .25rem 0;
@@ -51,18 +65,28 @@ body {
   border-bottom-color: #fff;
 }
 
+main {
+  position: relative;
+  z-index: 100;
+}
+
+h1 {
+  font-weight: 900;
+}
+
+h3 {
+  font-weight: 700;
+
+}
+
+.hidden{
+  visibility: hidden;
+}
 /*
  * blob
 
  https://codepen.io/LA_water/pen/rNaYZBb
  */
-
-@import url('https://fonts.googleapis.com/css?family=Playfair+Display:400,900');
-
-body {
-    padding: 0;
-    background: #0A2463;
-}
 
 .shape-blob {
 	background:#ED1250;
@@ -73,7 +97,8 @@ body {
 		transform 20s ease-in-out infinite both alternate,
 		movement_one 40s ease-in-out infinite both;
 	opacity:.7;
-	position: absolute;
+  position: fixed;
+  z-index: -10;
 	left: 70%;
     top: 50%;
 }
@@ -82,9 +107,11 @@ body {
 	height: 500px;
 	width: 500px;
 	left: -200px;
-	top: -150px;
+  top: -150px;
+  z-index: -100;
+  position: fixed;
 	transform: rotate(-180deg);
-    animation: transform 30s ease-in-out infinite both alternate, movement_two 60s ease-in-out infinite both;
+    animation: transform 30s ease-in-out infinite both alternate, movement_two 45ss ease-in-out infinite both;
 }
 
 .shape-blob.two{
@@ -93,7 +120,7 @@ body {
 	left: 500px;
 	top: -150px;
 	transform: rotate(-180deg);
-    animation: transform 30s ease-in-out infinite both alternate, movement_two 60s ease-in-out infinite both;
+    animation: transform 30s ease-in-out infinite both alternate, movement_two 45s ease-in-out infinite both;
 }
 
 .shape-blob.three{
@@ -102,7 +129,7 @@ body {
 	left: 290px;
 	top: 450px;
 	transform: rotate(180deg);
-    animation: transform 30s ease-in-out infinite both alternate, movement_two 60s ease-in-out infinite both;
+    animation: transform 30s ease-in-out infinite both alternate, movement_two 45s ease-in-out infinite both;
 }
 
 @keyframes transform
