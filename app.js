@@ -8,6 +8,8 @@
 const express = require('express');
 const app = express();
 const port = 3000;
+const open = require('open');
+var path = require('path');
 
 app.use(express.json()); // support json encoded bodies
 app.use(express.urlencoded({ extended: true })); // incoming objects are strings or arrays
@@ -31,7 +33,7 @@ async function createServer() {
     app.get('/song/subgenre/:playlist_subgenre', song.get_song_by_subgenre);
     app.post('/song', song.add);
     app.delete('/song/:track_id', song.delete_song);
-    
+
     // start the server
     server = app.listen(port, () => {
       console.log('Example app listening at http://localhost:%d', port);
