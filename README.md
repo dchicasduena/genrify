@@ -46,9 +46,9 @@ to import the list of songs in the .csv file you need to run the command `node i
 
 ## usage
 
-as of `version 0.0.1`
+as of `version 0.0.2`
 
-to connect the application to the db we created run the command `node app.js`, then open a new terminal window (inside the same folder) and run the command `node random.js`.
+run the command `npm start`
 
 this will show some questions in the terminal, make sure to answer them correctly.
 
