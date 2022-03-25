@@ -26,6 +26,8 @@ async function createServer() {
     // mongo to connect
     await mongo.connectToDB();
 
+    app.use(express.static(__dirname + '/view'));
+
     // contacts resource paths
     app.get('/song', song.list_all);
     app.get('/song/:track_id', song.get_song);
@@ -43,6 +45,7 @@ async function createServer() {
   }
 }
 createServer();
+open('http://localhost:3000'); // used to open auth page when ran
 
 // I created this callback function to capture
 // when for when we kill the server. 
