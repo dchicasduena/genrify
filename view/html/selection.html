@@ -17,6 +17,14 @@
   <meta name="generator" content="Hugo 0.84.0">
   <title>playlist generator</title>
 
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.1.3/socket.io.js"
+    integrity="sha512-2RDFHqfLZW8IhPRvQYmK9bTLfj/hddxGXQAred2wNZGkrKQkLGj8RCkXfRJPHlDerdHHIzTFaahq4s/P4V6Qig=="
+    crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+
   <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/cover/">
   <script src="https://kit.fontawesome.com/1dcf539929.js" crossorigin="anonymous"></script>
   <link href="../css/bootstrap.min.css" rel="stylesheet"> <!-- Bootstrap core CSS -->
@@ -30,7 +38,10 @@
     <header class="mb-auto">
       <div>
         <h3>Random Playlist Generator</h3>
-        <a href="../../index.html">go back</a>
+        <p class="lead">
+          <a href="../../index.html" class="btn btn-lg btn-secondary fw-bold border-white bg-white"> Go back</a>
+          <a class="btn btn-lg btn-secondary fw-bold border-white bg-white" id="btn-create">Create Playlist</a>
+        </p>
       </div>
     </header>
 
@@ -40,7 +51,7 @@
   </div>
 </body>
 
-<footer class="footer">
+<footer class=" footer">
   &copy; 2022&nbsp; <span class="separator">|</span> <a>Project</a>
   <a href="https://github.com/dchicasduena/playlist-generator" target="_blank">
     <i class="fab fa-github"></i></a>
