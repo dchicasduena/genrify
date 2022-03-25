@@ -100,6 +100,40 @@ h3 {
   border-radius: 5%;
 }
 
+/* FOOTER */
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 100%;
+  padding: 5px;
+  font-size: 20px;
+}
+
+html {
+  /* footer support */
+  position: relative;
+  min-height: 100%;
+}
+
+.fa-github {
+  color: #ffffff;
+  font-size: 24px;
+  transition: transform 0.4s ease-in-out;
+}
+
+.fa-github:hover {
+  transform: rotate(360deg) scale(1.2);
+}
+
+#update {
+  transform: scale(0);
+}
+
 /*
  * blob
  https://codepen.io/LA_water/pen/rNaYZBb
