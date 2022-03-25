@@ -19,15 +19,17 @@
     "open": "^8.4.0",
     "querystring": "~0.2.0",
     "request": "~2.83.0",
-    "spotify-web-api-node": "^5.0.2"
+    "spotify-web-api-node": "^5.0.2",
+    "wait-on": "^6.0.1"
   },
   "scripts": {
-    "start": "node app.js",
-    "random": "node random.js",
-    "test1": "npm run start && npm run random",
+    "app": "node app.js",
+    "random": "wait-on app.js && node random.js",
+    "start": "concurrently \"npm run app\" \"npm run random\"",
     "test": "mocha --timeout 10000 --exit"
   },
   "devDependencies": {
+    "concurrently": "^7.0.0",
     "mocha": "^9.2.1"
   }
 }

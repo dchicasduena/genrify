@@ -30,9 +30,7 @@ async function _get_playlist_collection() {
     return await db.collection('user_playlist');
 };
 
-getData();
-
-async function getData() {
+module.exports.getData = async (req, res) => {
     const songs = await instance.get('/song'); // get all songs from server
     this.songs = songs.data;
 
@@ -50,6 +48,9 @@ async function getData() {
                 genreList.push(song.playlist_genre[i])
             }
         }
+
+        res.send({data: genreList});
+
         // add subgenre to subGenreList
         for (let i in song.playlist_subgenre) {
             if (!subGenreList.includes(song.playlist_subgenre[i])) {
@@ -57,7 +58,7 @@ async function getData() {
             }
         }
     }
-    await getUserGenre();
+    //await getUserGenre();
 }
 
 // get favorite genre of user
