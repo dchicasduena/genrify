@@ -9,6 +9,11 @@
 .btn-secondary:focus {
   color: #000000;
   text-shadow: none; /* Prevent inheritance from `body` */
+  transition: transform 0.2s ease-in-out;
+}
+
+.btn-secondary:hover {
+  transform: scale(1.1);
 }
 
 /*
@@ -99,12 +104,18 @@ h3 {
   border-radius: 5%;
 }
 
+/* Back Button */
+
 .backB {
   position: fixed;
   left: 3%;
   top: 5%;
   color: #ffffff;
-  transition: transform 0.4s ease-in-out;
+  transition: transform 0.2s ease-in-out;
+}
+
+.backB:hover {
+  transform: scale(1.1);
 }
 
 /* FOOTER */
