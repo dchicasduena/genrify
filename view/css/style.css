@@ -74,7 +74,6 @@ h1 {
 
 h3 {
   font-weight: 700;
-
 }
 
 .hidden{
@@ -98,6 +97,14 @@ h3 {
   color: #000000; 
   padding: 5%;
   border-radius: 5%;
+}
+
+.backB {
+  position: fixed;
+  left: 3%;
+  top: 5%;
+  color: #ffffff;
+  transition: transform 0.4s ease-in-out;
 }
 
 /* FOOTER */
