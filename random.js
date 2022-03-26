@@ -16,7 +16,7 @@ var userSubgenre = []; // list of user subgenres
 
 
 const axios = require('axios')
-var myurl = 'http://localhost:3000';
+var myurl = 'http://localhost:5500';
 
 // Let's configure the base url
 const instance = axios.create({
@@ -49,8 +49,6 @@ module.exports.getData = async (req, res) => {
             }
         }
 
-        res.send({data: genreList});
-
         // add subgenre to subGenreList
         for (let i in song.playlist_subgenre) {
             if (!subGenreList.includes(song.playlist_subgenre[i])) {
@@ -58,7 +56,7 @@ module.exports.getData = async (req, res) => {
             }
         }
     }
-    //await getUserGenre();
+    res.send(genreList);
 }
 
 // get favorite genre of user

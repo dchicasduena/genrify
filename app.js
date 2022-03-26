@@ -7,14 +7,15 @@
 
 const express = require('express');
 const app = express();
-const port = 3000;
+const port = 5500;
 const open = require('open');
 var path = require('path');
 
 app.use(express.json()); // support json encoded bodies
 app.use(express.urlencoded({ extended: true })); // incoming objects are strings or arrays
 
-const song = require('./controller/main'); // Here we import our code with the contacts operations
+const song = require('./controller/main'); 
+const random = require('./random'); 
 const mongo = require('./utils/db.js');
 
 var server;
@@ -36,6 +37,9 @@ async function createServer() {
     app.post('/song', song.add);
     app.delete('/song/:track_id', song.delete_song);
 
+    app.get('/random', random.getData);
+
+
     // start the server
     server = app.listen(port, () => {
       console.log('Example app listening at http://localhost:%d', port);
@@ -45,7 +49,7 @@ async function createServer() {
   }
 }
 createServer();
-open('http://localhost:3000'); // used to open auth page when ran
+open('http://localhost:5500'); // used to open auth page when ran
 
 // I created this callback function to capture
 // when for when we kill the server. 

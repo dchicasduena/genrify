@@ -5,24 +5,21 @@
 * @year 2022 
 */
 
-$(document).jQuery(function () {
+$(document).ready(function(){
     /**
      * This function binds an event to the start button.
      */
 
-    $("#btn-add").on(function (event) { // shows form
+    $("#btn-add").click(function(event) { // shows form
         event.preventDefault();
         // Here we query the server-side
         $.ajax({
-            url: '/song/',
+            url: '/random',
             type: 'GET',
             contentType: 'application/json',
             success: function (response) {
                 console.log(JSON.stringify(response));
                 // add genres to checkbox
-                for (let i = 0; i < genreList.length; i++) {
-                    addCheckbox(genreList[i]);
-                }
             },
             // If there's an error, we can use the alert box to make sure we understand the problem
             error: function (xhr, status, error) {
