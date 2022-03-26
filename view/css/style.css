@@ -26,7 +26,8 @@ body {
   padding: 0;
   background: #0A2463;
   height: 100%;  width: 100%;
-  position: fixed;
+  position: auto;
+
 }
 
 .lead{
@@ -69,7 +70,7 @@ header{
 }
 
 main {
-  position: relative;
+  position: auto;
   z-index: 100;
 }
 
@@ -118,6 +119,11 @@ h3 {
   transform: scale(1.1);
 }
 
+.btnGenre {
+  margin: 1%;
+}
+
+
 /* FOOTER */
 
 .footer {
@@ -150,6 +156,30 @@ html {
 
 #update {
   transform: scale(0);
+}
+
+.btn-Done {
+  background:#ED1250;
+  border-color: #ED1250;
+  color: #ffffff;
+  margin: 2%;
+}
+
+.btn-Done:hover{  
+  background:#ED1250;
+  border-color: #ED1250;
+  color: #ffffff;
+  margin: 2%;
+  transform: scale(1.1);
+}
+
+.loading {
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /*

@@ -10,16 +10,31 @@ $(document).ready(function(){
      * This function binds an event to the start button.
      */
 
-    $("#btn-add").click(function(event) { // shows form
-        event.preventDefault();
-        // Here we query the server-side
+    $(function(){ 
         $.ajax({
             url: '/random',
             type: 'GET',
             contentType: 'application/json',
             success: function (response) {
+                $("#cblist").empty();
                 console.log(JSON.stringify(response));
-                // add genres to checkbox
+                for (let i = 0; i < response.length; i++){
+                    $('#cblist').append(
+                        $(document.createElement('button')).prop({
+                            type: 'button',
+                            innerHTML: response[i],
+                            class: 'btnGenre btn btn-secondary fw-bold border-white bg-white'
+                        })
+                    );          
+                };
+
+                $('#cblist').append(
+                    $(document.createElement('button')).prop({
+                        type: 'button',
+                        innerHTML: 'Done',
+                        class: "btn btn-lg btn-secondary fw-bold btn-Done"
+                    })
+                );
             },
             // If there's an error, we can use the alert box to make sure we understand the problem
             error: function (xhr, status, error) {
