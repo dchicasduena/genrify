@@ -38,6 +38,7 @@ async function createServer() {
     app.delete('/song/:track_id', song.delete_song);
 
     app.get('/random', random.getData);
+    app.get('/random/:genre', random.getSubGenre);
 
 
     // start the server

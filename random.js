@@ -59,6 +59,24 @@ module.exports.getData = async (req, res) => {
     res.send(genreList);
 }
 
+// Return subgenres of user genres
+module.exports.getSubGenre = async (req, res) => {
+    let genre = req.params.genre;
+    let genreList = genre.split(',');
+    let songs = await instance.get('/song');
+    console.log(genreList);
+    let list = [];
+    for (let i = 0; i < genreList.length; i++) {
+        // console.log('genre: ' + genreList[i]);
+        let subGenre = getSubGenre(genreList[i], songs.data);
+        console.log(subGenre);
+        for (let j = 0; j < subGenre.length; j++) {
+            list.push(subGenre[j]);
+        }
+    }
+    res.send(list);
+}
+
 // get favorite genre of user
 async function getUserGenre() {
     const readline = require("readline");
@@ -176,10 +194,10 @@ async function createPlaylist(num) {
 }
 
 // get all subgenres of a genre
-function getSubGenre(genre) {
+function getSubGenre(genre, songs) {
     let subGenre = [];
-    for (let i = 0; i < this.songs.length; i++) {
-        let song = this.songs[i];
+    for (let i = 0; i < songs.length; i++) {
+        let song = songs[i];
         for (let a in song.playlist_genre) {
             for (let b in song.playlist_subgenre) {
                 if (song.playlist_genre[a] == genre && (!subGenre.includes(song.playlist_subgenre[b]))) {
