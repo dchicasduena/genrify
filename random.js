@@ -61,20 +61,41 @@ module.exports.getData = async (req, res) => {
 
 // Return subgenres of user genres
 module.exports.getSubGenre = async (req, res) => {
-    let genre = req.params.genre;
-    let genreList = genre.split(',');
+    let genre = req.params.genre.split(',');
     let songs = await instance.get('/song');
-    console.log(genreList);
     let list = [];
-    for (let i = 0; i < genreList.length; i++) {
-        // console.log('genre: ' + genreList[i]);
-        let subGenre = getSubGenre(genreList[i], songs.data);
-        console.log(subGenre);
+    for (let i = 0; i < genre.length; i++) {
+        console.log('genre: ' + genre[i]);
+        let subGenre = getSubGenre(genre[i], songs.data);
         for (let j = 0; j < subGenre.length; j++) {
             list.push(subGenre[j]);
         }
     }
     res.send(list);
+}
+
+// create recommended playlist for user
+module.exports.createPlaylist = async (req, res) => {
+    let num = req.params.num;
+    let userSubgenre = req.params.subgenre.split(',');
+    let playlist = [];
+
+    console.log('user playlist created:')
+    for (let i = 0; i < num; i++) {
+        let rand = Math.floor(Math.random() * userSubgenre.length);
+        let song = await recommendSong(userSubgenre[rand]); //this needs to be fixed
+        playlist.push(song)
+    }
+    console.log(playlist)
+    let collection = await _get_playlist_collection();
+    for (let i = 0; i < playlist.length; i++) {
+        await collection.insertOne({
+            track_id: playlist[i].track_id,
+            playlist_genre: playlist[i].playlist_genre,
+            playlist_subgenre: playlist[i].playlist_subgenre
+        });
+    }
+    res.send('playlist created');
 }
 
 // get favorite genre of user
@@ -169,28 +190,6 @@ async function getUserGenre() {
     }
 
     createPlaylist(ans);
-}
-
-// create recommended playlist for user
-async function createPlaylist(num) {
-    let playlist = [];
-
-    console.log('user playlist created:')
-    for (let i = 0; i < num; i++) {
-        let rand = Math.floor(Math.random() * userSubgenre.length);
-        let song = await recommendSong(userSubgenre[rand]); //this needs to be fixed
-        playlist.push(song)
-    }
-    console.log(playlist)
-    let collection = await _get_playlist_collection();
-    for (let i = 0; i < playlist.length; i++) {
-        await collection.insertOne({
-            track_id: playlist[i].track_id,
-            playlist_genre: playlist[i].playlist_genre,
-            playlist_subgenre: playlist[i].playlist_subgenre
-        });
-    }
-    console.log(await client.closeDBConnection());
 }
 
 // get all subgenres of a genre
