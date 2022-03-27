@@ -62,14 +62,18 @@ module.exports.getData = async (req, res) => {
 // Return subgenres of user genres
 module.exports.getSubGenre = async (req, res) => {
     let genre = req.params.genre.split(',');
+    console.log(genre.length);
     let songs = await instance.get('/song');
     let list = [];
+    let sublist = [];
     for (let i = 0; i < genre.length; i++) {
         console.log('genre: ' + genre[i]);
         let subGenre = getSubGenre(genre[i], songs.data);
         for (let j = 0; j < subGenre.length; j++) {
-            list.push(subGenre[j]);
+            sublist.push(subGenre[j]);
         }
+        list.push(sublist);
+        sublist = [];
     }
     res.send(list);
 }

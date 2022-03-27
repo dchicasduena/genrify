@@ -23,7 +23,7 @@ $(document).ready(function () {
             contentType: 'application/json',
             success: function (response) {
                 $("#cblist").empty();
-                console.log(JSON.stringify(response));
+
                 // Display genres
                 for (let i = 0; i < response.length; i++) {
                     $('#cblist').append(
@@ -81,17 +81,20 @@ $(document).ready(function () {
                     //dataType: "json",
                     contentType: 'application/json',
                     success: function (response) {
-                        // console.log(JSON.stringify(response));
                         $("#cblist").empty();
-                        $('#instruction').text('Choose the subgenres for your playlist!');
+                        $('#instruction').text('Choose the subgenres for your playlist!'); // <-
                         for (let i = 0; i < response.length; i++) {
-                            $('#cblist').append(
-                                $(document.createElement('button')).prop({
-                                    type: 'button',
-                                    innerHTML: response[i],
-                                    class: 'btnGenre btn btn-secondary fw-bold border-white bg-white'
-                                })
-                            );
+                            let curSubgenre = response[i].length;
+                            for (let j = 0; i < response[i].length; i++) {
+                                $('#cblist').append($("<h3>").text(userGenre[i] + " subgenres"));
+                                $('#cblist').append(
+                                    $(document.createElement('button')).prop({
+                                        type: 'button',
+                                        innerHTML: response[j],
+                                        class: 'btnGenre btn btn-secondary fw-bold border-white bg-white'
+                                    })
+                                );
+                            }
                         };
                     },
                     // If there's an error, we can use the alert box to make sure we understand the problem
@@ -150,9 +153,9 @@ $(document).ready(function () {
         }
     });
 
-    $('#numSongs').slider({ // not working rn
-        slide: function (event, ui) {
-            $('#num').text(ui.value);
-        }
-    });
+    //$('#numSongs').slider({ // not working rn
+        //slide: function (event, ui) {
+            //$('#num').text(ui.value);
+        //}
+    //});
 });
