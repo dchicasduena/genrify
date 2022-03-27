@@ -5,12 +5,12 @@
 * @year 2022 
 */
 
-$(document).ready(function(){
+$(document).ready(function () {
     /**
      * This function binds an event to the start button.
      */
 
-    $(function(){ 
+    $(function () {
         $.ajax({
             url: '/random',
             type: 'GET',
@@ -18,17 +18,17 @@ $(document).ready(function(){
             success: function (response) {
                 $("#cblist").empty();
                 console.log(JSON.stringify(response));
-                for (let i = 0; i < response.length; i++){
+                for (let i = 0; i < response.length; i++) {
                     $('#cblist').append(
                         $(document.createElement('button')).prop({
                             type: 'button',
                             innerHTML: response[i],
                             class: 'btnGenre btn btn-secondary fw-bold border-white bg-white'
                         })
-                    );          
+                    );
                 };
 
-                $('#cblist').append(
+                $('#submit').append(
                     $(document.createElement('button')).prop({
                         type: 'button',
                         innerHTML: 'Done',
@@ -43,14 +43,20 @@ $(document).ready(function(){
             }
         });
     });
-});
 
-// Add checkbox     
-function addCheckbox(name) {
-    var container = $('#cblist');
-    var inputs = container.find('input');
-    var id = inputs.length+1;
- 
-    $('<input />', { type: 'checkbox', id: 'cb'+id, value: name }).appendTo(container);
-    $('<label />', { 'for': 'cb'+id, text: name }).appendTo(container);
-}
+    $('#cblist').on('click', function (e) {
+        e.preventDefault();
+        var btn = $(e.target);
+        btn.toggleClass('btn-selected');
+        btn.toggleClass('bg-white');
+    });
+
+    $('#submit').on('click', function (e) {
+        e.preventDefault();
+        var selected = [];
+        $('#cblist').find('.btn-selected').each(function () {
+            selected.push($(this).text());
+        });
+        console.log(selected);
+    });
+});

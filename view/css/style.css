@@ -7,13 +7,19 @@
 .btn-secondary,
 .btn-secondary:hover,
 .btn-secondary:focus {
-  color: #000000;
+  color: #0A2463;
   text-shadow: none; /* Prevent inheritance from `body` */
   transition: transform 0.2s ease-in-out;
 }
 
 .btn-secondary:hover {
   transform: scale(1.1);
+}
+
+/* Button selected */
+.btn-selected {
+  background-color: #b4b4b4;
+  border: #b4b4b4;
 }
 
 /*
@@ -26,6 +32,7 @@ body {
   padding: 0;
   background: #0A2463;
   height: 100%;  width: 100%;
+  min-height: 100vh;
   position: auto;
 
 }
@@ -38,9 +45,7 @@ body {
   max-width: 42em;
 }
 
-/*
- * Header
- */
+/* HEADER */
 
 header{
   z-index: 10;
@@ -68,6 +73,8 @@ header{
   color: #fff;
   border-bottom-color: #fff;
 }
+
+/* BODY */
 
 main {
   position: auto;
@@ -105,10 +112,14 @@ h3 {
   border-radius: 5%;
 }
 
+#submit{
+  padding-bottom: 15px;
+}
+
 /* Back Button */
 
 .backB {
-  position: fixed;
+  position: absolute;
   left: 3%;
   top: 5%;
   color: #ffffff;
@@ -122,7 +133,6 @@ h3 {
 .btnGenre {
   margin: 1%;
 }
-
 
 /* FOOTER */
 
