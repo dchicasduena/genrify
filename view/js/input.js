@@ -70,8 +70,8 @@ $(document).ready(function () {
                 userGenre.push($(this).text()); // add selected genres to userGenre
             });
             // Alert user if too few genres are selected
-            if (userGenre.length < 3) {
-                alert('Please select at least 3 genres.');
+            if (userGenre.length < 1) {
+                alert('Please select a genres.');
             } else {
                 this.id = "submitSubgenre";
                 $.ajax({
@@ -112,8 +112,8 @@ $(document).ready(function () {
                 userSubgenre.push($(this).text()); // add selected genres to userGenre
             });
             // Alert user if too few genres are selected
-            if (userSubgenre.length < 3) {
-                alert('Please select at least 3 subgenres.');
+            if (userSubgenre.length < 1) {
+                alert('Please select a subgenres.');
             } else {
                 this.id = "createPlaylist";
                 $("#cblist").empty();
