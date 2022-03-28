@@ -84,13 +84,14 @@ $(document).ready(function () {
                         $("#cblist").empty();
                         $('#instruction').text('Choose the subgenres for your playlist!'); // <-
                         for (let i = 0; i < response.length; i++) {
-                            let curSubgenre = response[i].length;
-                            for (let j = 0; i < response[i].length; i++) {
-                                $('#cblist').append($("<h3>").text(userGenre[i] + " subgenres"));
+                            let curSubgenre = response[i]
+                            console.log(curSubgenre)
+                            $('#cblist').append($("<h3>").text(userGenre[i] + " subgenres"));
+                            for (let j = 0; j < curSubgenre.length; j++) {
                                 $('#cblist').append(
                                     $(document.createElement('button')).prop({
                                         type: 'button',
-                                        innerHTML: response[j],
+                                        innerHTML: curSubgenre[j],
                                         class: 'btnGenre btn btn-secondary fw-bold border-white bg-white'
                                     })
                                 );
