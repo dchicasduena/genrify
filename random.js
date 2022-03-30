@@ -27,6 +27,7 @@ const instance = axios.create({
 async function _get_playlist_collection() {
     await client.connectToDB();
     let db = await client.getDb();
+    await db.collection('user_playlist').deleteMany({}); // reset the collection
     return await db.collection('user_playlist');
 };
 
@@ -83,12 +84,24 @@ module.exports.createPlaylist = async (req, res) => {
     let num = req.params.num;
     let userSubgenre = req.params.subgenre.split(',');
     let playlist = [];
+    let count = 0; // avoid infinite loop
 
     console.log('user playlist created:')
-    for (let i = 0; i < num; i++) {
+    while (playlist.length < num && count < 100) {
         let rand = Math.floor(Math.random() * userSubgenre.length);
-        let song = await recommendSong(userSubgenre[rand]); //this needs to be fixed
-        playlist.push(song)
+        let song = await recommendSong(userSubgenre[rand]);
+        let flag = false;
+        for (let i in playlist) {
+            if (playlist[i].track_id == song.track_id) { // if the song is already in the playlist
+                console.log('Song is already in playlist.');
+                count++;
+                flag = true;
+                break;
+            }
+        }
+        if (!flag) { // add song to playlist
+            playlist.push(song)
+        }
     }
     console.log(playlist)
     let collection = await _get_playlist_collection();
