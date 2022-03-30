@@ -14,6 +14,10 @@ $(document).ready(function () {
             contentType: 'application/json',
             success: function (response) { // not returning a response rn, but playlist is imported to mongo
                 console.log(response);
+                for (i = 0; i > response.length; i++){
+                    let song = response[i]['track_name'] + ' - ' + response[i].artist;
+                    $('#playlist').append(song);
+                };
             },
             // If there's an error, we can use the alert box to make sure we understand the problem
             error: function (xhr, status, error) {

@@ -13,7 +13,8 @@ var genreList = []; // list of all genres
 var subGenreList = []; // list of all subgenres
 var userGenre = []; // list of user genres
 var userSubgenre = []; // list of user subgenres
-
+var userPlaylist = [];
+var playlistLength = '';
 
 const axios = require('axios');
 const { json } = require('express');
@@ -110,9 +111,11 @@ module.exports.createPlaylist = async (req, res) => {
             playlist.push(song)
         }
     }
+    userPlaylist = playlist;
     console.log(playlist)
 
     let collection = await _get_playlist_collection();
+    playlistLength = playlist.length;
     for (let i = 0; i < playlist.length; i++) {
         await collection.insertOne({
             track_id: playlist[i].track_id,
@@ -127,17 +130,16 @@ module.exports.getPlaylist = async (req, res) => {
     let collection = await _get_playlist_collection();
     let length = collection.count();
     console.log(length);
-    for (let i = 0; i < playlist.length; i++) {
+    for (let i = 0; i < playlistLength; i++) {
         await collection.find({
-            track_id: playlist[i].track_id,
-            playlist_genre: playlist[i].playlist_genre,
-            playlist_subgenre: playlist[i].playlist_subgenre
+            track_id: userPlaylist[i].track_id,
+            playlist_genre: userPlaylist[i].playlist_genre,
+            playlist_subgenre: userPlaylist[i].playlist_subgenre
         });
     }
     console.log('reaching');
-    res.send(playlist);
+    res.send(userPlaylist);
     let del = await _del_playlist_collection();
-
 }
 
 // get favorite genre of user
