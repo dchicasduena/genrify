@@ -46,6 +46,8 @@ async function createServer() {
     app.get('/random', random.getData);
     app.get('/random/genre/:genre', random.getSubGenre);
     app.get('/random/playlist/:num/:subgenre', random.createPlaylist);
+    app.get('/random/playlist', random.getPlaylist);
+
     // auth modules
     app.get('/login', auth.login);
     app.get('/callback', auth.callback);

@@ -15,7 +15,8 @@ var userGenre = []; // list of user genres
 var userSubgenre = []; // list of user subgenres
 
 
-const axios = require('axios')
+const axios = require('axios');
+const { json } = require('express');
 var myurl = 'http://localhost:5500';
 
 // Let's configure the base url
@@ -25,6 +26,12 @@ const instance = axios.create({
 });
 
 async function _get_playlist_collection() {
+    await client.connectToDB();
+    let db = await client.getDb();
+    return await db.collection('user_playlist');
+};
+
+async function _del_playlist_collection() {
     await client.connectToDB();
     let db = await client.getDb();
     await db.collection('user_playlist').deleteMany({}); // reset the collection
@@ -104,6 +111,7 @@ module.exports.createPlaylist = async (req, res) => {
         }
     }
     console.log(playlist)
+
     let collection = await _get_playlist_collection();
     for (let i = 0; i < playlist.length; i++) {
         await collection.insertOne({
@@ -113,6 +121,23 @@ module.exports.createPlaylist = async (req, res) => {
         });
     }
     res.send('playlist created');
+}
+
+module.exports.getPlaylist = async (req, res) => {
+    let collection = await _get_playlist_collection();
+    let length = collection.count();
+    console.log(length);
+    for (let i = 0; i < playlist.length; i++) {
+        await collection.find({
+            track_id: playlist[i].track_id,
+            playlist_genre: playlist[i].playlist_genre,
+            playlist_subgenre: playlist[i].playlist_subgenre
+        });
+    }
+    console.log('reaching');
+    res.send(playlist);
+    let del = await _del_playlist_collection();
+
 }
 
 // get favorite genre of user
