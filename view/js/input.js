@@ -134,10 +134,11 @@ $(document).ready(function () {
         } else if (this.id == 'createPlaylist') { // if submit button is clicked for creating playlist
             let num = $('#numSongs').val();
             console.log(num);
-            $('#instruction').text('Your playlist is ready!');
-            $("#cblist").remove();
-            $('.submit').remove();
-            $('#num').remove();
+            // $('#instruction').text('Your playlist is ready!');
+            // $("#cblist").remove();
+            // $('.submit').remove();
+            // $('#num').remove();
+            window.location.href = './auth.html'
             $.ajax({
                 url: '/random/playlist/' + num + '/' + userSubgenre,
                 type: 'GET',

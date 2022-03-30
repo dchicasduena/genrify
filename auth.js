@@ -7,22 +7,18 @@
 
 var express = require('express'); // Express web server framework
 var request = require('request'); // "Request" library
-var cors = require('cors');
 var querystring = require('querystring');
-var cookieParser = require('cookie-parser');
-const open = require('open');
 
 // use .env file to load id and secret
 const dotenv = require('dotenv');
 const { apps } = require('open');
-dotenv.config({ path: '../../.env'});
+dotenv.config({ path: './.env'});
 
 var client_id = process.env.CLIENT_ID; // Your client id
 var client_secret = process.env.CLIENT_SECRET; // Your secret
-var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
+var redirect_uri = 'http://localhost:5500/callback'; // Your redirect uri
 
 const client = require('./utils/db.js');
-const db = require('./utils/db.js');
 
 /**
  * Generates a random string containing numbers and letters
@@ -40,13 +36,7 @@ var generateRandomString = function (length) {
 };
 
 var stateKey = 'spotify_auth_state';
-var app = express();
-
-app.use(express.static(__dirname + '/public'))
-  .use(cors())
-  .use(cookieParser());
-
-app.get('/login', function (req, res) {
+module.exports.login = async (req, res) => {
 
   var state = generateRandomString(16);
   res.cookie(stateKey, state);
@@ -61,10 +51,10 @@ app.get('/login', function (req, res) {
       redirect_uri: redirect_uri,
       state: state
     }));
-});
+};
 
 // callback that manages the authentication, provided by Spotify API
-app.get('/callback', function (req, res) {
+module.exports.callback = async (req, res) => {
 
   var code = req.query.code || null;
   var state = req.query.state || null;
@@ -123,9 +113,9 @@ app.get('/callback', function (req, res) {
       }
     });
   }
-});
+};
 
-app.get('/refresh_token', function (req, res) {
+module.exports.refresh_token = async (req, res) => {
 
   // requesting access token from refresh token
   var refresh_token = req.query.refresh_token;
@@ -147,18 +137,7 @@ app.get('/refresh_token', function (req, res) {
       });
     }
   });
-});
-
-
-// moved create playlist inside the callback so no need for this function
-function getUserID(userID) {
-  return new Promise(function (resolve, reject) {
-    var id = userID;
-    console.log('hello from inside getuserid function')
-    resolve(id);
-  }, (error) => { reject(error) }
-  )
-}
+};
 
 // creates a playlist with the information the usr gave
 // in random.js

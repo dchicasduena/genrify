@@ -19,7 +19,7 @@ dotenv.config({ path: './../.env' });
 
 var client_id = process.env.CLIENT_ID; // Your client id
 var client_secret = process.env.CLIENT_SECRET; // Your secret
-var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
+var redirect_uri = 'http://localhost:5500/callback'; // Your redirect uri
 
 const client = require('../utils/db.js');
 const db = require('../utils/db.js');
@@ -226,6 +226,6 @@ async function _remove_playlist_collection() {
   console.log(await client.closeDBConnection());
 };
 
-console.log('Listening on 8888');
-app.listen(8888);
-open('http://localhost:8888'); // used to open auth page when ran
+console.log('Listening on 5500');
+app.listen(5500);
+open('http://localhost:5500'); // used to open auth page when ran
