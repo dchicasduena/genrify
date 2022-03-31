@@ -62,7 +62,7 @@ async function createServer() {
   }
 }
 createServer();
-open('http://localhost:5500'); // used to open auth page when ran
+open('http://localhost:5500/html/auth.html'); // used to open auth page when ran
 
 // I created this callback function to capture
 // when for when we kill the server. 

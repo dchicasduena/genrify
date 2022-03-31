@@ -19,6 +19,7 @@ var client_secret = process.env.CLIENT_SECRET; // Your secret
 var redirect_uri = 'http://localhost:5500/callback'; // Your redirect uri
 
 const client = require('./utils/db.js');
+const { response } = require('express');
 
 /**
  * Generates a random string containing numbers and letters
@@ -97,6 +98,7 @@ module.exports.callback = async (req, res) => {
           console.log('user information: ')
           console.log(body);
           create_playlist(access_token, body.id); // create playlist
+          get_playlist_url(access_token,body.id);
 
           // we can also pass the token to the browser to make requests from there
           res.redirect('/#' +
@@ -139,6 +141,23 @@ module.exports.refresh_token = async (req, res) => {
   });
 };
 
+async function get_playlist_url(access_token, user_id) {
+  var options = {
+    url: 'https://api.spotify.com/v1/users/' + user_id + '/playlists', // create playlist for user
+    headers: {
+      'Authorization': 'Bearer ' + access_token,
+      'Content-Type': 'application/json',
+    }
+  }
+
+  // post request to spotify
+  request.get(options, (error, response, body) => {
+    console.log('playlist information: ')
+    var info = JSON.parse(body)
+    console.log(response)
+  })
+}
+
 // creates a playlist with the information the usr gave
 // in random.js
 async function create_playlist(access_token, user_id) {
@@ -157,7 +176,6 @@ async function create_playlist(access_token, user_id) {
   request.post(options, (error, response, body) => {
     console.log('playlist information: ')
     var info = JSON.parse(body)
-    console.log(info);
     console.log('Playlist created')
 
     // after creating playlist add the songs to the playlist
