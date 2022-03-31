@@ -36,10 +36,9 @@ async function importData() {
 async function arrangeData() {
   let string = "";
   count = 0;
-  var arrayToInsert = [];
   var collection = dbConn.collection('all');
   let objs = await collection.find({}).toArray();
-  for (let i = 0; i < objs.length; i++) {
+  for (let i = 74000; i < objs.length; i++) {
     let artist = objs[i].track_artist_id;
     let genre = await getArtistGenre(artist.substring(15));
     // if song has genre
@@ -61,8 +60,7 @@ async function arrangeData() {
         string = '';
       }
       string += JSON.stringify(song) + ',\n';
-      writeData('test' + count + '.json', string);
-      arrayToInsert.push(song);
+      writeData('data/test' + count + '.json', string);
     } else {
       console.log(objs[i])
       console.log(i + ': ' + objs[i].track_name + ' has no genre');
@@ -162,16 +160,6 @@ function writeData(filename, contents) {
   var writeFile = fs.createWriteStream(filename, { flag: 'w' }) // if program is ran again, delete and create new file
 
 }
-
-
-// This will avoid us to create many mongo connections
-// and use all our computer resources
-// process.on('SIGINT', async () => {
-//   console.info('SIGINT signal received.');
-//   console.log('Closing Mongo Client.');
-//   let msg = await client.close();
-//   console.log(msg);
-// });
 
 async function main() {
   ALL_GENRES = await getAllGenres();
