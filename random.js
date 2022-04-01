@@ -29,14 +29,7 @@ const instance = axios.create({
 async function _get_playlist_collection() {
     await client.connectToDB();
     let db = await client.getDb();
-    return await db.collection('user_playlist');
-};
-
-async function _del_playlist_collection() {
-    await client.connectToDB();
-    let db = await client.getDb();
-    await db.collection('user_playlist').deleteMany({}); // reset the collection
-    return await db.collection('user_playlist');
+    return await db.collection('user_playlist'); // return the collection
 };
 
 module.exports.getData = async (req, res) => {
@@ -92,11 +85,18 @@ module.exports.createPlaylist = async (req, res) => {
     let userSubgenre = req.params.subgenre.split(',');
     let playlist = [];
     let count = 0; // avoid infinite loop
+    let subGenreSongs = new Array(userSubgenre.length);
+
+    // get all songs of user subgenres
+    for (let i in userSubgenre) {
+        let subgenre = await instance.get('/song/subgenre/' + userSubgenre[i]);
+        subGenreSongs[i] = subgenre.data;
+    }
 
     console.log('user playlist created:')
     while (playlist.length < num && count < 100) {
         let rand = Math.floor(Math.random() * userSubgenre.length);
-        let song = await recommendSong(userSubgenre[rand]);
+        let song = await recommendSong(subGenreSongs[rand]); // get a random song from user subgenre
         let flag = false;
         for (let i in playlist) {
             if (playlist[i].track_id == song.track_id) { // if the song is already in the playlist
@@ -113,7 +113,9 @@ module.exports.createPlaylist = async (req, res) => {
     userPlaylist = playlist;
     console.log(playlist)
 
+    // add playlist to mongo
     let collection = await _get_playlist_collection();
+    await collection.deleteMany({}); // reset the collection before adding new playlist
     playlistLength = playlist.length;
     for (let i = 0; i < playlist.length; i++) {
         await collection.insertOne({
@@ -122,19 +124,18 @@ module.exports.createPlaylist = async (req, res) => {
             playlist_subgenre: playlist[i].playlist_subgenre
         });
     }
-    res.send(playlist);
+    res.send(playlist); // return playlist to client
 }
 
 module.exports.getPlaylistUrl = async (req, res) => {
-    let collection = await _get_playlist_collection();
+    let collection = await _get_playlist_collection(); // return the collection
     let url = await collection.find({ url: { $exists: true } }).toArray();
     console.log(url);
     res.send(url);
-    await collection.deleteMany({}); // delete playlist from mongo after its added 
 }
 
 module.exports.getPlaylist = async (req, res) => {
-    let collection = await _get_playlist_collection();
+    let collection = await _get_playlist_collection(); // return the collection
     let length = collection.count();
     console.log(length);
     for (let i = 0; i < playlistLength; i++) {
@@ -146,7 +147,6 @@ module.exports.getPlaylist = async (req, res) => {
     }
     console.log('reaching');
     res.send(userPlaylist);
-    let del = await _del_playlist_collection();
 }
 
 
@@ -168,7 +168,6 @@ function getSubGenre(genre, songs) {
 
 // recommend song by subgenre
 async function recommendSong(subgenre) {
-    let songs = await instance.get('/song/subgenre/' + subgenre);
-    let rand = Math.floor(Math.random() * songs.data.length);
-    return songs.data[rand]; // changed to return from print
+    let rand = Math.floor(Math.random() * subgenre.length);
+    return subgenre[rand]; // changed to return from print
 }

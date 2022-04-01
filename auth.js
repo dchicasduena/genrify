@@ -181,7 +181,7 @@ async function create_playlist(access_token, user_id, callback) {
 async function add_track(access_token, playlist_id, url) {
   let collection = await _get_playlist_collection(); // get playlist from mongo 
   await collection.insertOne({url: url, playlist_id: playlist_id}); // insert the url into mongo
-  let songObjs = await collection.find({}).toArray(); // turn it to an array
+  let songObjs = await collection.find({ track_id: { $exists: true } }).toArray(); // turn it to an array
   let tracks = []
 
   // add tracks to array
@@ -203,18 +203,11 @@ async function add_track(access_token, playlist_id, url) {
   request.post(options, (error, response, body) => {
     // console.log(body);
     console.log('Playlist added successfully.') // if successful
-    //_remove_playlist_collection();
   })
 }
 
 async function _get_playlist_collection() {
   await client.connectToDB();
   let db = await client.getDb();
-  return await db.collection('user_playlist');
-};
-
-async function _remove_playlist_collection() {
-  let db = await client.getDb();
-  await db.collection('user_playlist').deleteMany({}); // delete playlist from mongo after its added 
-  console.log(await client.closeDBConnection());
+  return await db.collection('user_playlist'); // return the collection
 };
