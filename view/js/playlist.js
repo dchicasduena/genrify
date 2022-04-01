@@ -21,7 +21,8 @@ $(document).ready(function () {
                         $(document.createElement('p5')).prop({
                             type: 'p5',
                             innerHTML: song + '<br>'
-                        }));
+                        })
+                    );
                 };
             },
             // If there's an error, we can use the alert box to make sure we understand the problem

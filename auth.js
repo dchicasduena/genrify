@@ -96,7 +96,7 @@ module.exports.callback = async (req, res) => {
         // use the access token to access the Spotify Web API
         request.get(options, function (error, response, body) {
           console.log('user information: ')
-          console.log(body);
+          //console.log(body);
           create_playlist(access_token, body.id); // create playlist
           get_playlist_url(access_token,body.id);
 
@@ -143,7 +143,7 @@ module.exports.refresh_token = async (req, res) => {
 
 async function get_playlist_url(access_token, user_id) {
   var options = {
-    url: 'https://api.spotify.com/v1/users/' + user_id + '/playlists', // create playlist for user
+    url: 'https://api.spotify.com/v1/users/' + user_id + '/playlists?offset=100000&limit=1', // get playlist
     headers: {
       'Authorization': 'Bearer ' + access_token,
       'Content-Type': 'application/json',
@@ -152,9 +152,9 @@ async function get_playlist_url(access_token, user_id) {
 
   // post request to spotify
   request.get(options, (error, response, body) => {
-    console.log('playlist information: ')
-    var info = JSON.parse(body)
-    console.log(response)
+    console.log('playlist link: ')
+    //var info = JSON.parse(response)
+    console.log(body)
   })
 }
 
