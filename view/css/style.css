@@ -192,6 +192,10 @@ html {
   100% { transform: rotate(360deg); }
 }
 
+.playlist {
+  text-align: left;
+}
+
 /*
  * blob
  https://codepen.io/LA_water/pen/rNaYZBb

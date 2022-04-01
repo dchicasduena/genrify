@@ -143,7 +143,7 @@ module.exports.refresh_token = async (req, res) => {
 
 async function get_playlist_url(access_token, user_id) {
   var options = {
-    url: 'https://api.spotify.com/v1/users/' + user_id + '/playlists?offset=100000&limit=1', // get playlist
+    url: 'https://api.spotify.com/v1/users/' + user_id + '/playlists?limit=1', // get playlist
     headers: {
       'Authorization': 'Bearer ' + access_token,
       'Content-Type': 'application/json',

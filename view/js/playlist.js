@@ -14,15 +14,11 @@ $(document).ready(function () {
             contentType: 'application/json',
             success: function (response) { // not returning a response rn, but playlist is imported to mongo
                 // console.log(response);
+                $('#playlist').empty();
                 for (i = 0; i < response.length; i++){
-                    let song = response[i].track_name + ' - ' + response[i].track_artist;
+                    let song = '<b>' + response[i].track_name + '</b> - ' + response[i].track_artist;
                     // console.log(song);
-                    $('#playlist').append(
-                        $(document.createElement('p5')).prop({
-                            type: 'p5',
-                            innerHTML: song + '<br>'
-                        })
-                    );
+                    $('#playlist').append('<p5 class="dispPlaylist"> ' + (song) + ' </p5><br>');
                 };
             },
             // If there's an error, we can use the alert box to make sure we understand the problem
