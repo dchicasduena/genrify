@@ -28,5 +28,23 @@ $(document).ready(function () {
             }
         });
     });
+
+    $('#add_spot').on('click', function (e) {
+        e.preventDefault();
+        window.location.href = '/login'
+        // $.ajax({
+        //     url: '/random/url',
+        //     type: 'GET',
+        //     contentType: 'application/json',
+        //     success: function (response) {
+        //         console.log('url: ' + response[0].url);
+        //     },
+        //     // If there's an error, we can use the alert box to make sure we understand the problem
+        //     error: function (xhr, status, error) {
+        //         var errorMessage = xhr.status + ': ' + xhr.statusText
+        //         alert('Error - ' + errorMessage);
+        //     }
+        // });
+    });
 });
   

@@ -12,7 +12,7 @@ var querystring = require('querystring');
 // use .env file to load id and secret
 const dotenv = require('dotenv');
 const { apps } = require('open');
-dotenv.config({ path: './.env'});
+dotenv.config({ path: './.env' });
 
 var client_id = process.env.CLIENT_ID; // Your client id
 var client_secret = process.env.CLIENT_SECRET; // Your secret
@@ -54,8 +54,7 @@ module.exports.login = async (req, res) => {
     }));
 };
 
-// callback that manages the authentication, provided by Spotify API
-module.exports.callback = async (req, res) => {
+async function test(req, res, callback) {
 
   var code = req.query.code || null;
   var state = req.query.state || null;
@@ -96,9 +95,9 @@ module.exports.callback = async (req, res) => {
         // use the access token to access the Spotify Web API
         request.get(options, function (error, response, body) {
           console.log('user information: ')
-          //console.log(body);
-          create_playlist(access_token, body.id); // create playlist
-          get_playlist_url(access_token,body.id);
+          create_playlist(access_token, body.id, function get(res, err) {
+            callback(err, res);
+          }); // create playlist
 
           // we can also pass the token to the browser to make requests from there
           res.redirect('/#' +
@@ -115,6 +114,18 @@ module.exports.callback = async (req, res) => {
       }
     });
   }
+}
+
+// callback that manages the authentication, provided by Spotify API
+module.exports.callback = async (request, response) => {
+  test(request, response, function (err, res) {
+    if (err) {
+      console.log(err);
+    } else {
+      //console.log('url: ' + res);
+      // response.send(res);
+    }
+  });
 };
 
 module.exports.refresh_token = async (req, res) => {
@@ -141,26 +152,9 @@ module.exports.refresh_token = async (req, res) => {
   });
 };
 
-async function get_playlist_url(access_token, user_id) {
-  var options = {
-    url: 'https://api.spotify.com/v1/users/' + user_id + '/playlists?limit=1', // get playlist
-    headers: {
-      'Authorization': 'Bearer ' + access_token,
-      'Content-Type': 'application/json',
-    }
-  }
-
-  // post request to spotify
-  request.get(options, (error, response, body) => {
-    console.log('playlist link: ')
-    //var info = JSON.parse(response)
-    console.log(body)
-  })
-}
-
 // creates a playlist with the information the usr gave
 // in random.js
-async function create_playlist(access_token, user_id) {
+async function create_playlist(access_token, user_id, callback) {
   let time = new Date().toLocaleString();
   var options = {
     url: 'https://api.spotify.com/v1/users/' + user_id + '/playlists', // create playlist for user
@@ -177,25 +171,27 @@ async function create_playlist(access_token, user_id) {
     console.log('playlist information: ')
     var info = JSON.parse(body)
     console.log('Playlist created')
+    callback(info.external_urls.spotify) // return the url of the playlist
 
     // after creating playlist add the songs to the playlist
-    add_track(access_token, info.id)
+    add_track(access_token, info.id, info.external_urls.spotify)
   })
 }
 
-async function add_track(access_token, playlist_id) {
-  let collection = await _get_playlist_collection(); // get playlist from mongo
+async function add_track(access_token, playlist_id, url) {
+  let collection = await _get_playlist_collection(); // get playlist from mongo 
+  await collection.insertOne({url: url, playlist_id: playlist_id}); // insert the url into mongo
   let songObjs = await collection.find({}).toArray(); // turn it to an array
   let tracks = []
 
   // add tracks to array
-  for (let i = 0; i < songObjs.length; i++){
+  for (let i = 0; i < songObjs.length; i++) {
     tracks.push(songObjs[i].track_id)
     console.log(songObjs[i].track_id)
   }
   var options = {
     url: 'https://api.spotify.com/v1/playlists/' + playlist_id + '/tracks',
-    body:JSON.stringify({ uris: tracks}),
+    body: JSON.stringify({ uris: tracks }),
     dataType: 'json',
     headers: {
       'Authorization': 'Bearer ' + access_token,
@@ -207,7 +203,7 @@ async function add_track(access_token, playlist_id) {
   request.post(options, (error, response, body) => {
     // console.log(body);
     console.log('Playlist added successfully.') // if successful
-    _remove_playlist_collection();
+    //_remove_playlist_collection();
   })
 }
 

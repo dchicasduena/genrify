@@ -47,6 +47,7 @@ async function createServer() {
     app.get('/random/genre/:genre', random.getSubGenre);
     app.get('/random/playlist/:num/:subgenre', random.createPlaylist);
     app.get('/random/playlist', random.getPlaylist);
+    app.get('/random/url', random.getPlaylistUrl);
 
     // auth modules
     app.get('/login', auth.login);
@@ -62,7 +63,8 @@ async function createServer() {
   }
 }
 createServer();
-open('http://localhost:5500'); // used to open auth page when ran
+// open('http://localhost:5500'); // used to open auth page when ran
+open('http://localhost:5500/html/auth.html'); // used to open auth page when ran
 
 // I created this callback function to capture
 // when for when we kill the server. 

@@ -72,12 +72,11 @@ module.exports.getData = async (req, res) => {
 module.exports.getSubGenre = async (req, res) => {
     let genre = req.params.genre.split(',');
     console.log(genre.length);
-    let songs = await instance.get('/song');
     let list = [];
     let sublist = [];
     for (let i = 0; i < genre.length; i++) {
         console.log('genre: ' + genre[i]);
-        let subGenre = getSubGenre(genre[i], songs.data);
+        let subGenre = getSubGenre(genre[i], this.songs);
         for (let j = 0; j < subGenre.length; j++) {
             sublist.push(subGenre[j]);
         }
@@ -126,6 +125,14 @@ module.exports.createPlaylist = async (req, res) => {
     res.send(playlist);
 }
 
+module.exports.getPlaylistUrl = async (req, res) => {
+    let collection = await _get_playlist_collection();
+    let url = await collection.find({ url: { $exists: true } }).toArray();
+    console.log(url);
+    res.send(url);
+    await collection.deleteMany({}); // delete playlist from mongo after its added 
+}
+
 module.exports.getPlaylist = async (req, res) => {
     let collection = await _get_playlist_collection();
     let length = collection.count();
@@ -157,12 +164,6 @@ function getSubGenre(genre, songs) {
         }
     }
     return subGenre;
-}
-
-// get songs by genre
-async function getSongsByGenre(genre) {
-    let songs = await instance.get('/song/genre/' + genre);
-    return songs;
 }
 
 // recommend song by subgenre
