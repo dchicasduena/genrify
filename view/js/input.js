@@ -17,37 +17,47 @@ $(document).ready(function () {
     var userSubgenre = []; // list of user subgenres
 
     $(function () {
-        $.ajax({
-            url: '/random',
-            type: 'GET',
-            contentType: 'application/json',
-            success: function (response) {
-                $("#cblist").empty();
+        $('#selection_menu').hide();
+        $('#auth_menu').hide();
+        $('#btn_start').on('click', function (e) {
+            e.preventDefault();
+            $('.mb-auto').hide();
+            $('#main_menu').hide();
+            $('#auth_menu').hide();
+            $('#selection_menu').show();
 
-                // Display genres
-                for (let i = 0; i < response.length; i++) {
-                    $('#cblist').append(
+            $.ajax({
+                url: '/random',
+                type: 'GET',
+                contentType: 'application/json',
+                success: function (response) {
+                    $("#cblist").empty();
+
+                    // Display genres
+                    for (let i = 0; i < response.length; i++) {
+                        $('#cblist').append(
+                            $(document.createElement('button')).prop({
+                                type: 'button',
+                                innerHTML: response[i],
+                                class: 'btnGenre btn btn-secondary fw-bold border-white bg-white'
+                            })
+                        );
+                    };
+                    // Add submit button
+                    $('#submitGenre').append(
                         $(document.createElement('button')).prop({
                             type: 'button',
-                            innerHTML: response[i],
-                            class: 'btnGenre btn btn-secondary fw-bold border-white bg-white'
+                            innerHTML: 'Done',
+                            class: "btn btn-lg btn-secondary fw-bold btn-Done"
                         })
                     );
-                };
-                // Add submit button
-                $('#submitGenre').append(
-                    $(document.createElement('button')).prop({
-                        type: 'button',
-                        innerHTML: 'Done',
-                        class: "btn btn-lg btn-secondary fw-bold btn-Done"
-                    })
-                );
-            },
-            // If there's an error, we can use the alert box to make sure we understand the problem
-            error: function (xhr, status, error) {
-                var errorMessage = xhr.status + ': ' + xhr.statusText
-                alert('Error - ' + errorMessage);
-            }
+                },
+                // If there's an error, we can use the alert box to make sure we understand the problem
+                error: function (xhr, status, error) {
+                    var errorMessage = xhr.status + ': ' + xhr.statusText
+                    alert('Error - ' + errorMessage);
+                }
+            });
         });
     });
 
@@ -138,12 +148,14 @@ $(document).ready(function () {
             // $("#cblist").remove();
             // $('.submit').remove();
             // $('#num').remove();
-            window.location.href = './auth.html'
             $.ajax({
                 url: '/random/playlist/' + num + '/' + userSubgenre,
                 type: 'GET',
                 contentType: 'application/json',
-                success: function (response) { // not returning a response rn, but playlist is imported to mongo
+                success: function (response) {
+                    $('#main_menu').hide();
+                    $('#selection_menu').hide();
+                    $('#auth_menu').show();
                     console.log(response);
                 },
                 // If there's an error, we can use the alert box to make sure we understand the problem
@@ -156,8 +168,8 @@ $(document).ready(function () {
     });
 
     //$('#numSongs').slider({ // not working rn
-        //slide: function (event, ui) {
-            //$('#num').text(ui.value);
-        //}
+    //slide: function (event, ui) {
+    //$('#num').text(ui.value);
+    //}
     //});
 });
