@@ -48,7 +48,7 @@ to import the list of songs in the .csv file you need to run the command `node i
 
 as of `version 0.0.2`
 
-run the command `npm start`
+run the command `node app.js`
 
 this will show some questions in the terminal, make sure to answer them correctly.
 
