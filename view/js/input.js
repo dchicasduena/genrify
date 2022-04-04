@@ -77,7 +77,6 @@ $(document).ready(function () {
             if (userGenre.length < 1) {
                 alert('Please select a genres.');
             } else {
-                this.id = "submitSubgenre";
                 $.ajax({
                     url: '/random/genre/' + userGenre,
                     type: 'GET',
@@ -85,13 +84,13 @@ $(document).ready(function () {
                     success: function (response) {
                         $("#cblist").empty();
                         $('#instruction').text('Choose the subgenres for your playlist!');
+                        $('#submitGenre').attr('id','submitSubgenre');
                         // Display subgenres
                         for (let i = 0; i < response.length; i++) {
                             let curSubgenre = response[i]
-                            // console.log(curSubgenre)
-                            let e = $(document.createElement('div')).prop({id: 'cblist' + i,});
+                            let e = $(document.createElement('div')).prop({ id: 'cblist' + i, });
                             $('#cblist').append(e);
-                            e.append($("<h3>").text(userGenre[i] + " subgenres"));
+                            e.append($("<h3>").text(userGenre[i] + " subgenre"));
                             for (let j = 0; j < curSubgenre.length; j++) {
                                 e.append(
                                     $(document.createElement('button')).prop({
