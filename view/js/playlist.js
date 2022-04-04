@@ -13,12 +13,10 @@ $(document).ready(function () {
             url: '/random/playlist',
             type: 'GET',
             contentType: 'application/json',
-            success: function (response) { // not returning a response rn, but playlist is imported to mongo
-                // console.log(response);
-                $('#playlist').empty();
+            success: function (response) {
+                $('#playlist_show').hide();
                 for (i = 0; i < response.length; i++){
                     let song = '<b>' + response[i].track_name + '</b> - ' + response[i].track_artist;
-                    // console.log(song);
                     $('#playlist').append('<p5 class="dispPlaylist"> ' + (song) + ' </p5><br>');
                 };
             },

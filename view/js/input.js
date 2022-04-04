@@ -44,13 +44,7 @@ $(document).ready(function () {
                         );
                     };
                     // Add submit button
-                    $('#submitGenre').append(
-                        $(document.createElement('button')).prop({
-                            type: 'button',
-                            innerHTML: 'Done',
-                            class: "btn btn-lg btn-secondary fw-bold btn-Done"
-                        })
-                    );
+                    $('#submitGenre').show();
                 },
                 // If there's an error, we can use the alert box to make sure we understand the problem
                 error: function (xhr, status, error) {
@@ -87,18 +81,19 @@ $(document).ready(function () {
                 $.ajax({
                     url: '/random/genre/' + userGenre,
                     type: 'GET',
-                    //data: { genre: selected },
-                    //dataType: "json",
                     contentType: 'application/json',
                     success: function (response) {
                         $("#cblist").empty();
-                        $('#instruction').text('Choose the subgenres for your playlist!'); // <-
+                        $('#instruction').text('Choose the subgenres for your playlist!');
+                        // Display subgenres
                         for (let i = 0; i < response.length; i++) {
                             let curSubgenre = response[i]
-                            console.log(curSubgenre)
-                            $('#cblist').append($("<h3>").text(userGenre[i] + " subgenres"));
+                            // console.log(curSubgenre)
+                            let e = $(document.createElement('div')).prop({id: 'cblist' + i,});
+                            $('#cblist').append(e);
+                            e.append($("<h3>").text(userGenre[i] + " subgenres"));
                             for (let j = 0; j < curSubgenre.length; j++) {
-                                $('#cblist').append(
+                                e.append(
                                     $(document.createElement('button')).prop({
                                         type: 'button',
                                         innerHTML: curSubgenre[j],
@@ -144,10 +139,6 @@ $(document).ready(function () {
         } else if (this.id == 'createPlaylist') { // if submit button is clicked for creating playlist
             let num = $('#numSongs').val();
             console.log(num);
-            // $('#instruction').text('Your playlist is ready!');
-            // $("#cblist").remove();
-            // $('.submit').remove();
-            // $('#num').remove();
             $.ajax({
                 url: '/random/playlist/' + num + '/' + userSubgenre,
                 type: 'GET',
