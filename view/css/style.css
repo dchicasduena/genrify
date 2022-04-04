@@ -30,6 +30,7 @@
 }
 
 /* Button selected */
+.btn-selected:hover,
 .btn-selected:focus,
 .btn-selected {
   color: #ffffff;
@@ -311,18 +312,18 @@ html {
 
 @keyframes colorChange {
   0% {
-    background: #992f0b;
+    background: #337ab7;
   }
   25% {
-    background: #C49991;
+    background: #5bc0de;
   }
   50% {
-    background: #FFFA70;
+    background: #5cb85c;
   }
   75% {
-    background: #E96969;
+    background: #f0ad4e;
   }
   100% {
-    background: #BFD7EA;
+    background: #d9534f;
   }
 }
