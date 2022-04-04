@@ -36,7 +36,6 @@
   background-color: #000000;
   text-shadow: none; /* Prevent inheritance from `body` */
   transition: transform 0.2s ease-in-out;
-  transform: scale(1.15);
 }
 
 /*
