@@ -19,6 +19,7 @@
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
 
   <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/cover/">
   <script src="https://kit.fontawesome.com/1dcf539929.js" crossorigin="anonymous"></script>
@@ -79,7 +80,6 @@
             class="fa-brands fa-spotify"></i></a>
         <div>
           <canvas id="pie-chart" width="800" height="450"></canvas>
-          <p>heres where chartjs will go</p>
         </div>
       </div>
     </main>
@@ -101,6 +101,7 @@
     <script id="oauth-template" type="text/x-handlebars-template">
     </script>
 
+    <script src="./js/graphs.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js"></script>
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script>
@@ -183,12 +184,13 @@
     <footer class="mt-auto text-white-50" />
 
   </div>
-</body>
 
-<div class="shape-blob one"></div>
-<div class="shape-blob two"></div>
-<div class="shape-blob three"></div>
-<div class="shape-blob"></div>
+  <div class="shape-blob one"></div>
+  <div class="shape-blob two"></div>
+  <div class="shape-blob three"></div>
+  <div class="shape-blob"></div>
+  
+</body>
 
 <footer class="footer">
   &copy; 2022&nbsp; <span class="separator">|</span>
