@@ -130,15 +130,30 @@ $(document).ready(function () {
                 this.id = "createPlaylist";
                 $("#cblist").empty();
                 $('#cblist').append(
+                    $(document.createElement('div')).prop({
+                        class: 'form-outline',
+                        id: 'number_input'
+                    })
+                );
+                $('#number_input').append(
                     $(document.createElement('input')).prop({
-                        type: 'number',
+                        class: 'form-control',
                         id: 'numSongs',
+                        type: 'number',
                         min: '10',
                         max: '50',
                         value: '20'
+                        
                     })
                 );
-                $('#instruction').text('Choose the number of songs you want in your playlist:');
+                $('#number_input').append(
+                    $(document.createElement('label')).prop({
+                        class: 'form-label',
+                        for: 'numSongs',
+                        text: 'Number of Songs'
+                    })
+                );
+                //$('#instruction').text('Choose the number of songs you want in your playlist:');
                 // $('#num').text($('#numSongs').val());
             }
         } else if (this.id == 'createPlaylist') { // if submit button is clicked for creating playlist
@@ -184,9 +199,10 @@ $(document).ready(function () {
                                 un_genres.push(property);
                                 un_count.push(counts[property]);
                             }
-                            console.log(colors);
+
                             Chart.defaults.global.defaultFontColor = '#fff';
-                            // Chart.defaults.global.defaultFontSize = '14';
+                            Chart.defaults.global.defaultFontSize = 20;
+                            Chart.defaults.global.defaultFontStyle = 'bold';
 
                             new Chart(document.getElementById("doughnut-chart"), {
                                 type: 'pie',
