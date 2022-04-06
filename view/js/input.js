@@ -131,17 +131,15 @@ $(document).ready(function () {
                 $("#cblist").empty();
                 $('#cblist').append(
                     $(document.createElement('input')).prop({
-                        type: 'range',
+                        type: 'number',
                         id: 'numSongs',
-                        class: 'form-range',
                         min: '10',
                         max: '50',
-                        value: '20',
-                        step: '1'
+                        value: '20'
                     })
                 );
                 $('#instruction').text('Choose the number of songs you want in your playlist:');
-                $('#num').text($('#numSongs').val());
+                // $('#num').text($('#numSongs').val());
             }
         } else if (this.id == 'createPlaylist') { // if submit button is clicked for creating playlist
             let num = $('#numSongs').val();
@@ -188,7 +186,7 @@ $(document).ready(function () {
                             }
                             console.log(colors);
                             Chart.defaults.global.defaultFontColor = '#fff';
-                            // Chart.defaults.global.defaultFontSize = '16';
+                            // Chart.defaults.global.defaultFontSize = '14';
 
                             new Chart(document.getElementById("doughnut-chart"), {
                                 type: 'pie',
@@ -219,10 +217,4 @@ $(document).ready(function () {
             });
         }
     });
-
-    //$('#numSongs').slider({ // not working rn
-    //slide: function (event, ui) {
-    //$('#num').text(ui.value);
-    //}
-    //});
 });

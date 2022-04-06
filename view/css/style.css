@@ -204,6 +204,10 @@ html {
   transform: scale(1.1);
 }
 
+#doughnut-chart {
+  margin-bottom: 20px;
+}
+
 .loading {
   animation: spin 2s linear infinite;
 }
