@@ -16,7 +16,7 @@ $(document).ready(function () {
                     let genre = response[i].playlist_subgenre[0];
                     p_genres.push(genre);
                 };
-                
+                console.log(p_genres);
                 p_genres.forEach(function (x) { counts[x] = (counts[x] || 0) + 1; });
                 for (var property in counts) {
                     if ( ! counts.hasOwnProperty(property)) {
@@ -35,7 +35,7 @@ $(document).ready(function () {
         new Chart(document.getElementById("pie-chart"), {
           type: 'pie',
           data: {
-            labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
+            labels: p_genres,
             datasets: [{
               backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
               data: [2478,5267,734,784,433]
