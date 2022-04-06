@@ -24,6 +24,7 @@ $(document).ready(function () {
             $('.mb-auto').hide();
             $('#main_menu').hide();
             $('#auth_menu').hide();
+            //$('#blob').hide();
             $('#selection_menu').show();
 
             $.ajax({
@@ -91,6 +92,7 @@ $(document).ready(function () {
                             // console.log(curSubgenre)
                             let e = $(document.createElement('div')).prop({id: 'cblist' + i,});
                             $('#cblist').append(e);
+                            e.append($("<br>"));
                             e.append($("<h3>").text(userGenre[i] + " subgenres"));
                             for (let j = 0; j < curSubgenre.length; j++) {
                                 e.append(
@@ -146,6 +148,7 @@ $(document).ready(function () {
                 success: function (response) {
                     $('#main_menu').hide();
                     $('#selection_menu').hide();
+                    //$('#blob').hide();
                     $('#auth_menu').show();
                     console.log(response);
                 },

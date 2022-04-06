@@ -65,20 +65,21 @@
             <i class="fa-solid fa-2xl fa-spinner loading"></i>
           </div>
           <div class="submit" id="submitGenre" style="display: none;">
-            <button type="button" class="btn btn-lg fw-bold btn-Done"  id="btn_done">Done</button>
+            <button type="button" class="btn btn-lg fw-bold btn-Done" id="btn_done">Done</button>
           </div>
         </div>
       </div>
 
-      <div id="auth_menu">
+      <div id="auth_menu" class="auth_menu">
         <div id="playlist">
           <h1>Your Playlist is Ready!</h1>
-          <a id="playlist_show" class="btn btn-primary">See Playlist</a>
+          <a id="playlist_show" class="btn btn-lg btn-secondary fw-bold border-white bg-white">See Playlist</a>
         </div>
         <br>
-        <a id="add_spot" class="btn btn-success" href="/login">Add Playlist to Spotify <i
+        <a id="add_spot" class="btn btn-lg fw-bold border-white btn-success" href="/login">Add Playlist to Spotify <i
             class="fa-brands fa-spotify"></i></a>
         <div>
+          <br>
           <canvas id="pie-chart" width="50%" height="40%"></canvas>
         </div>
       </div>
@@ -93,7 +94,7 @@
     <script id="user-profile-template" type="text/x-handlebars-template">
       <h1>Logged in as {{display_name}}</h1>
       <br>
-      <a class="btn btn-primary" id="playlist">Go to playlist</a>
+      <a class="btn btn-lg btn-secondary fw-bold border-white bg-white" id="playlist">Go to playlist</a>
     </script>
 
     <script id="oauth-template" type="text/x-handlebars-template">
@@ -183,10 +184,12 @@
 
   </div>
 
-  <div class="shape-blob one"></div>
-  <div class="shape-blob two"></div>
-  <div class="shape-blob three"></div>
-  <div class="shape-blob"></div>
+  <div id="blob" class="blob">
+    <div class="shape-blob one"></div>
+    <div class="shape-blob two"></div>
+    <div class="shape-blob three"></div>
+    <div class="shape-blob"></div>
+  </div>
 
 </body>
 

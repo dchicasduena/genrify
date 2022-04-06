@@ -1,3 +1,4 @@
+colors = ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"]
 let p_genres = [];
 let counts = {};
 let un_genres = [];
@@ -10,14 +11,12 @@ $(document).ready(function () {
             type: 'GET',
             contentType: 'application/json',
             success: function (response) {
-                console.log(response);
                 for (i = 0; i < response.length; i++){
-                    for (j = 0; j < response.length; j++){
-                        let genre = response[i].playlist_subgenre[j];
-                        p_genres.push(genre);
-                    }
+                    colors.push(colors);
+                    let genre = response[i].playlist_subgenre[0];
+                    p_genres.push(genre);
                 };
-
+                
                 p_genres.forEach(function (x) { counts[x] = (counts[x] || 0) + 1; });
                 for (var property in counts) {
                     if ( ! counts.hasOwnProperty(property)) {
@@ -34,21 +33,20 @@ $(document).ready(function () {
         });
 
         new Chart(document.getElementById("pie-chart"), {
-            type: 'pie',
-            data: {
-              labels: un_genres,
-              datasets: [{
-                label: "Population (millions)",
-                backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
-                data: un_count
-              }]
-            },
-            options: {
-              title: {
-                display: true,
-                text: 'Subgenres in Playlist'
-              }
+          type: 'pie',
+          data: {
+            labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
+            datasets: [{
+              backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+              data: [2478,5267,734,784,433]
+            }]
+          },
+          options: {
+            title: {
+              display: true,
+              text: 'Subgenres in Playlist'
             }
-        });
+          }
+      });
     });
 });

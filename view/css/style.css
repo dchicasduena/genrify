@@ -165,6 +165,10 @@ h3 {
   font-size: 20px;
 }
 
+.auth_menu{
+  z-index: 19;
+}
+
 html {
   /* footer support */
   position: relative;
@@ -221,6 +225,10 @@ html {
  * blob
  https://codepen.io/LA_water/pen/rNaYZBb
  */
+
+ .blob{
+  z-index: -10;
+ }
 
 .shape-blob {
   height: 200px;
