@@ -5,7 +5,7 @@
 * @year 2022 
 */
 
-colors = ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850"]
+colors = []
 let p_genres = [];
 let counts = {};
 let un_genres = [];
@@ -162,11 +162,13 @@ $(document).ready(function () {
                         contentType: 'application/json',
                         success: function (response) {
                             for (i = 0; i < response.length; i++) {
-                                colors.push(colors);
+                                color = "#" + ((1 << 24) * Math.random() | 0).toString(16);
+                                colors.push(color);
                                 let genre = response[i].playlist_subgenre[0];
-                                p_genres.push(genre);
+                                if(genre.length !== 1){
+                                    p_genres.push(genre);
+                                }
                             };
-                            console.log(p_genres);
                             p_genres.forEach(function (x) { counts[x] = (counts[x] || 0) + 1; });
                             for (var property in counts) {
                                 if (!counts.hasOwnProperty(property)) {
@@ -175,6 +177,34 @@ $(document).ready(function () {
                                 un_genres.push(property);
                                 un_count.push(counts[property]);
                             }
+                            console.log(colors);
+
+                            new Chart(document.getElementById("doughnut-chart"), {
+                                type: 'doughnut',
+                                data: {
+                                  labels: un_genres,
+                                  datasets: [
+                                    {
+                                      backgroundColor: colors,
+                                      data: un_count
+                                    }
+                                  ]
+                                },
+                                options: {
+                                    plugins: {
+                                        legend: {
+                                            labels: {
+                                                font: {
+                                                    size: 20,
+                                                    weight: 750,
+                                                    fontColor: 'white'
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            });
+
                         },
                         // If there's an error, we can use the alert box to make sure we understand the problem
                         error: function (xhr, status, error) {
@@ -183,22 +213,6 @@ $(document).ready(function () {
                         }
                     });
 
-                    new Chart(document.getElementById("pie-chart"), {
-                        type: 'pie',
-                        data: {
-                            labels: p_genres,
-                            datasets: [{
-                                backgroundColor: ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850"],
-                                data: [2478, 5267, 734, 784, 433]
-                            }]
-                        },
-                        options: {
-                            title: {
-                                display: true,
-                                text: 'Subgenres in Playlist'
-                            }
-                        }
-                    });
                 },
                 // If there's an error, we can use the alert box to make sure we understand the problem
                 error: function (xhr, status, error) {
