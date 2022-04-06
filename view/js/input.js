@@ -162,9 +162,11 @@ $(document).ready(function () {
                         contentType: 'application/json',
                         success: function (response) {
                             for (i = 0; i < response.length; i++) {
-                                let genre = response[i].playlist_subgenre[0];
-                                if (genre.length !== 1) {
-                                    p_genres.push(genre);
+                                let song_subgenre = response[i].playlist_subgenre;
+                                for (j = 0; j < song_subgenre.length; j++) {
+                                    if (userSubgenre.includes(song_subgenre[j])) {
+                                        p_genres.push(song_subgenre[j]);
+                                    }
                                 }
                             };
 
@@ -186,7 +188,7 @@ $(document).ready(function () {
                             }
                             console.log(colors);
                             Chart.defaults.global.defaultFontColor = '#fff';
-                            Chart.defaults.global.defaultFontSize = '16';
+                            // Chart.defaults.global.defaultFontSize = '16';
 
                             new Chart(document.getElementById("doughnut-chart"), {
                                 type: 'pie',
