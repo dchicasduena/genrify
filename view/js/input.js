@@ -204,7 +204,7 @@ $(document).ready(function () {
                             Chart.defaults.global.defaultFontSize = 20;
                             Chart.defaults.global.defaultFontStyle = 'bold';
 
-                            new Chart(document.getElementById("doughnut-chart"), {
+                            var ChartGenres = new Chart(document.getElementById("doughnut-chart"), {
                                 type: 'pie',
                                 data: {
                                     labels: un_genres,
@@ -215,6 +215,18 @@ $(document).ready(function () {
                                         }
                                     ]
                                 },
+                                options: {
+                                    animation: {
+                                      onComplete: function() {
+                                        var a = document.createElement('a');
+                                        a.href = ChartGenres.toBase64Image();
+                                        a.download = 'SubgenreChart.png';
+                                        
+                                        // Trigger the download
+                                        a.click();
+                                      }
+                                    }
+                                  }
                             });
                         },
                         // If there's an error, we can use the alert box to make sure we understand the problem
