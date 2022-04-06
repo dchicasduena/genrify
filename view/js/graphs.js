@@ -1,8 +1,3 @@
-colors = ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"]
-let p_genres = [];
-let counts = {};
-let un_genres = [];
-let un_count = [];
 
 $(document).ready(function () {
     $(function () {
@@ -30,22 +25,5 @@ $(document).ready(function () {
                 alert('Error - ' + errorMessage);
             }
         });
-
-        new Chart(document.getElementById("pie-chart"), {
-          type: 'pie',
-          data: {
-            labels: p_genres,
-            datasets: [{
-              backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
-              data: [2478,5267,734,784,433]
-            }]
-          },
-          options: {
-            title: {
-              display: true,
-              text: 'Subgenres in Playlist'
-            }
-          }
-      });
     });
 });
