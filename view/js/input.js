@@ -162,14 +162,21 @@ $(document).ready(function () {
                         contentType: 'application/json',
                         success: function (response) {
                             for (i = 0; i < response.length; i++) {
-                                color = "#" + ((1 << 24) * Math.random() | 0).toString(16);
-                                colors.push(color);
                                 let genre = response[i].playlist_subgenre[0];
-                                if(genre.length !== 1){
+                                if (genre.length !== 1) {
                                     p_genres.push(genre);
                                 }
                             };
+
+                            for (i = 0; i < (response.length * 2); i++) {
+                                color = "#" + ((1 << 24) * Math.random() | 0).toString(16);
+                                if (color.length !== 6) {
+                                    colors.push(color);
+                                }
+                            };
+
                             p_genres.forEach(function (x) { counts[x] = (counts[x] || 0) + 1; });
+
                             for (var property in counts) {
                                 if (!counts.hasOwnProperty(property)) {
                                     continue;
@@ -178,33 +185,21 @@ $(document).ready(function () {
                                 un_count.push(counts[property]);
                             }
                             console.log(colors);
+                            Chart.defaults.global.defaultFontColor = '#fff';
+                            Chart.defaults.global.defaultFontSize = '16';
 
                             new Chart(document.getElementById("doughnut-chart"), {
-                                type: 'doughnut',
+                                type: 'pie',
                                 data: {
-                                  labels: un_genres,
-                                  datasets: [
-                                    {
-                                      backgroundColor: colors,
-                                      data: un_count
-                                    }
-                                  ]
-                                },
-                                options: {
-                                    plugins: {
-                                        legend: {
-                                            labels: {
-                                                font: {
-                                                    size: 20,
-                                                    weight: 750,
-                                                    fontColor: 'white'
-                                                }
-                                            }
+                                    labels: un_genres,
+                                    datasets: [
+                                        {
+                                            backgroundColor: colors,
+                                            data: un_count
                                         }
-                                    }
-                                }
+                                    ]
+                                },
                             });
-
                         },
                         // If there's an error, we can use the alert box to make sure we understand the problem
                         error: function (xhr, status, error) {
