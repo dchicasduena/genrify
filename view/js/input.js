@@ -143,7 +143,7 @@ $(document).ready(function () {
                         min: '10',
                         max: '50',
                         value: '20'
-                        
+
                     })
                 );
                 $('#number_input').append(
@@ -157,80 +157,84 @@ $(document).ready(function () {
                 // $('#num').text($('#numSongs').val());
             }
         } else if (this.id == 'createPlaylist') { // if submit button is clicked for creating playlist
+            // Alert user if too few genres are selected
             let num = $('#numSongs').val();
-            console.log(num);
-            $.ajax({
-                url: '/random/playlist/' + num + '/' + userSubgenre,
-                type: 'GET',
-                contentType: 'application/json',
-                success: function (response) {
-                    $('#main_menu').hide();
-                    $('#selection_menu').hide();
-                    //$('#blob').hide();
-                    $('#auth_menu').show();
-                    console.log(response);
-                    $.ajax({
-                        url: '/random/playlist',
-                        type: 'GET',
-                        contentType: 'application/json',
-                        success: function (response) {
-                            for (i = 0; i < response.length; i++) {
-                                let song_subgenre = response[i].playlist_subgenre;
-                                for (j = 0; j < song_subgenre.length; j++) {
-                                    if (userSubgenre.includes(song_subgenre[j])) {
-                                        p_genres.push(song_subgenre[j]);
-                                    }
-                                }
-                            };
-
-                            for (i = 0; i < (response.length * 2); i++) {
-                                color = "#" + ((1 << 24) * Math.random() | 0).toString(16);
-                                if (color.length !== 6) {
-                                    colors.push(color);
-                                }
-                            };
-
-                            p_genres.forEach(function (x) { counts[x] = (counts[x] || 0) + 1; });
-
-                            for (var property in counts) {
-                                if (!counts.hasOwnProperty(property)) {
-                                    continue;
-                                }
-                                un_genres.push(property);
-                                un_count.push(counts[property]);
-                            }
-
-                            Chart.defaults.global.defaultFontColor = '#fff';
-                            Chart.defaults.global.defaultFontSize = 20;
-                            Chart.defaults.global.defaultFontStyle = 'bold';
-
-                            new Chart(document.getElementById("doughnut-chart"), {
-                                type: 'pie',
-                                data: {
-                                    labels: un_genres,
-                                    datasets: [
-                                        {
-                                            backgroundColor: colors,
-                                            data: un_count
+            if (num < 10 || num > 50) {
+                alert('Please select a number of songs between 10 and 50.');
+            } else {
+                $.ajax({
+                    url: '/random/playlist/' + num + '/' + userSubgenre,
+                    type: 'GET',
+                    contentType: 'application/json',
+                    success: function (response) {
+                        $('#main_menu').hide();
+                        $('#selection_menu').hide();
+                        //$('#blob').hide();
+                        $('#auth_menu').show();
+                        console.log(response);
+                        $.ajax({
+                            url: '/random/playlist',
+                            type: 'GET',
+                            contentType: 'application/json',
+                            success: function (response) {
+                                for (i = 0; i < response.length; i++) {
+                                    let song_subgenre = response[i].playlist_subgenre;
+                                    for (j = 0; j < song_subgenre.length; j++) {
+                                        if (userSubgenre.includes(song_subgenre[j])) {
+                                            p_genres.push(song_subgenre[j]);
                                         }
-                                    ]
-                                },
-                            });
-                        },
-                        // If there's an error, we can use the alert box to make sure we understand the problem
-                        error: function (xhr, status, error) {
-                            var errorMessage = xhr.status + ': ' + xhr.statusText
-                            alert('Error - ' + errorMessage);
-                        }
-                    });
+                                    }
+                                };
 
-                },
-                // If there's an error, we can use the alert box to make sure we understand the problem
-                error: function (xhr, status, error) {
-                    var errorMessage = xhr.status + ': ' + xhr.statusText
-                    alert('Error - ' + errorMessage);
-                }
-            });
+                                for (i = 0; i < (response.length * 2); i++) {
+                                    color = "#" + ((1 << 24) * Math.random() | 0).toString(16);
+                                    if (color.length !== 6) {
+                                        colors.push(color);
+                                    }
+                                };
+
+                                p_genres.forEach(function (x) { counts[x] = (counts[x] || 0) + 1; });
+
+                                for (var property in counts) {
+                                    if (!counts.hasOwnProperty(property)) {
+                                        continue;
+                                    }
+                                    un_genres.push(property);
+                                    un_count.push(counts[property]);
+                                }
+
+                                Chart.defaults.global.defaultFontColor = '#fff';
+                                Chart.defaults.global.defaultFontSize = 20;
+                                Chart.defaults.global.defaultFontStyle = 'bold';
+
+                                new Chart(document.getElementById("doughnut-chart"), {
+                                    type: 'pie',
+                                    data: {
+                                        labels: un_genres,
+                                        datasets: [
+                                            {
+                                                backgroundColor: colors,
+                                                data: un_count
+                                            }
+                                        ]
+                                    },
+                                });
+                            },
+                            // If there's an error, we can use the alert box to make sure we understand the problem
+                            error: function (xhr, status, error) {
+                                var errorMessage = xhr.status + ': ' + xhr.statusText
+                                alert('Error - ' + errorMessage);
+                            }
+                        });
+
+                    },
+                    // If there's an error, we can use the alert box to make sure we understand the problem
+                    error: function (xhr, status, error) {
+                        var errorMessage = xhr.status + ': ' + xhr.statusText
+                        alert('Error - ' + errorMessage);
+                    }
+                });
+            }
         }
     });
 });
