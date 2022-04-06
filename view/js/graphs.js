@@ -12,18 +12,10 @@ $(document).ready(function () {
             contentType: 'application/json',
             success: function (response) {
                 for (i = 0; i < response.length; i++){
-                    colors.push(colors);
-                    let genre = response[i].playlist_subgenre[0];
+                    let genre = response[i].playlist_subgenre[i];
                     p_genres.push(genre);
                 };
-                
-                p_genres.forEach(function (x) { counts[x] = (counts[x] || 0) + 1; });
-                for (var property in counts) {
-                    if ( ! counts.hasOwnProperty(property)) {
-                       continue;}      
-                un_genres.push(property);
-                un_count.push(counts[property]);
-                 }
+              console.log(p_genres);
             },
             // If there's an error, we can use the alert box to make sure we understand the problem
             error: function (xhr, status, error) {
