@@ -135,6 +135,7 @@ $(document).ready(function () {
                         id: 'number_input'
                     })
                 );
+                $('#instruction').text('Choose the size of your playlist!');
                 $('#number_input').append(
                     $(document.createElement('input')).prop({
                         class: 'form-control',
