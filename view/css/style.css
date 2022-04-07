@@ -208,6 +208,10 @@ html {
   margin-bottom: 20px;
 }
 
+#download {
+  margin-bottom: 20px;
+}
+
 .loading {
   animation: spin 2s linear infinite;
 }

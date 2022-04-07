@@ -221,12 +221,9 @@ $(document).ready(function () {
                                 options: {
                                     animation: {
                                       onComplete: function() {
-                                        var a = document.createElement('a');
+                                        var a = document.getElementById('download');
                                         a.href = ChartGenres.toBase64Image();
                                         a.download = 'SubgenreChart.png';
-                                        
-                                        // Trigger the download
-                                        a.click();
                                       }
                                     }
                                   }
