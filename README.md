@@ -57,7 +57,11 @@ This will tell you where the app is running in the terminal. Go to the specified
 
 ## Troubleshooting
 
-## Future relases
+## Future Releases
 
 API's we want to implement: 
 - [Apple Music API](https://developer.apple.com/documentation/applemusicapi/)
+
+## Credits
+Our project uses [Chart.JS](https://www.chartjs.org), [Bootstrap](https://getbootstrap.com/), and it uses the Bootstrap [Cover](https://getbootstrap.com/docs/5.1/examples/cover/) Template
+
