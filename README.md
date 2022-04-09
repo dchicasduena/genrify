@@ -52,7 +52,7 @@ As of `version 0.0.2`
 
 Run the command `node app.js`
 
-This will tell you where the app is running in the terminal. Go to the specified address and then follow the steps the application says. Now check your account on the spotify app or web player to see your new playlist
+This will tell you where the app is running in the terminal. Go to the specified address and then follow the steps the application says. Now check your account on the Spotify app or web player to see your new playlist
 
 
 ## Troubleshooting
