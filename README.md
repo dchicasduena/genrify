@@ -31,15 +31,15 @@ nano .env
 For `Windows`
 
 ```bash
-# inside the iteration two folder
+# inside the project folder
 # save a new file with the contents on a text editor, 
 # then click save type as all files, and save with .env extension
 ```
 Then fill the .env file with the **CLIENT_ID** and **CLIENT_SECRET**, it should look like this:
 
 ```js
-CLIENT_ID='' #add your app id here
-CLIENT_SECRET='' #and your secret here
+CLIENT_ID='vgiwny1af6b60sjvswxfesb6nbpza7h2' # add your app id here
+CLIENT_SECRET='evch3hr5g5zbrwocnv5lxq0n9loyr6m7' # add your app secret here
 ```
 
 Now you can run the command `npm install`to download all the dependancies you need for the project. 
