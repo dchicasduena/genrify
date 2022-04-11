@@ -4,12 +4,13 @@
 * @course COMP 3100 - Web Programming
 * @year 2022 
 */
-
+const dotenv = require('dotenv');
 dotenv.config({ path: './.env' });
 // Import required module csvtojson and mongodb packages
 const fs = require('fs');
 const csvtojson = require('csvtojson');
 var url = process.env.DB_URL + '/Playlist';
+console.log(url)
 const MongoClient = require('mongodb').MongoClient;
 const client = new MongoClient(url, { useUnifiedTopology: true });
 var dbConn;
@@ -28,7 +29,7 @@ async function importData() {
   var arrayToInsert = [];
   await csvtojson().fromFile(csv).then(async function (source){
     // Insert into the table
-    var collectionName = 'test';
+    var collectionName = 'songs';
     var collection = dbConn.collection(collectionName);
     await dbConn.listCollections({ name: collectionName })
       .next(async function (err, collinfo) {
@@ -84,7 +85,7 @@ async function importData() {
 
 async function addJson() {
   // Get the collection
-  var collectionName = 'test';
+  var collectionName = 'more songs';
   var collection = dbConn.collection(collectionName);
   // Read the files
   let filename = 'test';
