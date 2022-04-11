@@ -1,7 +1,7 @@
 {
   "author": "Nhu Nguyen and David Chicas",
   "name": "playlist-generator",
-  "description": "COMP3100 Project that generates playlist",
+  "description": "generate playlist",
   "version": "0.0.1",
   "dependencies": {
     "axios": "^0.21.1",

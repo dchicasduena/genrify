@@ -9,10 +9,10 @@ dotenv.config({ path: './.env' });
 // Import required module csvtojson and mongodb packages
 const fs = require('fs');
 const csvtojson = require('csvtojson');
-var url = process.env.DB_URL + '/Playlist';
-console.log(url)
+var uri = process.env.DB_URL;
+console.log(uri)
 const MongoClient = require('mongodb').MongoClient;
-const client = new MongoClient(url, { useUnifiedTopology: true });
+const client = new MongoClient(uri, { useNewUrlParser: true });
 var dbConn;
 
 async function importData() {
