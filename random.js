@@ -4,7 +4,7 @@
 * @course COMP 3100 - Web Programming
 * @year 2022 
 */
-
+const dotenv = require('dotenv');
 dotenv.config({ path: './.env' });
 let fs = require('fs');
 const client = require('./utils/db.js');

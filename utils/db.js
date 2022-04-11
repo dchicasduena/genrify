@@ -4,6 +4,7 @@
 * @course COMP 3100 - Web Programming
 * @year 2022 
 */
+const dotenv = require('dotenv');
 dotenv.config({ path: './.env' });
 const MongoClient = require("mongodb").MongoClient
 const uri = process.env.DB_URL;
