@@ -5,10 +5,11 @@
 * @year 2022 
 */
 
+dotenv.config({ path: './.env' });
+
 const express = require('express');
 const app = express();
-const port = 5500;
-const open = require('open');
+const port = process.env.PORT;
 var path = require('path');
 var cors = require('cors');
 var cookieParser = require('cookie-parser');

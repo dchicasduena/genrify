@@ -5,6 +5,7 @@
 * @year 2022 
 */
 
+dotenv.config({ path: './.env' });
 let fs = require('fs');
 const client = require('./utils/db.js');
 
@@ -18,7 +19,7 @@ var playlistLength = '';
 
 const axios = require('axios');
 const { json } = require('express');
-var myurl = 'http://localhost:5500';
+var myurl = 'http://localhost:' + process.env.PORT;
 
 // Let's configure the base url
 const instance = axios.create({

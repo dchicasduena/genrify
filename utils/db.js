@@ -4,9 +4,9 @@
 * @course COMP 3100 - Web Programming
 * @year 2022 
 */
-
+dotenv.config({ path: './.env' });
 const MongoClient = require("mongodb").MongoClient
-const uri = "mongodb://localhost:27017";
+const uri = process.env.DB_URL;
 const client = new MongoClient(uri, { useUnifiedTopology: true });
 var db;
 

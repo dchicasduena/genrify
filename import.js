@@ -5,10 +5,11 @@
 * @year 2022 
 */
 
+dotenv.config({ path: './.env' });
 // Import required module csvtojson and mongodb packages
 const fs = require('fs');
 const csvtojson = require('csvtojson');
-var url = 'mongodb://localhost:27017/Playlist';
+var url = process.env.DB_URL + '/Playlist';
 const MongoClient = require('mongodb').MongoClient;
 const client = new MongoClient(url, { useUnifiedTopology: true });
 var dbConn;

@@ -8,7 +8,6 @@
 var express = require('express'); // Express web server framework
 var request = require('request'); // "Request" library
 var querystring = require('querystring');
-
 // use .env file to load id and secret
 const dotenv = require('dotenv');
 const { apps } = require('open');
@@ -16,7 +15,7 @@ dotenv.config({ path: './.env' });
 
 var client_id = process.env.CLIENT_ID; // Your client id
 var client_secret = process.env.CLIENT_SECRET; // Your secret
-var redirect_uri = 'http://localhost:5500/callback'; // Your redirect uri
+var redirect_uri = process.env.REDIRECT_URI; // Your redirect uri
 
 const client = require('./utils/db.js');
 const { response } = require('express');
