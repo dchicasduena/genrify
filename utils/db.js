@@ -7,7 +7,7 @@
 const dotenv = require('dotenv');
 dotenv.config({ path: './.env' });
 const MongoClient = require("mongodb").MongoClient
-const uri = process.env.DB_URL;
+const uri = "mongodb://mongodb+srv://MiaN11579:875R5L8cJICkSfNA@spotify.3srob.mongodb.net/test?retryWrites=true&w=majority:27017";
 const client = new MongoClient(uri, { useUnifiedTopology: true });
 var db;
 

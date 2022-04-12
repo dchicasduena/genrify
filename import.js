@@ -9,8 +9,7 @@ dotenv.config({ path: './.env' });
 // Import required module csvtojson and mongodb packages
 const fs = require('fs');
 const csvtojson = require('csvtojson');
-var uri = process.env.DB_URL;
-console.log(uri)
+var uri = 'mongodb+srv://MiaN11579:875R5L8cJICkSfNA@spotify.3srob.mongodb.net/test?retryWrites=true&w=majority';
 const MongoClient = require('mongodb').MongoClient;
 const client = new MongoClient(uri, { useNewUrlParser: true });
 var dbConn;
@@ -19,7 +18,8 @@ async function importData() {
   // Connect to the database
   await client.connect().then((client) => {
     console.log('DB Connected!');
-    dbConn = client.db();
+    dbConn = client.db('Playlist');
+    // console.log(dbConn);
   }).catch(err => {
     console.log('DB Connection Error: ${err.message}');
   });

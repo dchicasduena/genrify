@@ -8,7 +8,7 @@
 // Import required modules
 const fs = require('fs');
 const request = require('request'); // "Request" library
-var url = 'mongodb://localhost:27017/Playlist';
+var url = 'mongodb+srv://MiaN11579:W$N2TRgAq%n$@spotify.3srob.mongodb.net/test?retryWrites=true&w=majority';
 const MongoClient = require('mongodb').MongoClient;
 const client = new MongoClient(url, { useUnifiedTopology: true });
 var dbConn;
@@ -25,7 +25,7 @@ async function importData() {
   // Connect to the database
   await client.connect().then((client) => {
     console.log('DB Connected!');
-    dbConn = client.db();
+    dbConn = client.db('Playlist');
   }).catch(err => {
     console.log('DB Connection Error: ${err.message}');
   });
