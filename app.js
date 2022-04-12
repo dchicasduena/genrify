@@ -62,8 +62,7 @@ async function createServer() {
     console.log(err)
   }
 }
-
-const server http.createServer();
+createServer();
 
 // I created this callback function to capture
 // when for when we kill the server. 
