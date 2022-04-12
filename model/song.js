@@ -10,7 +10,7 @@ const client = require('../utils/db.js');
 
 async function _get_songs_collection() {
     let db = await client.getDb();
-    return await db.collection('test');
+    return await db.collection('songs');
 };
 
 /**

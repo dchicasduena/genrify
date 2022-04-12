@@ -85,7 +85,7 @@ async function importData() {
 
 async function addJson() {
   // Get the collection
-  var collectionName = 'more songs';
+  var collectionName = 'songs';
   var collection = dbConn.collection(collectionName);
   // Read the files
   let filename = 'test';
