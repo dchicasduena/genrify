@@ -8,7 +8,7 @@
 // Import required modules
 const fs = require('fs');
 const request = require('request'); // "Request" library
-var url = 'mongodb+srv://MiaN11579:W$N2TRgAq%n$@spotify.3srob.mongodb.net/test?retryWrites=true&w=majority';
+var url = process.env.DB_URL;
 const MongoClient = require('mongodb').MongoClient;
 const client = new MongoClient(url, { useUnifiedTopology: true });
 var dbConn;
