@@ -154,10 +154,10 @@ module.exports.refresh_token = async (req, res) => {
 // creates a playlist with the information the usr gave
 // in random.js
 async function create_playlist(access_token, user_id, callback) {
-  let time = new Date().toLocaleString();
+  let time = new Date().toDateString();
   var options = {
     url: 'https://api.spotify.com/v1/users/' + user_id + '/playlists', // create playlist for user
-    body: JSON.stringify({ name: "Random Playlist", description: "playlist made through 3100 Project // made at " + time, public: true }),
+    body: JSON.stringify({ name: "Random Playlist", description: "playlist made through the internet // made " + time, public: true }),
     dataType: 'json',
     headers: {
       'Authorization': 'Bearer ' + access_token,
