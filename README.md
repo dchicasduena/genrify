@@ -5,7 +5,7 @@ Spotify playlist generator based on genres and sub-genres
 
 ![Spotify](https://img.shields.io/badge/Spotify-1ED760?style=for-the-badge&logo=spotify&logoColor=white)  ![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)  ![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white)
 
-> This is still a WIP so fuctionality can still be changed / improved
+> This is still a WIP so fuctionality can still be changed / improved. Because the app is still in development, Spotify will not let you add the playlist to your account unless you are verified in the app dashboard. 
 
 ## Features
 
