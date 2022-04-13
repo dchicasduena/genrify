@@ -1,7 +1,7 @@
 # SPOTIFY PLAYLIST GENERATOR
 https://playlist-generator-spotify.herokuapp.com
 
-A random playlist generator based on answers, questions and songs
+A random playlist generator based on genres and subgenres
 
 ![Spotify](https://img.shields.io/badge/Spotify-1ED760?style=for-the-badge&logo=spotify&logoColor=white)  ![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)  ![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white)
 
