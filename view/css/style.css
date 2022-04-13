@@ -229,8 +229,12 @@ html {
   text-align: left;
 }
 
-.btn-spotify{
+.btn-spotify {
   background-color: #1db954;
+}
+
+.error {
+ font-size: 60pt
 }
 
 /*
