@@ -34,7 +34,8 @@
 .btn-selected:focus,
 .btn-selected {
   color: #ffffff;
-  background-color: #000000;
+  background-color: #ff744c;
+  transform: scale(1.075);
   text-shadow: none; /* Prevent inheritance from `body` */
   transition: transform 0.2s ease-in-out;
 }
