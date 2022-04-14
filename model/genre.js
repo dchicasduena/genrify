@@ -42,7 +42,7 @@ class GenreData {
      */
      static async getSubgenre(genre) {
         let collection = await _get_songs_collection();
-        console.log(genre)
+        // console.log(genre)
         let obj = await collection.find({ "genre": genre }).toArray();
         return obj;
     }
