@@ -44,11 +44,11 @@ module.exports.getData = async (req, res) => {
 // Return subgenres of user genres
 module.exports.getSubGenre = async (req, res) => {
     let genre = req.params.genre.split(',');
-    console.log(genre.length);
+    // console.log(genre.length);
     let list = [];
     let sublist = [];
     for (let i = 0; i < genre.length; i++) {
-        console.log('genre: ' + genre[i]);
+        // console.log('genre: ' + genre[i]);
         const data = await instance.get('subgenre/' + genre[i]);
         let subGenre = data.data[0].subgenre;
         // console.log(subGenre);
@@ -119,7 +119,7 @@ module.exports.getPlaylistUrl = async (req, res) => {
 module.exports.getPlaylist = async (req, res) => {
     let collection = await _get_playlist_collection(); // return the collection
     let length = collection.count();
-    console.log(length);
+    // console.log(length);
     for (let i = 0; i < playlistLength; i++) {
         await collection.find({
             track_id: userPlaylist[i].track_id,

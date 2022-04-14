@@ -52,7 +52,7 @@ $(document).ready(function () {
                     let genre = response[i].playlist_subgenre[i];
                     p_genres.push(genre);
                 };
-                console.log(p_genres);
+                // console.log(p_genres);
                 p_genres.forEach(function (x) { counts[x] = (counts[x] || 0) + 1; });
                 for (var property in counts) {
                     if ( ! counts.hasOwnProperty(property)) {

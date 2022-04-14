@@ -161,6 +161,14 @@ $(document).ready(function () {
             if (num < 10 || num > 50) {
                 alert('Please select a number of songs between 10 and 50.');
             } else {
+                $('#instruction').text('Creating your playlist...');
+                $('#number_input').hide();
+                $(this).empty();
+                $(this).append(
+                    $(document.createElement('i')).prop({
+                        class: 'fa fa-spinner fa-spin fa-3x fa-fw'
+                    })
+                );
                 $.ajax({
                     url: '/random/playlist/' + num + '/' + userSubgenre,
                     type: 'GET',
@@ -168,9 +176,8 @@ $(document).ready(function () {
                     success: function (response) {
                         $('#main_menu').hide();
                         $('#selection_menu').hide();
-                        //$('#blob').hide();
                         $('#auth_menu').show();
-                        console.log(response);
+                        // console.log(response);
                         $.ajax({
                             url: '/random/playlist',
                             type: 'GET',

@@ -36,7 +36,7 @@ class Song {
         try {
             let collection = await _get_songs_collection();
             let mongoObj = await collection.insertOne(this);
-            console.log('1 song was inserted in the database with id -> ' + mongoObj.insertedId);
+            // console.log('1 song was inserted in the database with id -> ' + mongoObj.insertedId);
             return {success: 'Song correctly inserted in the Database.'};
         } catch (err) {
             throw err
@@ -62,7 +62,7 @@ class Song {
      */
     static async get(track_id) {
         let collection = await _get_songs_collection();
-        console.log(track_id)
+        // console.log(track_id)
         let obj = await collection.find({ "track_id": track_id }).toArray();
         return obj;
     }
@@ -75,7 +75,7 @@ class Song {
      */
     static async getSongByGenre(genre) {
         let collection = await _get_songs_collection();
-        console.log(genre)
+        // console.log(genre)
         let obj = await collection.find({ "playlist_genre": genre }).toArray();
         return obj;
     }
@@ -88,7 +88,7 @@ class Song {
      */
     static async getSongBySubgenre(subgenre) {
         let collection = await _get_songs_collection();
-        console.log(subgenre)
+        // console.log(subgenre)
         let obj = await collection.find({ "playlist_subgenre": subgenre }).toArray();
         return obj;
     }
