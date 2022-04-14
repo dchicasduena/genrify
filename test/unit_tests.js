@@ -1,3 +1,7 @@
+/**
+* @author Nhu Nguyen & David Chicas
+* @year 2022 
+*/
 
 //Require the dev-dependencies
 let chai = require('chai');

@@ -1,9 +1,8 @@
 /**
-* @author Nhu Nguyen, David Chicas
-* @student_id 201916426, 201919354
-* @course COMP 3100 - Web Programming
+* @author Nhu Nguyen & David Chicas
 * @year 2022 
 */
+
 const dotenv = require('dotenv');
 dotenv.config({ path: './.env' });
 let fs = require('fs');
