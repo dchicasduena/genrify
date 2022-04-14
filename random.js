@@ -34,31 +34,11 @@ async function _get_playlist_collection() {
 };
 
 module.exports.getData = async (req, res) => {
-    const songs = await instance.get('/song'); // get all songs from server
-    this.songs = songs.data;
-
-    for (let i = 1; i < this.songs.length; i++) { // go through the songs
-        const song = this.songs[i]; // get the song
-
-        // change duration to minutes
-        const minutes = Math.floor(song.duration_ms / 60000);
-        const seconds = ((song.duration_ms % 60000) / 1000).toFixed(0);
-        song.duration_ms = minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
-
-        // add genre to genreList
-        for (let i in song.playlist_genre) {
-            if (!genreList.includes(song.playlist_genre[i]) && (song.playlist_genre[i].length > 2)) {
-                genreList.push(song.playlist_genre[i])
-            }
-        }
-
-        // add subgenre to subGenreList
-        for (let i in song.playlist_subgenre) {
-            if (!subGenreList.includes(song.playlist_subgenre[i])) {
-                subGenreList.push(song.playlist_subgenre[i])
-            }
-        }
+    const genres = await instance.get('/genre'); // get all genre data from server
+    for (let i in genres.data) {
+        genreList.push(genres.data[i].genre);
     }
+    // console.log(genreList);
     res.send(genreList);
 }
 
@@ -70,7 +50,9 @@ module.exports.getSubGenre = async (req, res) => {
     let sublist = [];
     for (let i = 0; i < genre.length; i++) {
         console.log('genre: ' + genre[i]);
-        let subGenre = getSubGenre(genre[i], this.songs);
+        const data = await instance.get('subgenre/' + genre[i]);
+        let subGenre = data.data[0].subgenre;
+        // console.log(subGenre);
         for (let j = 0; j < subGenre.length; j++) {
             sublist.push(subGenre[j]);
         }
@@ -146,25 +128,8 @@ module.exports.getPlaylist = async (req, res) => {
             playlist_subgenre: userPlaylist[i].playlist_subgenre
         });
     }
-    console.log('reaching');
+    // console.log('reaching');
     res.send(userPlaylist);
-}
-
-
-// get all subgenres of a genre
-function getSubGenre(genre, songs) {
-    let subGenre = [];
-    for (let i = 0; i < songs.length; i++) {
-        let song = songs[i];
-        for (let a in song.playlist_genre) {
-            for (let b in song.playlist_subgenre) {
-                if (song.playlist_genre[a] == genre && (!subGenre.includes(song.playlist_subgenre[b]))) {
-                    subGenre.push(song.playlist_subgenre[b])
-                }
-            }
-        }
-    }
-    return subGenre;
 }
 
 // recommend song by subgenre

@@ -7,6 +7,7 @@
 
 const client = require('../utils/db.js');
 const Song = require('../model/song.js').Song;
+const GenreData = require('../model/genre.js').GenreData;
 
 /**
  * A function that adds a song to the database.
@@ -50,6 +51,38 @@ module.exports.get_song = async (req, res) => {
     if (obj.length > 0) {
         console.log(obj.length + ' item(s) sent.');
         res.send(obj[0]);
+    } else {
+        res.send('No item was found');
+    }
+};
+
+/**
+ * A function that returns all genre data.
+ * @param {Request} req - A request Object
+ * @param {Response} res - A response Object
+ */
+module.exports.get_all_genre = async (req, res) => {
+    let obj = await GenreData.getAll();
+    if (obj.length > 0) {
+        console.log(obj.length + ' item(s) sent.');
+        res.send(obj);
+    } else {
+        res.send('No item was found');
+    }
+};
+
+/**
+ * A function that gets subgenres by genre and returns all
+ * data of the requested genre.
+ * @param {Request} req - A request Object
+ * @param {Response} res - A response Object
+ */
+module.exports.get_subgenres_by_genre = async (req, res) => {
+    let genre = req.params.genre;
+    let obj = await GenreData.getSubgenre(genre);
+    if (obj.length > 0) {
+        console.log(obj.length + ' item(s) sent.');
+        res.send(obj);
     } else {
         res.send('No item was found');
     }

@@ -42,6 +42,9 @@ async function createServer() {
     app.get('/song/subgenre/:playlist_subgenre', song.get_song_by_subgenre);
     app.post('/song', song.add);
     app.delete('/song/:track_id', song.delete_song);
+    // genre modules
+    app.get('/genre', song.get_all_genre);
+    app.get('/subgenre/:genre', song.get_subgenres_by_genre);
     // random modules
     app.get('/random', random.getData);
     app.get('/random/genre/:genre', random.getSubGenre);
