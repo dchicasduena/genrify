@@ -62,5 +62,5 @@ This will tell you where the app is running in the terminal. Go to the specified
 
 
 ## Credits
-Our project uses [Chart.JS](https://www.chartjs.org), [Bootstrap](https://getbootstrap.com/), and it uses the Bootstrap [Cover](https://getbootstrap.com/docs/5.1/examples/cover/) Template
+Our project uses [Chart.JS](https://www.chartjs.org), [Bootstrap](https://getbootstrap.com/), and it uses the Bootstrap [Cover](https://getbootstrap.com/docs/5.1/examples/cover/) Template. The CSS for the background is from [CodePen](https://codepen.io/LA_water/pen/rNaYZBb)
 
