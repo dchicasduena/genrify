@@ -33,6 +33,7 @@ async function _get_playlist_collection() {
 };
 
 module.exports.getData = async (req, res) => {
+    genreList = []; // reset genre list
     const genres = await instance.get('/genre'); // get all genre data from server
     for (let i in genres.data) {
         genreList.push(genres.data[i].genre);
