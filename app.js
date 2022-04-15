@@ -56,6 +56,11 @@ async function createServer() {
     app.get('/callback', auth.callback);
     app.get('refresh_token', auth.refresh_token);
 
+    app.use((req, res) => {
+      res.status(404).redirect('/html/404.html')
+  });
+  
+
     // start the server
     server = app.listen(port, () => {
       console.log('Example app listening at http://localhost:%d', port);

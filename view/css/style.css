@@ -81,6 +81,8 @@ header {
   color: rgba(255, 255, 255, 0.5);
   background-color: transparent;
   border-bottom: 0.25rem solid transparent;
+  font-size: 1.5rem;
+  padding-top: 1.2rem;
 }
 
 .nav-masthead .nav-link:hover,
@@ -125,6 +127,18 @@ h3 {
 
 .hylink:hover {
   color: #fdfd66;
+}
+
+.icon-cont{
+  color: #ffffff;
+}
+
+.icon-cont:hover{
+  color: #ffffff;
+}
+
+.han_link {
+  font-size: 65pt !important;
 }
 
 .credits {
