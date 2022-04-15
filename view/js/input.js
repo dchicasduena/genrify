@@ -21,8 +21,8 @@ $(document).ready(function () {
     var userSubgenre = []; // list of user subgenres
 
     $(function () {
-        $('#selection_menu').hide();
-        $('#auth_menu').hide();
+        // $('#selection_menu').hide();
+        // $('#auth_menu').hide();
         $('#btn_start').on('click', function (e) {
             e.preventDefault();
             $('.mb-auto').hide();
