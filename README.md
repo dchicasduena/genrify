@@ -56,11 +56,6 @@ Run the command `node app.js`
 
 This will tell you where the app is running in the terminal. Go to the specified address and then follow the steps the application says. Now check your account on the Spotify app or web player to see your new playlist
 
-
-## Troubleshooting
-
-
-
 ## Credits
 Our project uses [Chart.JS](https://www.chartjs.org), [Bootstrap](https://getbootstrap.com/), and it uses the Bootstrap [Cover](https://getbootstrap.com/docs/5.1/examples/cover/) Template. The CSS for the background is from [CodePen](https://codepen.io/LA_water/pen/rNaYZBb)
 
