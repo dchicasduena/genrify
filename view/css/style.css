@@ -18,7 +18,7 @@
 .btn-secondary,
 .btn-secondary:focus,
 .btn-secondary:hover {
-  color: #0a2463;
+  color: #111c34; 
   text-shadow: none; /* Prevent inheritance from `body` */
   transition: transform 0.2s ease-in-out;
 }
@@ -34,7 +34,7 @@
 .btn-selected:focus,
 .btn-selected {
   color: #ffffff;
-  background-color: #363a51;
+  background-color: #36413e;
   transform: scale(1.075);
   text-shadow: none; /* Prevent inheritance from `body` */
   transition: transform 0.2s ease-in-out;
@@ -53,6 +53,11 @@ body {
   width: 100%;
   min-height: 100vh;
   position: auto;
+  font-family: 'Raleway', sans-serif;
+}
+
+p {
+  font-size: 65pt;
 }
 
 .lead {
@@ -219,6 +224,10 @@ html {
   animation: spin 2s linear infinite;
 }
 
+.fa-music {
+  color: #ed1250;
+}
+
 @keyframes spin {
   0% {
     transform: rotate(0deg);
@@ -339,18 +348,23 @@ html {
 
 @keyframes colorChange {
   0% {
-    background: #337ab7;
+    background: #ffd166;
   }
-  25% {
-    background: #69dbfd;
-  }
+
   50% {
-    background: #7dfd7d;
+    background: #06d6a0;
   }
-  75% {
-    background: #ffd95b;
-  }
+
   100% {
-    background: #fd5151;
+    background: #4056f4;
   }
 }
+
+/*
+ * color codes
+  red #ed1250
+  dark blue #111c34
+  yellow #ffd166
+  green #06d6a0
+  blue #4056f4
+*/
