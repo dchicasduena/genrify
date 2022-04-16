@@ -71,7 +71,7 @@ $(document).ready(function () {
         }
     });
 
-    $('.submit').on('click', function (e) {
+    $('.btn-Done').on('click', function (e) {
         e.preventDefault();
         if (this.id == 'submitGenre') { // if submit button is clicked for choosing genre
             // Clear user list and add selected genres
@@ -168,8 +168,8 @@ $(document).ready(function () {
             } else {
                 $('#instruction').text('Creating your playlist...');
                 $('#number_input').hide();
-                $(this).empty();
-                $(this).append(
+                $('.submit').empty();
+                $('.submit').append(
                     $(document.createElement('i')).prop({
                         class: 'fa fa-spinner fa-spin fa-3x fa-fw'
                     })
