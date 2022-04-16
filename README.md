@@ -1,7 +1,5 @@
 # GENRIFY
-App: https://genrify-app.herokuapp.com
-
-Github: https://github.com/dchicasduena/genrify
+https://genrify-app.herokuapp.com
 
 Spotify playlist generator based on genres and sub-genres
 
