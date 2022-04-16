@@ -25,6 +25,7 @@ $(document).ready(function () {
         // $('#auth_menu').hide();
         $('#btn_start').on('click', function (e) {
             e.preventDefault();
+            $('main').removeClass('center');
             $('.mb-auto').hide();
             $('#main_menu').hide();
             $('#auth_menu').hide();
