@@ -81,6 +81,8 @@ $(document).ready(function () {
             // Alert user if too few genres are selected
             if (userGenre.length < 1) {
                 alert('Please select a genres.');
+            } else if (userGenre.length > 5) {
+                alert('Please select no more than 5 genres.');
             } else {
                 $.ajax({
                     url: '/random/genre/' + userGenre,
@@ -124,6 +126,8 @@ $(document).ready(function () {
             // Alert user if too few genres are selected
             if (userSubgenre.length < 1) {
                 alert('Please select a subgenres.');
+            } else if (userSubgenre.length > 10) {
+                alert('Please select no more than 10 subgenres.');
             } else {
                 this.id = "createPlaylist";
                 $("#cblist").empty();

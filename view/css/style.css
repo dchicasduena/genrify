@@ -65,7 +65,7 @@ p {
 }
 
 .cover-container {
-  max-width: 42em;
+  width: 50em;
 }
 
 /* HEADER */
@@ -153,6 +153,16 @@ h3 {
 
 .submit {
   padding-bottom: 15px;
+}
+
+.form-outline {
+  margin-left: 150px;
+  margin-right: 150px;
+  text-align: center;
+}
+
+.form-control {
+  text-align: center;
 }
 
 /* Back Button */
