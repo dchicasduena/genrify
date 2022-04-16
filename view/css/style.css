@@ -116,6 +116,10 @@ h3 {
   font-weight: 700;
 }
 
+.px-3 {
+  margin: auto;
+}
+
 .hidden {
   visibility: hidden;
 }
