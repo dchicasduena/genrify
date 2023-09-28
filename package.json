@@ -19,7 +19,7 @@
     "mongodb": "^4.4.1",
     "open": "^8.4.0",
     "querystring": "~0.2.0",
-    "request": "~2.83.0",
+    "request": "~2.88.2",
     "spotify-web-api-node": "^5.0.2",
     "wait-on": "^6.0.1"
   },
