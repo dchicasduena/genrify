@@ -18,7 +18,7 @@ First clone the repository like you normally would, then go to project folder.
 git clone https://github.com/dchicasduena/playlist-generator.git
 ```
 
-Once inside the folder you will need to create a .env file containing you client id and secret, more informaiton [here](https://developer.spotify.com/documentation/general/guides/authorization/app-settings/)
+Once inside the folder you will need to create a `.env` file containing your client ID, secret, and redirect URI, more information [here](https://developer.spotify.com/documentation/web-api/concepts/authorization).
 
 For `macOS and Linux machines`
 
@@ -38,12 +38,11 @@ For `Windows`
 Then fill the .env file with the **CLIENT_ID** and **CLIENT_SECRET**, it should look like this:
 
 ```js
-CLIENT_ID='vgiwny1af6b60sjvswxfesb6nbpza7h2' # add your app id here
-CLIENT_SECRET='evch3hr5g5zbrwocnv5lxq0n9loyr6m7' # add your app secret here
+CLIENT_ID='your-spotify-client-id'
+CLIENT_SECRET='your-spotify-client-secret'
 ```
 
 Now you can run the command `npm install`to download all the dependancies you need for the project. 
-
 To import the list of songs in the .csv file you need to run the command `node import.js `, this command only needs to be run **once** during setup.
 
 ## Usage

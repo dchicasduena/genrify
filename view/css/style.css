@@ -60,6 +60,19 @@ p {
   font-size: 65pt;
 }
 
+.dispPlaylist {
+  font-size: 1rem;
+  line-height: 1.5;
+  margin: 0;
+  padding: 0.15rem 0;
+}
+
+.spotify-success {
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
 .lead {
   font-weight: 500;
 }

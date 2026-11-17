@@ -7,6 +7,8 @@
 let chai = require('chai');
 let chaiHttp = require('chai-http');
 const { Song } = require('../model/song.js');
+const adminToken = 'test-admin-token-0123456789abcdef';
+process.env.ADMIN_API_TOKEN = adminToken;
 let server = require('../app').app;
 let should = chai.should();
 
@@ -17,6 +19,17 @@ describe('Songs', () => {
      * Test the /POST route
      */
     describe('/POST song', () => {
+        it('rejects song creation without an admin token', function (done) {
+            chai.request(server)
+                .post('/song')
+                .send({ track_id: 'unauthorized' })
+                .end((err, res) => {
+                    if (err) { return done(err); }
+                    res.should.have.status(401);
+                    done();
+                });
+        });
+
         it('POST a song with info', function (done) {
             let song = new Song();
             song.track_id = '123456789';
@@ -27,6 +40,7 @@ describe('Songs', () => {
             // console.log(song);
             chai.request(server)
                 .post('/song')
+                .set('x-admin-token', adminToken)
                 .send(song)
                 .end((err, res) => {
                     if (err) { done(err) }
@@ -44,10 +58,21 @@ describe('Songs', () => {
      * Test the /DELETE/:id route
      */
     describe('/DELETE/:id song', () => {
+        it('rejects song deletion without an admin token', function (done) {
+            chai.request(server)
+                .delete('/song/unauthorized')
+                .end((err, res) => {
+                    if (err) { return done(err); }
+                    res.should.have.status(401);
+                    done();
+                });
+        });
+
         it('DELETE song by the given track ID', function (done) {
             let track_id = '123456789';
             chai.request(server)
                 .delete('/song/' + track_id)
+                .set('x-admin-token', adminToken)
                 .end((err, res) => {
                     if (err) { done(err) }
                     console.log(res.body.success);
@@ -132,6 +157,7 @@ describe('Songs', () => {
                 });
 
         });
+
     });
 
 });

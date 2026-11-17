@@ -1,210 +1,177 @@
-/**
-* @author Nhu Nguyen & David Chicas
-* @year 2022 
-*/
-
-var express = require('express'); // Express web server framework
-var request = require('request'); // "Request" library
-var querystring = require('querystring');
-// use .env file to load id and secret
+const crypto = require('crypto');
 const dotenv = require('dotenv');
-const { apps } = require('open');
 dotenv.config({ path: './.env' });
 
-var client_id = process.env.CLIENT_ID; // Your client id
-var client_secret = process.env.CLIENT_SECRET; // Your secret
-var redirect_uri = process.env.REDIRECT_URI; // Your redirect uri
-
-const client = require('./utils/db.js');
-const { response } = require('express');
-
-/**
- * Generates a random string containing numbers and letters
- * @param  {number} length The length of the string
- * @return {string} The generated string
- */
-var generateRandomString = function (length) {
-  var text = '';
-  var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
-  for (var i = 0; i < length; i++) {
-    text += possible.charAt(Math.floor(Math.random() * possible.length));
-  }
-  return text;
+const clientId = process.env.CLIENT_ID;
+const clientSecret = process.env.CLIENT_SECRET;
+const redirectUri = process.env.REDIRECT_URI;
+const stateKey = 'spotify_auth_state';
+const stateCookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'lax',
+  path: '/callback',
+  maxAge: 10 * 60 * 1000
+};
+const stateCookieClearOptions = {
+  httpOnly: stateCookieOptions.httpOnly,
+  secure: stateCookieOptions.secure,
+  sameSite: stateCookieOptions.sameSite,
+  path: stateCookieOptions.path
 };
 
-var stateKey = 'spotify_auth_state';
-module.exports.login = async (req, res) => {
-
-  var state = generateRandomString(16);
-  res.cookie(stateKey, state);
-
-  // your application requests authorization to Spotify
-  var scope = 'user-read-private user-read-email playlist-modify-public playlist-modify-private';
-  res.redirect('https://accounts.spotify.com/authorize?' +
-    querystring.stringify({
-      response_type: 'code',
-      client_id: client_id,
-      scope: scope,
-      redirect_uri: redirect_uri,
-      state: state
-    }));
-};
-
-async function test(req, res, callback) {
-
-  var code = req.query.code || null;
-  var state = req.query.state || null;
-  var storedState = req.cookies ? req.cookies[stateKey] : null;
-
-  if (state === null || state !== storedState) {
-    res.redirect('/#' +
-      querystring.stringify({
-        error: 'state_mismatch'
-      }));
-  } else {
-    res.clearCookie(stateKey);
-    var authOptions = {
-      url: 'https://accounts.spotify.com/api/token',
-      form: {
-        code: code,
-        redirect_uri: redirect_uri,
-        grant_type: 'authorization_code'
-      },
-      headers: {
-        'Authorization': 'Basic ' + (Buffer.from(client_id + ':' + client_secret).toString('base64'))
-      },
-      json: true
-    };
-
-    request.post(authOptions, async function (error, response, body) {
-      if (!error && response.statusCode === 200) {
-
-        var access_token = body.access_token,
-          refresh_token = body.refresh_token;
-
-        var options = {
-          url: 'https://api.spotify.com/v1/me',
-          headers: { 'Authorization': 'Bearer ' + access_token },
-          json: true
-        };
-
-        // use the access token to access the Spotify Web API
-        request.get(options, function (error, response, body) {
-          console.log('user information: ')
-          create_playlist(access_token, body.id, function get(res, err) {
-            callback(err, res);
-          }); // create playlist
-
-          // we can also pass the token to the browser to make requests from there
-          res.redirect('/#' +
-            querystring.stringify({
-              access_token: access_token,
-              refresh_token: refresh_token
-            }));
-        });
-      } else {
-        res.redirect('/#' +
-          querystring.stringify({
-            error: 'invalid_token'
-          }));
-      }
+async function requestSpotify(url, options) {
+  let response;
+  try {
+    response = await fetch(url, {
+      ...options,
+      signal: AbortSignal.timeout(15000)
     });
+  } catch (error) {
+    throw new Error('Spotify request could not be completed.');
   }
+  if (!response.ok) {
+    throw new Error(`Spotify request failed with status ${response.status}.`);
+  }
+  return response.json();
 }
 
-// callback that manages the authentication, provided by Spotify API
-module.exports.callback = async (request, response) => {
-  test(request, response, function (err, res) {
-    if (err) {
-      console.log(err);
-    } else {
-      //console.log('url: ' + res);
-      // response.send(res);
+function getClientAuthorization() {
+  if (!clientId || !clientSecret || !redirectUri) {
+    throw new Error('Spotify OAuth is not configured.');
+  }
+  return 'Basic ' + Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
+}
+
+module.exports.login = (req, res) => {
+  try {
+    getClientAuthorization();
+  } catch (error) {
+    return res.status(503).send('Spotify login is not configured.');
+  }
+
+  const state = crypto.randomBytes(32).toString('hex');
+  res.cookie(stateKey, state, stateCookieOptions);
+  const scope = 'playlist-modify-public playlist-modify-private';
+  const authorizationUrl = new URL('https://accounts.spotify.com/authorize');
+  authorizationUrl.searchParams.set('response_type', 'code');
+  authorizationUrl.searchParams.set('client_id', clientId);
+  authorizationUrl.searchParams.set('scope', scope);
+  authorizationUrl.searchParams.set('redirect_uri', redirectUri);
+  authorizationUrl.searchParams.set('state', state);
+  res.redirect(authorizationUrl.toString());
+};
+
+module.exports.callback = async (req, res) => {
+  const state = req.query.state;
+  const storedState = req.cookies ? req.cookies[stateKey] : null;
+  res.clearCookie(stateKey, stateCookieClearOptions);
+
+  if (!state || !storedState || state !== storedState) {
+    return res.status(400).send('Spotify authorization could not be verified.');
+  }
+  if (!req.query.code) {
+    return res.status(400).send('Spotify did not return an authorization code.');
+  }
+
+  try {
+    const tokenBody = await requestSpotify('https://accounts.spotify.com/api/token', {
+      method: 'POST',
+      headers: {
+        Authorization: getClientAuthorization(),
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: new URLSearchParams({
+        code: req.query.code,
+        redirect_uri: redirectUri,
+        grant_type: 'authorization_code'
+      })
+    });
+
+    if (!tokenBody || !tokenBody.access_token) {
+      throw new Error('Spotify did not return an access token.');
     }
-  });
+
+    const playlist = await createPlaylist(tokenBody.access_token);
+    res.redirect('/?spotify_playlist_url=' + encodeURIComponent(playlist.url));
+  } catch (error) {
+    console.error(error.message);
+    res.status(502).send('Unable to create a Spotify playlist. Please try again.');
+  }
 };
 
 module.exports.refresh_token = async (req, res) => {
+  const refreshToken = req.body && req.body.refresh_token;
+  if (typeof refreshToken !== 'string' || refreshToken.length === 0) {
+    return res.status(400).json({ error: 'A refresh_token is required.' });
+  }
 
-  // requesting access token from refresh token
-  var refresh_token = req.query.refresh_token;
-  var authOptions = {
-    url: 'https://accounts.spotify.com/api/token',
-    headers: { 'Authorization': 'Basic ' + (Buffer.from(client_id + ':' + client_secret).toString('base64')) },
-    form: {
-      grant_type: 'refresh_token',
-      refresh_token: refresh_token
+  try {
+    const tokenBody = await requestSpotify('https://accounts.spotify.com/api/token', {
+      method: 'POST',
+      headers: {
+        Authorization: getClientAuthorization(),
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: new URLSearchParams({
+        grant_type: 'refresh_token',
+        refresh_token: refreshToken
+      })
+    });
+    if (!tokenBody || !tokenBody.access_token) {
+      throw new Error('Spotify did not return an access token.');
+    }
+    res.json({ access_token: tokenBody.access_token });
+  } catch (error) {
+    console.error(error.message);
+    res.status(502).json({ error: 'Unable to refresh the Spotify token.' });
+  }
+};
+
+async function createPlaylist(accessToken) {
+  const playlist = await requestSpotify('https://api.spotify.com/v1/me/playlists', {
+    method: 'POST',
+    body: JSON.stringify({
+      name: 'Random Playlist',
+      description: `Playlist made through Genrify on ${new Date().toDateString()}`,
+      public: true
+    }),
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json'
     },
-    json: true
-  };
-
-  request.post(authOptions, function (error, response, body) {
-    if (!error && response.statusCode === 200) {
-      var access_token = body.access_token;
-      res.send({
-        'access_token': access_token
-      });
-    }
   });
-};
 
-// creates a playlist with the information the usr gave
-// in random.js
-async function create_playlist(access_token, user_id, callback) {
-  let time = new Date().toDateString();
-  var options = {
-    url: 'https://api.spotify.com/v1/users/' + user_id + '/playlists', // create playlist for user
-    body: JSON.stringify({ name: "Random Playlist", description: "playlist made through the internet // made " + time, public: true }),
-    dataType: 'json',
-    headers: {
-      'Authorization': 'Bearer ' + access_token,
-      'Content-Type': 'application/json',
-    }
+  const playlistUrl = playlist && playlist.external_urls && playlist.external_urls.spotify;
+  const parsedPlaylistUrl = playlistUrl ? new URL(playlistUrl) : null;
+  if (!playlist || !playlist.id || !parsedPlaylistUrl ||
+    parsedPlaylistUrl.protocol !== 'https:' || parsedPlaylistUrl.hostname !== 'open.spotify.com') {
+    throw new Error('Spotify returned an invalid playlist response.');
   }
 
-  // post request to spotify
-  request.post(options, (error, response, body) => {
-    console.log('playlist information: ')
-    var info = JSON.parse(body)
-    console.log('Playlist created')
-    callback(info.external_urls.spotify) // return the url of the playlist
+  const collection = await getPlaylistCollection();
+  await collection.insertOne({ url: playlistUrl, playlist_id: playlist.id });
+  const songObjects = await collection.find({ track_id: { $exists: true } }).toArray();
+  const trackUris = songObjects
+    .map((song) => song.track_id)
+    .filter((uri) => typeof uri === 'string' && /^spotify:track:[A-Za-z0-9]+$/.test(uri));
 
-    // after creating playlist add the songs to the playlist
-    add_track(access_token, info.id, info.external_urls.spotify)
-  })
-}
-
-async function add_track(access_token, playlist_id, url) {
-  let collection = await _get_playlist_collection(); // get playlist from mongo 
-  await collection.insertOne({url: url, playlist_id: playlist_id}); // insert the url into mongo
-  let songObjs = await collection.find({ track_id: { $exists: true } }).toArray(); // turn it to an array
-  let tracks = []
-
-  // add tracks to array
-  for (let i = 0; i < songObjs.length; i++) {
-    tracks.push(songObjs[i].track_id)
-    console.log(songObjs[i].track_id)
+  for (let offset = 0; offset < trackUris.length; offset += 100) {
+    await requestSpotify(`https://api.spotify.com/v1/playlists/${encodeURIComponent(playlist.id)}/items`, {
+      method: 'POST',
+      body: JSON.stringify({ uris: trackUris.slice(offset, offset + 100) }),
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      }
+    });
   }
-  var options = {
-    url: 'https://api.spotify.com/v1/playlists/' + playlist_id + '/tracks',
-    body: JSON.stringify({ uris: tracks }),
-    dataType: 'json',
-    headers: {
-      'Authorization': 'Bearer ' + access_token,
-      'Content-Type': 'application/json',
-    }
-  };
 
-  // post request of array of songs to spotify
-  request.post(options, (error, response, body) => {
-    // console.log(body);
-    console.log('Playlist added successfully.') // if successful
-  })
+  return { url: playlistUrl };
 }
 
-async function _get_playlist_collection() {
-  await client.connectToDB();
-  let db = await client.getDb();
-  return await db.collection('user_playlist'); // return the collection
-};
+async function getPlaylistCollection() {
+  const client = require('./utils/db.js');
+  const db = await client.getDb();
+  return db.collection('user_playlist');
+}

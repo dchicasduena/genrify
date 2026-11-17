@@ -16,15 +16,15 @@ var userSubgenre = []; // list of user subgenres
 var userPlaylist = [];
 var playlistLength = '';
 
-const axios = require('axios');
-const { json } = require('express');
-var myurl = 'http://localhost:' + process.env.PORT;
+const apiBaseUrl = `http://localhost:${process.env.PORT || 5500}`;
 
-// Let's configure the base url
-const instance = axios.create({
-    baseURL: myurl,
-    headers: { 'content-type': 'application/json' }
-});
+async function getApiData(path) {
+    const response = await fetch(new URL(path, apiBaseUrl));
+    if (!response.ok) {
+        throw new Error(`Local API request failed with status ${response.status}.`);
+    }
+    return response.json();
+}
 
 async function _get_playlist_collection() {
     await client.connectToDB();
@@ -34,9 +34,9 @@ async function _get_playlist_collection() {
 
 module.exports.getData = async (req, res) => {
     genreList = []; // reset genre list
-    const genres = await instance.get('/genre'); // get all genre data from server
-    for (let i in genres.data) {
-        genreList.push(genres.data[i].genre);
+    const genres = await getApiData('/genre'); // get all genre data from server
+    for (let i in genres) {
+        genreList.push(genres[i].genre);
     }
     // console.log(genreList);
     res.send(genreList);
@@ -50,8 +50,8 @@ module.exports.getSubGenre = async (req, res) => {
     let sublist = [];
     for (let i = 0; i < genre.length; i++) {
         // console.log('genre: ' + genre[i]);
-        const data = await instance.get('subgenre/' + genre[i]);
-        let subGenre = data.data[0].subgenre;
+        const data = await getApiData('/subgenre/' + encodeURIComponent(genre[i]));
+        let subGenre = data[0].subgenre;
         // console.log(subGenre);
         for (let j = 0; j < subGenre.length; j++) {
             sublist.push(subGenre[j]);
@@ -72,8 +72,8 @@ module.exports.createPlaylist = async (req, res) => {
 
     // get all songs of user subgenres
     for (let i in userSubgenre) {
-        let subgenre = await instance.get('/song/subgenre/' + userSubgenre[i]);
-        subGenreSongs[i] = subgenre.data;
+        let subgenre = await getApiData('/song/subgenre/' + encodeURIComponent(userSubgenre[i]));
+        subGenreSongs[i] = subgenre;
     }
 
     console.log('user playlist created:')

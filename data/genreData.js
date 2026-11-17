@@ -11,15 +11,15 @@ var songs = [] // array of all songs
 var genreList = []; // list of all genres
 var subGenreList = []; // list of all subgenres
 
-const axios = require('axios');
-const { json } = require('express');
-var myurl = 'http://localhost:' + process.env.PORT;
+const apiBaseUrl = `http://localhost:${process.env.PORT || 3000}`;
 
-// Let's configure the base url
-const instance = axios.create({
-    baseURL: myurl,
-    headers: { 'content-type': 'application/json' }
-});
+async function getApiData(path) {
+    const response = await fetch(new URL(path, apiBaseUrl));
+    if (!response.ok) {
+        throw new Error(`Local API request failed with status ${response.status}.`);
+    }
+    return response.json();
+}
 
 async function _get_playlist_collection() {
     await client.connectToDB();
@@ -28,8 +28,7 @@ async function _get_playlist_collection() {
 };
 
 async function get_data() {
-    const songs = await instance.get('/song'); // get all songs from server
-    this.songs = songs.data;
+    this.songs = await getApiData('/song'); // get all songs from server
 
     for (let i = 1; i < this.songs.length; i++) { // go through the songs
         const song = this.songs[i]; // get the song

@@ -7,7 +7,7 @@ const dotenv = require('dotenv');
 dotenv.config({ path: './.env' });
 const express = require('express');
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5500;
 var path = require('path');
 var cors = require('cors');
 var cookieParser = require('cookie-parser');
@@ -19,6 +19,7 @@ const song = require('./controller/main');
 const random = require('./random');
 const mongo = require('./utils/db.js');
 const auth = require('./auth');
+const requireAdminToken = require('./utils/adminAuth');
 
 var server;
 
@@ -39,8 +40,8 @@ async function createServer() {
     app.get('/song/:track_id', song.get_song);
     app.get('/song/genre/:playlist_genre', song.get_song_by_genre);
     app.get('/song/subgenre/:playlist_subgenre', song.get_song_by_subgenre);
-    app.post('/song', song.add);
-    app.delete('/song/:track_id', song.delete_song);
+    app.post('/song', requireAdminToken, song.add);
+    app.delete('/song/:track_id', requireAdminToken, song.delete_song);
     // genre modules
     app.get('/genre', song.get_all_genre);
     app.get('/subgenre/:genre', song.get_subgenres_by_genre);
@@ -54,7 +55,7 @@ async function createServer() {
     // auth modules
     app.get('/login', auth.login);
     app.get('/callback', auth.callback);
-    app.get('refresh_token', auth.refresh_token);
+    app.post('/refresh_token', auth.refresh_token);
 
     app.use((req, res) => {
       res.status(404).redirect('/html/404.html')
@@ -63,7 +64,7 @@ async function createServer() {
 
     // start the server
     server = app.listen(port, () => {
-      console.log('Example app listening at http://localhost:%d', port);
+      console.log('Example app listening at http://127.0.0.1:%d', port);
     });
   } catch (err) {
     console.log(err)

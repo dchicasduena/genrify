@@ -7,14 +7,11 @@
 
 // Import required modules
 const fs = require('fs');
-const request = require('request'); // "Request" library
-var url = process.env.DB_URL;
-const MongoClient = require('mongodb').MongoClient;
-const client = new MongoClient(url, { useUnifiedTopology: true });
-var dbConn;
-
 const dotenv = require('dotenv');
 dotenv.config({ path: './.env' });
+const MongoClient = require('mongodb').MongoClient;
+const client = new MongoClient(process.env.DB_URL);
+var dbConn;
 
 var client_id = process.env.CLIENT_ID; // Your client id
 var client_secret = process.env.CLIENT_SECRET; // Your secret
@@ -69,65 +66,48 @@ async function arrangeData() {
 
 }
 
-// your application requests authorization
-var authOptions = {
-  url: 'https://accounts.spotify.com/api/token',
-  headers: {
-    'Authorization': 'Basic ' + (Buffer.from(client_id + ':' + client_secret).toString('base64'))
-  },
-  form: {
-    grant_type: 'client_credentials'
-  },
-  json: true
-};
+async function getSpotifyToken() {
+  const response = await fetch('https://accounts.spotify.com/api/token', {
+    method: 'POST',
+    headers: {
+      Authorization: 'Basic ' + Buffer.from(client_id + ':' + client_secret).toString('base64'),
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: new URLSearchParams({ grant_type: 'client_credentials' }),
+    signal: AbortSignal.timeout(15000)
+  });
+  if (!response.ok) {
+    throw new Error(`Spotify token request failed with status ${response.status}.`);
+  }
+  const tokenBody = await response.json();
+  if (!tokenBody.access_token) {
+    throw new Error('Spotify did not return an access token.');
+  }
+  return tokenBody.access_token;
+}
+
+async function getSpotifyData(url) {
+  const token = await getSpotifyToken();
+  const response = await fetch(url, {
+    headers: { Authorization: `Bearer ${token}` },
+    signal: AbortSignal.timeout(15000)
+  });
+  if (!response.ok) {
+    throw new Error(`Spotify API request failed with status ${response.status}.`);
+  }
+  return response.json();
+}
 
 // get all available genres
-function getAllGenres() {
-  return new Promise(function (resolve, reject) {
-    request.post(authOptions, function (error, response, body) {
-      if (!error && response.statusCode === 200) {
-
-        // use the access token to access the Spotify Web API
-        var token = body.access_token;
-        var options = {
-          url: 'https://api.spotify.com/v1/recommendations/available-genre-seeds',
-          headers: {
-            'Authorization': 'Bearer ' + token
-          },
-          json: true
-        };
-
-        request.get(options, function (error, response, body) {
-          resolve(body.genres)
-        });
-      }
-    })
-  })
+async function getAllGenres() {
+  const body = await getSpotifyData('https://api.spotify.com/v1/recommendations/available-genre-seeds');
+  return body.genres;
 }
 
 // get artist genre
-function getArtistGenre(artist_id) {
-  return new Promise(function (resolve, reject) {
-    request.post(authOptions, function (error, response, body) {
-      if (!error && response.statusCode === 200) {
-
-        // use the access token to access the Spotify Web API
-        var token = body.access_token;
-        var options = {
-          url: 'https://api.spotify.com/v1/artists/' + artist_id,
-          headers: {
-            'Authorization': 'Bearer ' + token
-          },
-          json: true
-        };
-
-        request.get(options, function (error, response, body) {
-          let artistGenres = body.genres
-          resolve(artistGenres)
-        });
-      }
-    })
-  })
+async function getArtistGenre(artist_id) {
+  const body = await getSpotifyData(`https://api.spotify.com/v1/artists/${encodeURIComponent(artist_id)}`);
+  return body.genres;
 }
 
 // arrange the genres into 2 categories
